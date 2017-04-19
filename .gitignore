@@ -7,3 +7,7 @@
 Homestead.json
 Homestead.yaml
 .env
+artisan
+bootstrap/
+server.php
+storage/
