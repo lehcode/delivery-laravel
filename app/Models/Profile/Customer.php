@@ -6,7 +6,7 @@
  * Time: 1:52
  */
 
-namespace App\Models;
+namespace App\Models\Profile;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -40,7 +40,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\ProfileCustomer whereUserId($value)
  * @mixin \Eloquent
  */
-class ProfileCustomer extends Model implements HasMediaConversions, AuditableContract
+class Customer extends Model implements HasMediaConversions, AuditableContract
 {
     use Auditable, Searchable, SoftDeletes, HasMediaTrait;
 
@@ -48,7 +48,7 @@ class ProfileCustomer extends Model implements HasMediaConversions, AuditableCon
 
     protected $table = 'user_customer_profiles';
     protected $primaryKey = 'user_id';
-    protected $fillable = ['user_id', 'membership_id', 'name', 'birth_date', 'is_activated'];
+    protected $fillable = ['user_id', 'name', 'is_activated'];
     protected $casts = ['birth_date' => 'date', 'is_activated' => 'boolean'];
 
     public $incrementing = false;
