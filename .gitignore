@@ -11,3 +11,6 @@ artisan
 bootstrap/
 server.php
 storage/
+_ide_helper.php
+.phpstorm.meta.php
+public/pinfo.php

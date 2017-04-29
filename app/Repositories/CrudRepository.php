@@ -1,0 +1,86 @@
+<?php
+
+/**
+ * Created by Antony Repin
+ * Date: 24.04.2017
+ * Time: 3:04
+ */
+
+namespace App\Repositories;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class CrudRepository
+ * @package App\Repositories
+ */
+class CrudRepository implements CrudRepositoryInterface
+{
+    /**
+     * @var mixed
+     */
+    protected $model = null;
+
+    /**
+     * @param int $id
+     * @return $this->model
+     */
+    public function find($id) {
+        $m = $this->model;
+        return $m::find($id);
+    }
+
+    /**
+     * @param array $params
+     * @return Collection|null
+     */
+    public function findByParams(array $params) {
+        $m = $this->model;
+        return $m::where($params)->get();
+    }
+
+    /**
+     * @param array $params
+     * @return $this->model
+     */
+    public function create(array $params) {
+        $m = $this->model;
+        return $m::create($params);
+    }
+
+    /**
+     * @param array $params
+     * @return $this->model
+     */
+    public function edit(Model $model, array $params, $unguard = false) {
+        $save = function($model, $params) {
+            return $model->fill($params)->save();
+        };
+
+        if($unguard == true) {
+            return $model::unguarded(function() use($model, $params, $save) {
+                return $save($model, $params);
+            });
+        } else {
+            return $save($model, $params);
+        }
+    }
+
+    /**
+     * @param Model $model
+     * @return bool
+     */
+    public function remove(Model $model) {
+        return $model->delete();
+    }
+
+    /**
+     * @return Builder
+     */
+    public function getBuilder() {
+        $m = $this->model;
+        return $m::select();
+    }
+}

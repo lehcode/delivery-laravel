@@ -11,6 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/reset-password/done', ['as' => 'password_reset.success', 'uses' => 'RestorePasswordController@success']);
+Route::get('/reset-password/{key}', ['as' => 'password_reset.form', 'uses' => 'RestorePasswordController@restorePage']);
+Route::post('/reset-password/{key}', ['as' => 'password_reset.action', 'uses' => 'RestorePasswordController@restoreAction']);
+Route::get('/activate/{user}/{key}', ['as' => 'activate.link', 'uses' => 'ActivationController@verify']);

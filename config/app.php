@@ -135,7 +135,7 @@ return [
     |
     */
 
-    'providers' => [
+    'providers' => array_merge([
 
         /*
          * Laravel Framework Service Providers...
@@ -177,7 +177,24 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-    ],
+        Propaganistas\LaravelPhone\LaravelPhoneServiceProvider::class,
+        Propaganistas\LaravelIntl\IntlServiceProvider::class,
+        'Alexpechkarev\GoogleGeocoder\GoogleGeocoderServiceProvider',
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
+        Laratrust\LaratrustServiceProvider::class,
+        'Jenssegers\Date\DateServiceProvider',
+        OwenIt\Auditing\AuditingServiceProvider::class,
+        'Tymon\JWTAuth\Providers\JWTAuthServiceProvider',
+        Spatie\Fractal\FractalServiceProvider::class,
+        'GrahamCampbell\Flysystem\FlysystemServiceProvider',
+        Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
+
+    ], (env('APP_DEBUG') == true ? [
+        Barryvdh\Debugbar\ServiceProvider::class,
+        Way\Generators\GeneratorsServiceProvider::class,
+        Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
+    ] : [])),
 
     /*
     |--------------------------------------------------------------------------
@@ -190,7 +207,7 @@ return [
     |
     */
 
-    'aliases' => [
+    'aliases' => array_merge([
 
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
@@ -225,7 +242,15 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Laratrust'   => Laratrust\LaratrustFacade::class,
+        'Date' => Jenssegers\Date\Date::class,
+        'JWTAuth' => 'Tymon\JWTAuth\Facades\JWTAuth',
+        'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
+        'Fractal' => Spatie\Fractal\FractalFacade::class,
+        'Flysystem' => 'GrahamCampbell\Flysystem\Facades\Flysystem'
 
-    ],
+    ], (env('APP_DEBUG') == true ? [
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
+    ] : []))
 
 ];
