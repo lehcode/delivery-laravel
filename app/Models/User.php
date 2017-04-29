@@ -52,7 +52,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'created_at', 'updated_at'];
 
     protected $casts = ['is_enabled' => 'boolean'];
 
