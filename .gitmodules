@@ -1,0 +1,4 @@
+[submodule "admin"]
+	path = admin
+	url = ssh://git@bitbucket.org/egeshi/barq-admin.git
+    ignore = all
