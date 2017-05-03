@@ -2,7 +2,7 @@
 
 return [
 
-    /*
+	/*
     |--------------------------------------------------------------------------
     | Default Serializer
     |--------------------------------------------------------------------------
@@ -13,6 +13,7 @@ return [
     |
     */
 
-    'default_serializer' => League\Fractal\Serializer\JsonApiSerializer::class,
+	'default_serializer' => League\Fractal\Serializer\JsonApiSerializer::class,
+	'per_page' => 20
 
 ];
