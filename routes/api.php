@@ -19,6 +19,7 @@ Route::group(['middleware' => 'api'], function () {
 			Route::post('authenticate', ['uses' => 'AuthController@authenticate']);
 			Route::any('user/me', ['middleware' => 'jwt.auth', 'uses' => 'AuthController@me']);
 			Route::post('user/restore-password', ['uses' => 'RestorePasswordController@sendLink']);
+			Route::get('user/navigation', ['middleware' => 'jwt.auth', 'uses' => 'AuthController@navigation']);
 		});
 	});
 });

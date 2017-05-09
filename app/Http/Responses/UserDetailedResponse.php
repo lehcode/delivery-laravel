@@ -93,10 +93,9 @@ class UserDetailedResponse extends TransformerAbstract
 						: null,
 				];
 
-				if ($this->includeDetails == true) {
-					$data = array_merge($data, [
-						'notes' => $user->profile->notes,
-					]);
+				if ($this->includeDetails == true)
+				{
+					$data = array_merge($data, [ "notes" => $user->profile->notes ]);
 				}
 				break;
 		}
@@ -111,7 +110,8 @@ class UserDetailedResponse extends TransformerAbstract
 			'updated_at' => $user->updated_at
 		]);
 
-		if ($this->authenticateUser == true) {
+		if ($this->authenticateUser == true)
+		{
 			$token = JWTAuth::fromUser($user);
 			$data = array_merge($data, ['token' => $token]);
 		}
@@ -126,7 +126,8 @@ class UserDetailedResponse extends TransformerAbstract
 	 */
 	public function includeLanguage(User $user)
 	{
-		if (is_null($user->languages)) {
+		if (is_null($user->languages))
+		{
 			return null;
 		}
 
