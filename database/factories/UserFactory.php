@@ -11,23 +11,25 @@
 |
 */
 
-use Jenssegers\Date;
+use Jenssegers\Date\Date;
 use App\Models\User;
 use Faker\Generator as Faker;
+use Webpatser\Uuid\Uuid;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(User::class, function (Faker $faker) {
 
-    static $password = 'Qrab17';
+	static $password = 'Qrab17';
 
-    $userData = [
-        'password' => bcrypt($password),
-        'remember_token' => str_random(10),
-        'phone' => $faker->phoneNumber,
-        'last_login' => Date::now()->subDays(rand(0, 4)),
-    ];
+	$userData = [
+		'id' => Uuid::generate(4),
+		'email' => $faker->safeEmail,
+		'name' => $faker->name,
+		'password' => bcrypt($password),
+		'phone' => phone(preg_replace('/\s+/', '', $faker->phoneNumber), 'GB', \libphonenumber\PhoneNumberFormat::E164),
+		'last_login' => Date::now()->subDays(rand(0, 4)),
+		'is_enabled' => true,
+	];
 
-    var_dump($userData);
-
-    return $userData;
+	return $userData;
 });

@@ -24,6 +24,7 @@ class User extends Authenticatable
 	const ROLE_ROOT = 'root';
 	const ROLE_ADMIN = 'admin';
 	const ROLE_CUSTOMER = 'customer';
+	const ROLE_RECIPIENT = 'recipient';
 	const ROLE_DRIVER = 'driver';
 
 	/**
@@ -67,8 +68,15 @@ class User extends Authenticatable
 	protected $rules = [
 		'name' => 'required',
 		'email' => 'required|email|unique:users,email',
-		'phone' => 'required|phone:AUTO,GB|unique:users,phone',
+		'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
 		'password' => 'required|min:5'
+	];
+
+	protected $validationMessages = [
+		'name.required' => "User full name is required",
+		'email.required' => "User email is required",
+		'password.required' => "User password is required",
+		'phone.required' => "User phone is required",
 	];
 
 	/**
@@ -78,6 +86,10 @@ class User extends Authenticatable
 	{
 		switch ($this->roles()[0]->get('name')) {
 			case self::ROLE_CUSTOMER:
+				return ProfileCustomer::find($this->id);
+				break;
+
+			case self::ROLE_RECIPIENT:
 				return ProfileCustomer::find($this->id);
 				break;
 
