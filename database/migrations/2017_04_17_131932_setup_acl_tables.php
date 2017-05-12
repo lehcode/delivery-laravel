@@ -22,7 +22,7 @@ class SetupAclTables extends Migration
 
 		// Create table for associating roles to users (Many To Many Polymorphic)
 		Schema::create('role_user', function (Blueprint $table) {
-			$table->uuid('user_id');
+			$table->uuid('user_id')->references('id')->on('users');
 			$table->string('user_type');
 
 			$table->integer('role_id')->unsigned();

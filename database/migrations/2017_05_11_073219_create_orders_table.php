@@ -28,8 +28,8 @@ class CreateOrdersTable extends Migration
 			$table->foreign('customer_id')->references('id')->on('users')
 				->onUpdate('restrict')->onDelete('restrict');
 
-			$table->uuid('driver_id');
-			$table->foreign('driver_id')->references('id')->on('users')
+			$table->uuid('carrier_id');
+			$table->foreign('carrier_id')->references('id')->on('users')
 				->onUpdate('restrict')->onDelete('restrict');
 
 			$table->uuid('shipment_id');

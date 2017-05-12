@@ -18,7 +18,7 @@ class SetupAclTablesSeed extends Seeder
 	var $usersAmt = [
 		'admin' => 2,
 		'customer' => 5,
-		'driver' => 5,
+		'carrier' => 5,
 		'recipient' => 5,
 	];
 
@@ -86,8 +86,8 @@ class SetupAclTablesSeed extends Seeder
 				]);
 
 				try {
-					$user->attachRole($role);
 					$user->save();
+					$user->attachRole($role);
 				} catch (ValidationException $e) {
 					var_dump($user->phone);
 					print_r($e->getErrors());
@@ -110,8 +110,8 @@ class SetupAclTablesSeed extends Seeder
 						}
 
 						try {
-							$user->attachRole($role);
 							$user->save();
+							$user->attachRole($role);
 						} catch (ValidationException $e) {
 							var_dump($user->phone);
 							print_r($e->getErrors());

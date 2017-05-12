@@ -21,5 +21,11 @@ Route::group(['middleware' => 'api'], function () {
 			Route::post('user/restore-password', ['uses' => 'RestorePasswordController@sendLink']);
 			Route::get('user/navigation', ['middleware' => 'jwt.auth', 'uses' => 'AuthController@navigation']);
 		});
+
+		Route::group(['prefix' => 'customer/v1', 'namespace' => 'Customer'], function () {
+			Route::group(['prefix' => 'user'], function () {
+				Route::post('create', ['uses' => 'UserController@create']);
+			});
+		});
 	});
 });

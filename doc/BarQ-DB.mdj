@@ -436,7 +436,7 @@
 									"height": 13,
 									"autoResize": false,
 									"underline": false,
-									"text": "driver",
+									"text": "carrier",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5,
 									"wordWrap": false
@@ -1928,9 +1928,9 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 178,
+									"left": 171,
 									"top": 323,
-									"width": 10.1181640625,
+									"width": 24.578125,
 									"height": 13,
 									"autoResize": false,
 									"alpha": 0.5235987755982988,
@@ -1960,9 +1960,9 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 358,
+									"left": 355,
 									"top": 439,
-									"width": 49.8544921875,
+									"width": 54.18359375,
 									"height": 13,
 									"autoResize": false,
 									"alpha": -0.5235987755982988,
@@ -1972,7 +1972,7 @@
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "driver_id",
+									"text": "carrier_id",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5,
 									"wordWrap": false
@@ -2406,9 +2406,9 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 777,
+									"left": 770,
 									"top": 779,
-									"width": 10.1181640625,
+									"width": 24.578125,
 									"height": 13,
 									"autoResize": false,
 									"alpha": -0.5235987755982988,
@@ -2418,7 +2418,7 @@
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "id",
+									"text": "uuid",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5,
 									"wordWrap": false
@@ -2640,9 +2640,9 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 320,
+									"left": 296,
 									"top": 243,
-									"width": 19.5,
+									"width": 67.18994140625,
 									"height": 13,
 									"autoResize": false,
 									"alpha": 0.5235987755982988,
@@ -2652,7 +2652,7 @@
 									},
 									"edgePosition": 2,
 									"underline": false,
-									"text": "city",
+									"text": "current_city",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5,
 									"wordWrap": false
@@ -3290,9 +3290,9 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 777,
+									"left": 770,
 									"top": 1102,
-									"width": 10.1181640625,
+									"width": 24.578125,
 									"height": 13,
 									"autoResize": false,
 									"alpha": 0.5235987755982988,
@@ -3302,7 +3302,7 @@
 									},
 									"edgePosition": 2,
 									"underline": false,
-									"text": "id",
+									"text": "uuid",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5,
 									"wordWrap": false
@@ -4094,7 +4094,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFbV+V7EGeWIPg="
 									},
-									"visible": true,
+									"visible": false,
 									"enabled": true,
 									"lineColor": "#000000",
 									"fillColor": "#ffffff",
@@ -4115,7 +4115,6 @@
 									},
 									"edgePosition": 1,
 									"underline": false,
-									"text": "uuid",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5,
 									"wordWrap": false
@@ -4135,9 +4134,9 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 494,
+									"left": 482,
 									"top": 688,
-									"width": 0,
+									"width": 24.578125,
 									"height": 13,
 									"autoResize": false,
 									"alpha": 0.5235987755982988,
@@ -4147,6 +4146,7 @@
 									},
 									"edgePosition": 2,
 									"underline": false,
+									"text": "uuid",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5,
 									"wordWrap": false
@@ -5057,7 +5057,7 @@
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "uuid",
+									"text": "id",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5,
 									"wordWrap": false
@@ -5364,7 +5364,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFLzntJC6EktCk="
 					},
-					"name": "driver",
+					"name": "carrier",
 					"ownedElements": [
 						{
 							"_type": "ERDRelationship",
@@ -5454,7 +5454,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFbHu7lTgbx7hU="
 								},
-								"name": "driver_id",
+								"name": "carrier_id",
 								"reference": {
 									"$ref": "AAAAAAFbGoG1XaK5Uq0="
 								},
@@ -5474,7 +5474,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFbV3x9a2Urhkw="
 								},
-								"name": "city",
+								"name": "current_city",
 								"reference": {
 									"$ref": "AAAAAAFbGjvjmKF8RT0="
 								},
@@ -5502,8 +5502,9 @@
 							"_parent": {
 								"$ref": "AAAAAAFbGjvjmKF8RT0="
 							},
-							"name": "uuid",
-							"length": 0,
+							"name": "id",
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": true,
 							"foreignKey": true,
 							"referenceTo": {
@@ -5668,9 +5669,9 @@
 							"_parent": {
 								"$ref": "AAAAAAFbGj2+DaHzgLo="
 							},
-							"name": "uuid",
-							"type": "BINARY",
-							"length": "16",
+							"name": "id",
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": true,
 							"foreignKey": true,
 							"referenceTo": {
@@ -5686,11 +5687,12 @@
 								"$ref": "AAAAAAFbGj2+DaHzgLo="
 							},
 							"name": "city",
-							"length": 0,
+							"type": "INTEGER",
+							"length": "11",
 							"primaryKey": false,
 							"foreignKey": true,
 							"referenceTo": {
-								"$ref": "AAAAAAFbHqp0rwKbmQU="
+								"$ref": "AAAAAAFbV4Vl8mWer7A="
 							},
 							"nullable": false,
 							"unique": false
@@ -6070,7 +6072,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFbHwjcCQgZPVc="
 								},
-								"name": "id",
+								"name": "uuid",
 								"reference": {
 									"$ref": "AAAAAAFbHr6k4AOrePs="
 								},
@@ -6151,8 +6153,8 @@
 								"$ref": "AAAAAAFbGj4i9KIRPro="
 							},
 							"name": "id",
-							"type": "INT",
-							"length": "11",
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": true,
 							"foreignKey": false,
 							"nullable": false,
@@ -6192,7 +6194,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFbGj4i9KIRPro="
 							},
-							"name": "customer_id",
+							"name": "customer",
 							"length": 0,
 							"primaryKey": false,
 							"foreignKey": true,
@@ -6208,7 +6210,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFbGj4i9KIRPro="
 							},
-							"name": "shipment_category_id",
+							"name": "shipment_category",
 							"length": 0,
 							"primaryKey": false,
 							"foreignKey": true,
@@ -6224,7 +6226,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFbGj4i9KIRPro="
 							},
-							"name": "route_id",
+							"name": "route",
 							"length": 0,
 							"primaryKey": false,
 							"foreignKey": true,
@@ -6240,7 +6242,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFbGj4i9KIRPro="
 							},
-							"name": "trip_id",
+							"name": "trip",
 							"length": 0,
 							"primaryKey": false,
 							"foreignKey": true,
@@ -6300,7 +6302,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFbGj4i9KIRPro="
 							},
-							"name": "driver",
+							"name": "carrier",
 							"length": 0,
 							"primaryKey": false,
 							"foreignKey": true,
@@ -6473,6 +6475,7 @@
 								"$ref": "AAAAAAFbGj5ERqIeM28="
 							},
 							"name": "id",
+							"type": "INT(11)",
 							"length": 0,
 							"primaryKey": true,
 							"foreignKey": false,
@@ -6708,8 +6711,8 @@
 								"$ref": "AAAAAAFbGoG1XaK5Uq0="
 							},
 							"name": "id",
-							"type": "INTEGER",
-							"length": "11",
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": true,
 							"foreignKey": false,
 							"nullable": false,
@@ -6812,8 +6815,8 @@
 								"$ref": "AAAAAAFbHr6k4AOrePs="
 							},
 							"name": "id",
-							"type": "INTEGER",
-							"length": "11",
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": true,
 							"foreignKey": false,
 							"nullable": false,
@@ -6947,8 +6950,8 @@
 								"$ref": "AAAAAAFbV4kMQmXpG7c="
 							},
 							"name": "id",
-							"type": "INT",
-							"length": "11",
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": true,
 							"foreignKey": false,
 							"nullable": false,
@@ -7062,7 +7065,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFbV6Lh4WZ9H0A="
 								},
-								"name": "id",
+								"name": "uuid",
 								"reference": {
 									"$ref": "AAAAAAFbV6INZmZdfhQ="
 								},
@@ -7091,7 +7094,8 @@
 								"$ref": "AAAAAAFbV6INZmZdfhQ="
 							},
 							"name": "uuid",
-							"length": 0,
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": true,
 							"foreignKey": true,
 							"referenceTo": {
@@ -7130,13 +7134,13 @@
 							"_parent": {
 								"$ref": "AAAAAAFbV9h03WcN544="
 							},
-							"name": "uuid",
 							"end1": {
 								"_type": "ERDRelationshipEnd",
 								"_id": "AAAAAAFbV+V7D2eTrKg=",
 								"_parent": {
 									"$ref": "AAAAAAFbV+V7D2eSY0s="
 								},
+								"name": "uuid",
 								"reference": {
 									"$ref": "AAAAAAFbV9h03WcN544="
 								},
@@ -7165,8 +7169,8 @@
 								"$ref": "AAAAAAFbV9h03WcN544="
 							},
 							"name": "uuid",
-							"type": "BINARY",
-							"length": "16",
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": true,
 							"foreignKey": false,
 							"nullable": false,
@@ -7386,7 +7390,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFbWA+9yWke+eQ="
 								},
-								"name": "uuid",
+								"name": "id",
 								"reference": {
 									"$ref": "AAAAAAFbGjvjmKF8RT0="
 								},
@@ -7434,9 +7438,9 @@
 							"_parent": {
 								"$ref": "AAAAAAFbV+uQj2fbyn0="
 							},
-							"name": "uuid",
-							"type": "BINARY",
-							"length": "16",
+							"name": "id",
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": true,
 							"foreignKey": false,
 							"nullable": false,
@@ -7691,7 +7695,7 @@
 							},
 							"name": "id",
 							"type": "INTEGER",
-							"length": "1",
+							"length": "2",
 							"primaryKey": true,
 							"foreignKey": false,
 							"nullable": false,

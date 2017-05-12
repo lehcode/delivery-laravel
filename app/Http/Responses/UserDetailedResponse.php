@@ -81,7 +81,7 @@ class UserDetailedResponse extends TransformerAbstract
 
 				break;
 
-			case User::ROLE_DRIVER:
+			case User::ROLE_CARRIER:
 				$data = [
 					'is_online' => $user->profile->status == ProfileDriver::STATUS_ONLINE,
 					'name' => $user->profile->name,
@@ -107,7 +107,8 @@ class UserDetailedResponse extends TransformerAbstract
 			'phone' => $user->phone,
 			'is_enabled' => $user->is_enabled,
 			'created_at' => $user->created_at,
-			'updated_at' => $user->updated_at
+			'updated_at' => $user->updated_at,
+			'roles' => $user->roles,
 		]);
 
 		if ($this->authenticateUser == true)

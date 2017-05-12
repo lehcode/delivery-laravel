@@ -18,10 +18,6 @@ use Auth;
 use JWTAuth;
 use App\Exceptions\MultipleExceptions;
 
-/**
- * Class AuthController
- * @package App\Http\Controllers
- */
 class AuthController
 {
 	/**
@@ -77,7 +73,8 @@ class AuthController
 			throw new MultipleExceptions(trans('auth.failed'), 400);
 		}
 
-		if (Auth::user()->roles()->first()->name != $type) {
+		$user = Auth::user();
+		if (!$user->hasRole($type)) {
 			throw new MultipleExceptions(trans('auth.failed'), 400);
 		}
 
@@ -121,9 +118,9 @@ class AuthController
 						'sref' => '/dashboard',
 					],
 					[
-						'title' => 'Drivers',
+						'title' => 'Carriers',
 						'icon' => '/img/material-design-icons/taxi.svg',
-						'sref' => '/drivers',
+						'sref' => '/carriers',
 					],
 					[
 						'title' => 'Customers',

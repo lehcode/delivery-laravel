@@ -18,14 +18,12 @@ use Webpatser\Uuid\Uuid;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(User::class, function (Faker $faker) {
-
-	static $password = 'Qrab17';
-
+	
 	$userData = [
 		'id' => Uuid::generate(4),
 		'email' => $faker->safeEmail,
 		'name' => $faker->name,
-		'password' => bcrypt($password),
+		'password' => 'Qrab17',
 		'phone' => '+37529' . mt_rand(1111111, 9999999),
 		'last_login' => Date::now()->subDays(rand(0, 4)),
 		'is_enabled' => true,
