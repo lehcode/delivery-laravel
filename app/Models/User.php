@@ -24,7 +24,7 @@ class User extends Authenticatable
 	const ROLE_ROOT = 'root';
 	const ROLE_ADMIN = 'admin';
 	const ROLE_CUSTOMER = 'customer';
-	const ROLE_RECIPIENT = 'recipient';
+	//const ROLE_RECIPIENT = 'recipient';
 	const ROLE_DRIVER = 'driver';
 
 	/**
@@ -55,16 +55,34 @@ class User extends Authenticatable
 	 */
 	protected $dates = ['deleted_at', 'created_at', 'updated_at'];
 
+	/**
+	 * @var array
+	 */
 	protected $casts = ['is_enabled' => 'boolean'];
 
+	/**
+	 * @var array
+	 */
 	protected $guarded = ['password', 'is_enabled'];
 
+	/**
+	 * @var array
+	 */
 	protected $visible = ['id', 'email', 'name', 'phone', 'photo', 'is_enabled', 'created_at', 'updated_at'];
 
+	/**
+	 * @var array
+	 */
 	protected $appends = ['profile'];
 
+	/**
+	 * @var bool
+	 */
 	protected $throwValidationExceptions = true;
 
+	/**
+	 * @var array
+	 */
 	protected $rules = [
 		'name' => 'required',
 		'email' => 'required|email|unique:users,email',
@@ -72,6 +90,9 @@ class User extends Authenticatable
 		'password' => 'required|min:5'
 	];
 
+	/**
+	 * @var array
+	 */
 	protected $validationMessages = [
 		'name.required' => "User full name is required",
 		'email.required' => "User email is required",
@@ -89,9 +110,9 @@ class User extends Authenticatable
 				return ProfileCustomer::find($this->id);
 				break;
 
-			case self::ROLE_RECIPIENT:
-				return ProfileCustomer::find($this->id);
-				break;
+//			case self::ROLE_RECIPIENT:
+//				return ProfileCustomer::find($this->id);
+//				break;
 
 			case self::ROLE_DRIVER:
 				return ProfileDriver::find($this->id);

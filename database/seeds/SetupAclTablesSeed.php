@@ -22,6 +22,8 @@ class SetupAclTablesSeed extends Seeder
 		'recipient' => 5,
 	];
 
+	var $phoneSfx = 0;
+
 	/**
 	 * Run the database seeds.
 	 *
@@ -74,12 +76,13 @@ class SetupAclTablesSeed extends Seeder
 				}
 			}
 
-			$this->command->info("Creating '{$key}' user");
+			$this->command->info("Creating '{$key}' user(s)");
 
 			if ($key === 'root') {
 
 				$user = factory(User::class)->make([
-					'email' => $key . '@barq.com'
+					'email' => $key . '@barq.com',
+					'phone' => '+375291111110',
 				]);
 
 				try {
@@ -94,11 +97,15 @@ class SetupAclTablesSeed extends Seeder
 			} else {
 
 				$tick = false;
+
 				factory(User::class, $this->usersAmt[$key])->make()
 					->each(function ($user) use ($role, &$tick) {
 
+						$this->phoneSfx++;
+
 						if (!$tick) {
 							$user->email = $role->name . '@barq.com';
+							$user->phone = '+37529111111' . $this->phoneSfx;
 							$tick = true;
 						}
 

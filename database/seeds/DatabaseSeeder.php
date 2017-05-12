@@ -11,9 +11,11 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
+		$this->call(CitiesSeeder::class);
+		$this->call(PaymentTypesSeeder::class);
 		$this->call(SetupAclTablesSeed::class);
 		$this->call(SettingsSeeder::class);
 		$this->call(LanguagesSeeder::class);
-		$this->call(CitiesSeeder::class);
+		$this->call(RecipientSeeder::class);
 	}
 }

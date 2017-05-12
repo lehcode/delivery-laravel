@@ -6,28 +6,36 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateUserLanguageTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('user_language', function(Blueprint $table)
-        {
-            $table->uuid('user_id')->index('fk_user_language_users1_idx');
-            $table->unsignedInteger('language_id')->index('fk_user_language_languages1_idx');
-            $table->primary(['user_id','language_id']);
-        });
-    }
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		Schema::create('user_language', function (Blueprint $table) {
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::drop('user_language');
-    }
+			$table->uuid('user_id')->index();
+			$table->foreign('user_id')->references('id')->on('users')
+				->onUpdate('restrict');
+
+			$table->unsignedInteger('language_id')->index();
+			$table->primary(['user_id', 'language_id']);
+
+			$table->foreign('language_id')->references('id')->on('languages')
+				->onUpdate('CASCADE');
+		});
+	}
+
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
+		DB::statement("SET FOREIGN_KEY_CHECKS=0");
+		Schema::dropIfExists('user_language');
+		DB::statement("SET FOREIGN_KEY_CHECKS=1");
+	}
 }
