@@ -49,13 +49,13 @@ return [
 			'payment_types' => 'ra',
 			'cities' => 'ra',
 		],
-		'recipient' => [
-			'customers' => 'ro',
-			'trips' => 'ro',
-			'shipments' => 'ro',
-			'orders' => 'ro',
-			'cities' => 'ra',
-		],
+//		'recipient' => [
+//			'customers' => 'ro',
+//			'trips' => 'ro',
+//			'shipments' => 'ro',
+//			'orders' => 'ro',
+//			'cities' => 'ra',
+//		],
 	],
 	'permission_structure' => [
 //        'api_user' => [
