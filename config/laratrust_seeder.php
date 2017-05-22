@@ -5,7 +5,7 @@ return [
 		'root' => [
 			'users' => 'c,ra,ua,d,ud',
 			'acl' => 'c,ra,ua,d,ud',
-			'drivers' => 'c,ra,ua,d,ud',
+			'carriers' => 'c,ra,ua,d,ud',
 			'customers' => 'c,ra,ua,d,ud',
 			'recipients' => 'c,ra,ua,d,ud',
 			'trips' => 'c,ra,ua,d,ud',
@@ -17,7 +17,7 @@ return [
 			'cities' => 'c,ra,ua,d,ud',
 		],
 		'admin' => [
-			'drivers' => 'c,ra,ua,d',
+			'carriers' => 'c,ra,ua,d',
 			'customers' => 'c,ra,ua,d',
 			'recipients' => 'c,ra,ua,d',
 			'trips' => 'c,ra,ua,d',
@@ -29,7 +29,7 @@ return [
 			'cities' => 'c,ra,ua,d',
 		],
 		'customer' => [
-			'drivers' => 'ra',
+			'carriers' => 'ra',
 			'customers' => 'ro,uo',
 			'recipients' => 'c,ro,uo',
 			'trips' => 'ro',
@@ -39,8 +39,8 @@ return [
 			'payment_types' => 'ra',
 			'cities' => 'ra',
 		],
-		'driver' => [
-			'drivers' => 'ro,uo',
+		'carrier' => [
+			'carriers' => 'ro,uo',
 			'customers' => 'ra',
 			'trips' => 'c,ro,d',
 			'shipments' => 'ro,uo',
@@ -49,13 +49,6 @@ return [
 			'payment_types' => 'ra',
 			'cities' => 'ra',
 		],
-//		'recipient' => [
-//			'customers' => 'ro',
-//			'trips' => 'ro',
-//			'shipments' => 'ro',
-//			'orders' => 'ro',
-//			'cities' => 'ra',
-//		],
 	],
 	'permission_structure' => [
 //        'api_user' => [

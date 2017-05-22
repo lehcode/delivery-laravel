@@ -23,14 +23,14 @@ class CreateTripsTable extends Migration
 
 			$table->uuid('id');
 			$table->primary('id');
-			$table->timestamp('time_length');
+			$table->integer('time_length');
 
 			$table->integer('payment_type_id')->unsigned()->index();
 			$table->foreign('payment_type_id')->references('id')->on('payment_types')
 				->onUpdate('cascade');
 
-			$table->uuid('driver_id');
-			$table->foreign('driver_id')->references('id')->on('users')
+			$table->uuid('carrier_id');
+			$table->foreign('carrier_id')->references('id')->on('users')
 				->onUpdate('cascade');
 
 			$table->timestamps();
@@ -47,10 +47,6 @@ class CreateTripsTable extends Migration
 	public function down()
 	{
 		DB::statement("SET FOREIGN_KEY_CHECKS=0");
-//        Schema::table($this->name, function(Blueprint $table){
-//            $table->dropForeign(['payment_type_id']);
-//            $table->dropForeign(['driver_id']);
-//        });
 		Schema::drop($this->name);
 		DB::statement("SET FOREIGN_KEY_CHECKS=1");
 	}

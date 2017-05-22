@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\ModelValidationException;
 use App\Extensions\UuidTrait;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,15 +25,14 @@ class User extends Authenticatable
 	const ROLE_ROOT = 'root';
 	const ROLE_ADMIN = 'admin';
 	const ROLE_CUSTOMER = 'customer';
-	//const ROLE_RECIPIENT = 'recipient';
-	const ROLE_DRIVER = 'driver';
+	const ROLE_CARRIER = 'carrier';
 
 	/**
 	 * The attributes that are mass assignable.
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'email', 'password', 'is_enabled'];
+	protected $fillable = ['name', 'email', 'password', 'is_enabled', 'roles'];
 
 	/**
 	 * The attributes that should be hidden for arrays.
@@ -68,7 +68,7 @@ class User extends Authenticatable
 	/**
 	 * @var array
 	 */
-	protected $visible = ['id', 'email', 'name', 'phone', 'photo', 'is_enabled', 'created_at', 'updated_at'];
+	protected $visible = ['id', 'email', 'name', 'phone', 'photo', 'is_enabled', 'created_at', 'updated_at', 'roles'];
 
 	/**
 	 * @var array
@@ -101,7 +101,8 @@ class User extends Authenticatable
 	];
 
 	/**
-	 * @return ProfileCustomer|ProfileDriver|null
+	 * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
+	 * @throws \Exception
 	 */
 	public function getProfileAttribute()
 	{
@@ -110,11 +111,7 @@ class User extends Authenticatable
 				return ProfileCustomer::find($this->id);
 				break;
 
-//			case self::ROLE_RECIPIENT:
-//				return ProfileCustomer::find($this->id);
-//				break;
-
-			case self::ROLE_DRIVER:
+			case self::ROLE_CARRIER:
 				return ProfileDriver::find($this->id);
 				break;
 
@@ -122,8 +119,13 @@ class User extends Authenticatable
 				return ProfileAdmin::find($this->id);
 				break;
 
-			default:
+			case self::ROLE_ROOT:
 				return ProfileRoot::fund($this->id);
+			break;
+
+			default:
+				throw new \Exception("Cannot get user profile.");
+
 		}
 	}
 

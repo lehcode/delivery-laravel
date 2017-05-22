@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-	'name' => 'Laravel',
+	'name' => 'Barq API',
 
 	/*
     |--------------------------------------------------------------------------
@@ -173,6 +173,7 @@ return [
 		/*
          * Application Service Providers...
          */
+		Laratrust\LaratrustServiceProvider::class,
 		App\Providers\AppServiceProvider::class,
 		App\Providers\AuthServiceProvider::class,
 		// App\Providers\BroadcastServiceProvider::class,
@@ -184,7 +185,6 @@ return [
 		'Alexpechkarev\GoogleGeocoder\GoogleGeocoderServiceProvider',
 		Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 		Barryvdh\Cors\ServiceProvider::class,
-		Laratrust\LaratrustServiceProvider::class,
 		'Jenssegers\Date\DateServiceProvider',
 		OwenIt\Auditing\AuditingServiceProvider::class,
 		'Tymon\JWTAuth\Providers\JWTAuthServiceProvider',

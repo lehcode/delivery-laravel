@@ -16,4 +16,8 @@ class Trip extends Model
 	 * @var array
 	 */
 	protected $dates = ['deleted_at', 'created_at', 'updated_at'];
+
+	public function carrier(){
+		return $this->belongsTo(User::class);
+	}
 }
