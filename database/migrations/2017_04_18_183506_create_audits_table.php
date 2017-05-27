@@ -27,14 +27,19 @@ class CreateAuditsTable extends Migration
     {
         Schema::create('audits', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('user_id')->nullable();
+            $table->uuid('user_id');
             $table->string('event');
-            $table->morphs('auditable');
+
+            $table->uuid('auditable_id');
+            $table->string('auditable_type');
+            $table->index(["auditable_id", "auditable_type"]);
+
             $table->text('old_values')->nullable();
             $table->text('new_values')->nullable();
             $table->string('url')->nullable();
             $table->ipAddress('ip_address')->nullable();
             $table->timestamp('created_at');
+            $table->string('user_agent');
         });
     }
 
