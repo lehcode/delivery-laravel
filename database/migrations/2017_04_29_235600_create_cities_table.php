@@ -18,6 +18,10 @@ class CreateCitiesTable extends Migration
 			$table->increments('id');
 			$table->string('name', 128);
 			$table->boolean('active')->default(true);
+
+			$table->unsignedInteger('country_id');
+			$table->foreign('country_id')->references('id')->on('countries')
+				->onUpdate('cascade');
 		});
 	}
 
