@@ -27,6 +27,10 @@ Route::group(['middleware' => 'api'], function () {
 		Route::group(['prefix' => 'customer/v1'], function () {
 			Route::group(['middleware' => 'jwt.auth'], function(){
 				Route::get('navigation', ['uses' => 'CustomerController@navigation']);
+
+				Route::group(['prefix' => 'user'], function () {
+					Route::post('edit', ['uses' => 'UserController@edit']);
+				});
 			});
 
 			Route::group(['prefix' => 'user'], function () {
@@ -36,21 +40,25 @@ Route::group(['middleware' => 'api'], function () {
 
 
 		Route::group(['prefix' => 'carrier/v1'], function () {
-			Route::group(['middleware' => 'jwt.auth'], function(){
-				Route::get('navigation', ['uses' => 'CarrierController@navigation']);
-			});
 
 			Route::group(['prefix' => 'user'], function () {
 				Route::post('create', ['uses' => 'CarrierController@create']);
 			});
 
-			Route::group(['prefix' => 'trip'], function () {
-				Route::get('list', ['uses' => 'TripController@getTrips']);
-				Route::get('{trip}', ['uses' => 'TripController@item']);
-				Route::get('{trip}/available_time', ['uses' => 'TripController@getAvailableTimes']);
+			Route::group(['middleware' => 'jwt.auth'], function(){
+				Route::get('navigation', ['uses' => 'CarrierController@navigation']);
+
+				Route::group(['prefix' => 'user'], function () {
+					Route::post('edit', ['uses' => 'UserController@edit']);
+				});
+
+				Route::group(['prefix' => 'trip'], function () {
+					Route::get('list', ['uses' => 'TripController@getTrips']);
+					Route::get('{trip}', ['uses' => 'TripController@item']);
+					Route::get('{trip}/available_time', ['uses' => 'TripController@getAvailableTimes']);
+				});
+
 			});
 		});
-
-
 	});
 });

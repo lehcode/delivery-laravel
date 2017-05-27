@@ -2,25 +2,27 @@
 
 namespace App\Models;
 
-use App\Exceptions\ModelValidationException;
+use App\Models\User\Customer;
+use Jenssegers\Date\Date;
 use App\Extensions\UuidTrait;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use Hash;
 use Watson\Validating\ValidatingTrait;
 use Validator;
 
-class User extends Authenticatable
+class User extends Authenticatable implements AuditableInterface
 {
 	use LaratrustUserTrait,
 		Notifiable,
 		UuidTrait,
 		SoftDeletes,
 		ValidatingTrait,
-		Auditable;
+		AuditableTrait;
 
 	const ROLE_ROOT = 'root';
 	const ROLE_ADMIN = 'admin';
@@ -32,7 +34,7 @@ class User extends Authenticatable
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'email', 'password', 'is_enabled', 'roles'];
+	protected $fillable = ['name', 'email', 'phone', 'password', 'is_enabled', 'roles', 'last_login'];
 
 	/**
 	 * The attributes that should be hidden for arrays.
@@ -53,27 +55,37 @@ class User extends Authenticatable
 	 *
 	 * @var array
 	 */
-	protected $dates = ['deleted_at', 'created_at', 'updated_at'];
+	protected $dates = ['deleted_at', 'created_at', 'updated_at', 'last_login'];
 
 	/**
 	 * @var array
 	 */
-	protected $casts = ['is_enabled' => 'boolean'];
+	protected $casts = ['is_enabled' => 'boolean', 'last_login'=>'datetime'];
 
 	/**
 	 * @var array
 	 */
-	protected $guarded = ['password', 'is_enabled'];
+	protected $guarded = ['password', 'is_enabled', 'remember_token'];
 
 	/**
 	 * @var array
 	 */
-	protected $visible = ['id', 'email', 'name', 'phone', 'photo', 'is_enabled', 'created_at', 'updated_at', 'roles'];
+	protected $visible = ['id', 'email', 'name', 'phone', 'photo', 'is_enabled', 'created_at', 'updated_at', 'roles', 'last_login'];
 
 	/**
 	 * @var array
 	 */
 	protected $appends = ['profile'];
+
+	/**
+	 * @var array
+	 */
+	protected $auditExclude = ['id', 'created_at', 'updated_at'];
+
+	/**
+	 * @var array
+	 */
+	protected $auditableEvents = ['deleted', 'updated', 'restored'];
 
 	/**
 	 * @var bool
@@ -96,6 +108,7 @@ class User extends Authenticatable
 	protected $validationMessages = [
 		'name.required' => "User full name is required",
 		'email.required' => "User email is required",
+		'email.unique' => "Email must be unique",
 		'password.required' => "User password is required",
 		'phone.required' => "User phone is required",
 	];
@@ -106,21 +119,21 @@ class User extends Authenticatable
 	 */
 	public function getProfileAttribute()
 	{
-		switch ($this->roles()[0]->get('name')) {
+		switch ($this->roles()->first()->name) {
 			case self::ROLE_CUSTOMER:
-				return ProfileCustomer::find($this->id);
+				return Customer::find($this->id);
 				break;
 
 			case self::ROLE_CARRIER:
-				return ProfileDriver::find($this->id);
+				return Carrier::find($this->id);
 				break;
 
 			case self::ROLE_ADMIN:
-				return ProfileAdmin::find($this->id);
+				return Admin::find($this->id);
 				break;
 
 			case self::ROLE_ROOT:
-				return ProfileRoot::fund($this->id);
+				return Root::find($this->id);
 			break;
 
 			default:

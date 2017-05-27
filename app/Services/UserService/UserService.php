@@ -42,7 +42,7 @@ class UserService implements UserServiceInterface
      * @return bool
      */
     public function edit(User $user, array $params) {
-        $funcName = 'edit' . $user->type;
+        $funcName = 'edit' . ucfirst($user->roles()->first()->name);
         return $this->$funcName($user, $params);
     }
 
@@ -63,8 +63,6 @@ class UserService implements UserServiceInterface
             'email'         => ['email', Rule::unique('users')->ignore($user->id)],
             'password'      => 'min:5',
             'phone'         => ['phone:AUTO', Rule::unique('users')->ignore($user->id)],
-            'language_id'   => 'exists:languages,id',
-            'birth_date'    => 'date'
         ])->validate();
 
         return DB::transaction(function() use($entityUser, $entityProfile, $user, $params) {

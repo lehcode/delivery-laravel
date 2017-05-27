@@ -7,7 +7,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EditUserProfileRequest;
 use App\Http\Requests\SignUpCustomerRequest;
 use App\Http\Responses\UserDetailedResponse;
 use App\Repositories\User\UserRepositoryInterface;
@@ -20,7 +19,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
-class UserController extends BaseController
+class CustomerController extends BaseController
 {
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
@@ -45,7 +44,7 @@ class UserController extends BaseController
 	protected $userRepository;
 
 	/**
-	 * UserController constructor.
+	 * CustomerController constructor.
 	 *
 	 * @param SignUpServiceInterface    $signUpServiceInterface
 	 * @param ResponderServiceInterface $responderServiceInterface
@@ -57,42 +56,70 @@ class UserController extends BaseController
 		ResponderServiceInterface $responderServiceInterface,
 		UserServiceInterface $userServiceInterface,
 		UserRepositoryInterface $userRepositoryInterface
-	)
-	{
+	) {
+		$this->userService = $userServiceInterface;
 		$this->signupService = $signUpServiceInterface;
 		$this->responderService = $responderServiceInterface;
-		$this->userService = $userServiceInterface;
 		$this->userRepository = $userRepositoryInterface;
 	}
 
 	/**
-	 * @param EditUserProfileRequest $request
+	 * @param Request $request
 	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 * @throws ModelValidationException
+	 * @return mixed
 	 * @throws ValidationException
 	 */
-	public function edit(EditUserProfileRequest $request)
+	public function create(Request $request)
 	{
-
-		$data = $request->all();
-
 		try {
-			$this->userService->edit(\Auth::user(), $data);
-			$user = $this->userRepository->find(\Auth::id());
-
-			if ($request->has('old_password') && $request->has('new_password')) {
-				if (!$this->userService->verifyPassword(\Auth::user(), $request->get('old_password'))) {
-					throw new ModelValidationException(trans('app.common.errors.incorrect_password'));
-				}
-				$this->userService->changePassword(\Auth::user(), $request->get('new_password'));
-			}
-
-			return $this->responderService->fractal($user, UserDetailedResponse::class);
+			$params = $request->all();
+			$user = $this->signupService->customer($params);
+			return $this->responderService->fractal($user, UserDetailedResponse::class, 0, [false, true]);
 		} catch (ValidationException $e) {
 			throw $e;
 		} catch (\Exception $e) {
 			return $this->responderService->errorResponse($e);
 		}
+
+	}
+
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function navigation()
+	{
+
+		return $this->responderService->response([
+			'status' => 'success',
+			'data' => [
+				'data' => [
+					[
+						'title' => 'My Account',
+						'id' => 'MyAccount',
+						'href' => '/customer/v1/user/account',
+					],
+					[
+						'title' => 'ID Validation',
+						'id' => 'IdValidation',
+						'href' => '/customer/v1/user/id_validation',
+					],
+					[
+						'title' => 'Payment Info',
+						'id' => 'PaymentInfo',
+						'href' => '/customer/v1/user/payment_info',
+					],
+					[
+						'title' => 'My Orders',
+						'id' => 'MyOrders',
+						'href' => '/customer/v1/orders',
+					],
+					[
+						'title' => 'Help & Legal',
+						'id' => 'HelpLegal',
+						'href' => '/customer/v1/help',
+					],
+				]
+			]
+		]);
 	}
 }

@@ -63,8 +63,10 @@ class UserDetailedResponse extends TransformerAbstract
 		//$ratingService = app()->make(RatingServiceInterface::class);
 
 		$data = [];
+		$roles = $user->roles();
+		$role = $roles->first();
 
-		switch ($user->roles()->first()->name) {
+		switch ($role->name) {
 			case User::ROLE_ADMIN:
 				$data = [];
 				break;
@@ -73,9 +75,8 @@ class UserDetailedResponse extends TransformerAbstract
 				$data = [
 					'name' => $user->profile->name,
 					'is_activated' => $user->profile->is_activated,
-					'language_id' => !is_null($user->languages->first()) ? $user->languages->first()->id : null,
-					'picture' => !is_null($user->profile->getFirstMedia(ProfileCustomer::MEDIA_PICTURE))
-						? $user->profile->getFirstMedia(ProfileCustomer::MEDIA_PICTURE)->getFullUrl('fitted')
+					'picture' => !is_null($user->profile->getFirstMedia(User\Customer::MEDIA_PICTURE))
+						? $user->profile->getFirstMedia(User\Customer::MEDIA_PICTURE)->getFullUrl('fitted')
 						: null
 				];
 
@@ -87,7 +88,6 @@ class UserDetailedResponse extends TransformerAbstract
 					'name' => $user->profile->name,
 					'status' => $user->profile->status,
 					'notes' => $user->profile->notes,
-					//'rating' => $ratingService->getUserRating($user),
 					'picture' => !is_null($user->profile->getFirstMedia(ProfileDriver::MEDIA_PICTURE))
 						? $user->profile->getFirstMedia(ProfileDriver::MEDIA_PICTURE)->getFullUrl('fitted')
 						: null,

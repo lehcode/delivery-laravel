@@ -15,6 +15,7 @@ use App\Services\Responder\ResponderServiceInterface;
 use App\Services\UserService\UserServiceInterface;
 use Illuminate\Http\Request;
 use Auth;
+use Jenssegers\Date\Date;
 use JWTAuth;
 use App\Exceptions\MultipleExceptions;
 
@@ -49,6 +50,7 @@ class AuthController
 	) {
 	
 
+
 		$this->userRepository = $userRepository;
 		$this->responderService = $responderService;
 		$this->userService = $userService;
@@ -74,6 +76,9 @@ class AuthController
 		}
 
 		$user = Auth::user();
+		$user->last_login = Date::now();
+		$user->update($user->toArray());
+
 		if (!$user->hasRole($type)) {
 			throw new MultipleExceptions(trans('auth.failed'), 400);
 		}
