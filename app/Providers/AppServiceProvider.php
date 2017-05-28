@@ -12,6 +12,7 @@ use App\Services\Settings\SettingsService;
 use App\Services\Settings\SettingsServiceInterface;
 use App\Services\SignUp\SignUpService;
 use App\Services\SignUp\SignUpServiceInterface;
+use App\Services\Trip\TripServiceInterface;
 use App\Services\UserService\UserService;
 use App\Services\UserService\UserServiceInterface;
 use Illuminate\Support\ServiceProvider;
@@ -54,6 +55,7 @@ class AppServiceProvider extends ServiceProvider
         app()->singleton(UserServiceInterface::class, UserService::class);
         app()->singleton(MaintenanceServiceInterface::class, MaintenanceService::class);
         app()->singleton(SettingsServiceInterface::class, SettingsService::class);
+        app()->singleton(TripServiceInterface::class, TripService::class);
 
         if ($this->app->environment('local', 'testing')) {
             $this->app->register(DuskServiceProvider::class);
