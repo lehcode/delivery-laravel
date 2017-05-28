@@ -36,6 +36,16 @@ Route::group(['middleware' => 'api'], function () {
 			Route::group(['prefix' => 'user'], function () {
 				Route::post('create', ['uses' => 'CustomerController@create']);
 			});
+
+			Route::group(['prefix' => 'order'], function () {
+				Route::get('list', ['uses' => 'OrderController@getOrders']);
+				Route::get('{order}', ['uses' => 'OrderController@order']);
+			});
+
+			Route::group(['prefix' => 'trip'], function () {
+				Route::get('list', ['uses' => 'OrderController@getTrips']);
+				Route::get('{order}', ['uses' => 'OrderController@trip']);
+			});
 		});
 
 
@@ -53,9 +63,8 @@ Route::group(['middleware' => 'api'], function () {
 				});
 
 				Route::group(['prefix' => 'trip'], function () {
-					Route::get('list', ['uses' => 'TripController@getTrips']);
-					Route::get('{trip}', ['uses' => 'TripController@item']);
-					Route::get('{trip}/available_time', ['uses' => 'TripController@getAvailableTimes']);
+					Route::get('list', ['uses' => 'OrderController@getTrips']);
+					Route::get('{trip}', ['uses' => 'OrderController@getTrip']);
 				});
 
 			});
