@@ -15,3 +15,4 @@ _ide_helper.php
 .phpstorm.meta.php
 public/pinfo.php
 tmp/
+_ide_helper_models.php
