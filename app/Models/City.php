@@ -21,5 +21,10 @@ class City extends Model
 	 */
 	public $timestamps = false;
 
+	public function country()
+	{
+		return $this->belongsTo('App\Models\Country');
+	}
+
 
 }

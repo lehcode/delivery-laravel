@@ -19,9 +19,12 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 {
 	use AuditableTrait, SoftDeletes, HasMediaTrait;
 
-	const STATUS_ONLINE = 'online';
-	const STATUS_OFFLINE = 'offine';
+	const STATUS_ONLINE = 1;
+	const STATUS_OFFLINE = 0;
 
+	/**
+	 *
+	 */
 	const ID_IMAGE = 'id_scan';
 
 	/**
@@ -58,11 +61,24 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	 * @var bool
 	 */
 	public $incrementing = false;
-	
+
+	/**
+	 * @var array
+	 */
 	protected $rules = [
+		'name' => 'required|string|min:3',
+		'current_city' => 'nullable|integer',
 		self::ID_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
 		User::PROFILE_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
 	];
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function trips()
+	{
+		return $this->hasMany('App\Models\Trip', 'carrier_id');
+	}
 
 	/**
 	 * @throws \Spatie\Image\Exceptions\InvalidManipulation
@@ -78,7 +94,13 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	 *
 	 * @return mixed
 	 */
-	public function scopeOnline(Builder $builder) {
+	public function scopeOnline(Builder $builder)
+	{
 		return $builder->where('is_online', true);
+	}
+
+	public function user()
+	{
+		return $this->belongsTo('App\Models\User');
 	}
 }

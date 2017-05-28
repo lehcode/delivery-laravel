@@ -18,8 +18,6 @@ class LanguagesSeeder extends Seeder
 	 */
 	public function run()
 	{
-		DB::statement("DELETE FROM languages");
-
 		$langs = [
 			['code' => 'ar', 'flag' => 'sa', 'name' => 'Arabic'],
 			['code' => 'en', 'flag' => 'gb', 'name' => 'English'],

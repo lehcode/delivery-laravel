@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(SetupAclTablesSeed::class);
 		$this->call(SettingsSeeder::class);
 		$this->call(LanguagesSeeder::class);
-		$this->call(RecipientSeeder::class);
+		$this->call(TripsSeeder::class);
+		$this->call(OrdersSeeder::class);
 	}
 }

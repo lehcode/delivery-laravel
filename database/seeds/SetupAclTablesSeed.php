@@ -9,6 +9,7 @@ use App\Models\User\Permission;
 use App\Repositories\User\UserRepositoryInterface;
 use Propaganistas\LaravelIntl\Facades\Country;
 use Watson\Validating\ValidationException;
+use App\Models\City;
 
 class SetupAclTablesSeed extends Seeder
 {
@@ -33,7 +34,7 @@ class SetupAclTablesSeed extends Seeder
 	{
 
 		$faker = Faker\Factory::create('en_GB');
-		$countries = Country::all();
+		$cities = City::all();
 
 		$this->command->info('Truncating User, Role and Permission tables');
 		$this->truncateAclTables();
@@ -99,7 +100,7 @@ class SetupAclTablesSeed extends Seeder
 				$tick = false;
 
 				factory(User::class, $this->usersAmt[$key])->make()
-					->each(function ($user) use ($role, &$tick) {
+					->each(function ($user) use ($role, &$tick, $key, $cities, $faker) {
 
 						$this->phoneSfx++;
 
@@ -112,6 +113,19 @@ class SetupAclTablesSeed extends Seeder
 						try {
 							$user->save();
 							$user->attachRole($role);
+
+							switch ($key) {
+								case 'customer':
+									User\Customer::create(array_merge(['user_id' => $user->id, 'name' => $user->name], ['notes' => $faker->text(128)]));
+									break;
+
+								case 'carrier':
+									User\Carrier::create(array_merge(['user_id' => $user->id, 'name' => $user->name],
+										['current_city' => $cities->random()->id, 'notes' => $faker->text(128)]));
+									break;
+							}
+
+
 						} catch (ValidationException $e) {
 							var_dump($user->phone);
 							print_r($e->getErrors());

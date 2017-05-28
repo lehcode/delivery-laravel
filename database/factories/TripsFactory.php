@@ -5,8 +5,17 @@
  * Time: 14:42
  */
 
-$factory->define(App\Models\Trip::class, function(Faker\Generator $faker){
+use App\Models\Trip;
+use Faker\Generator as Faker;
+use App\Models\PaymentType;
+use App\Models\Country;
+
+$factory->define(Trip::class, function (Faker $faker) {
+	
+	$paymentTypes = PaymentType::all();
+	
 	return [
-		
+		'carrier_id' => null,
+		'payment_type_id' => $paymentTypes->random()->id
 	];
 });

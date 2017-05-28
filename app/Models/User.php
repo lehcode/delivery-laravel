@@ -175,4 +175,14 @@ class User extends Authenticatable implements AuditableInterface
 		return $this;
 	}
 
+	public function customer()
+	{
+		return $this->hasOne('App\Models\User\Customer');
+	}
+
+	public function carrier()
+	{
+		return $this->hasOne('App\Models\User\Carrier');
+	}
+
 }

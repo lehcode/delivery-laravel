@@ -4,26 +4,67 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Order
+ * @package App\Models
+ */
 class Order extends Model
 {
+	/**
+	 * @var array
+	 */
 	protected $fillable = [
 		'departure_date',
 		'expected_delivery_date',
 		'recipient_name',
 		'customer_id',
-		'driver_id',
 		'shipment_id',
-		'route_id',
 		'trip_id',
 	];
 
-	protected $dates = ['deleted_at', 'created_at', 'updated_at'];
+	/**
+	 * @var array
+	 */
+	protected $dates = [
+		'departure_date',
+		'expected_delivery_date',
+		'deleted_at',
+		'created_at',
+		'updated_at'];
 
+	/**
+	 * @var array
+	 */
 	protected $rules = [
-		'name' => 'required',
-		'email' => 'required|email|unique:users,email',
-		'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
-		'password' => 'required|min:5'
+		'departure_date' => 'required',
+		'expected_delivery_date' => 'required',
+		'recipient_name' => 'required|min:3',
+		'customer_id' => 'required|integer',
+		'shipment_id' => 'required|integer',
+		'trip_id' => 'required|integer',
 	];
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function trip()
+	{
+		return $this->hasOne(Trip::class, 'trip_id');
+	}
+
+	public function customer()
+	{
+		return $this->hasOne(User::class);
+	}
+
+	public function recipient()
+	{
+		return $this->hasOne(Recipient::class);
+	}
+
+	public function shipmentCategory()
+	{
+		return $this->hasOne(ShipmentCategory::class);
+	}
 
 }

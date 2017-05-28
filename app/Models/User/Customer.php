@@ -7,6 +7,7 @@
 
 namespace App\Models\User;
 
+use App\Models\Recipient;
 use App\Models\User;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
@@ -61,5 +62,10 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 	{
 		$this->addMediaConversion('fitted')
 			->fit(Manipulations::FIT_CROP, 400, 400);
+	}
+	
+	public function user()
+	{
+		return $this->belongsTo(User::class);
 	}
 }
