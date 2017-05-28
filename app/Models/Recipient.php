@@ -38,7 +38,7 @@ class Recipient extends Model
 	 */
 	protected $rules = [
 		'name' => 'required',
-		'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
+		'phone' => 'required|phone:AUTO,mobile',
 	];
 
 	/**
