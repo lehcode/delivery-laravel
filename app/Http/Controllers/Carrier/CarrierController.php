@@ -5,21 +5,19 @@
  * Time: 7:22
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Carrier;
 
 use App\Http\Requests\SignUpCustomerRequest;
 use App\Http\Responses\UserDetailedResponse;
-use App\Repositories\User\UserRepositoryInterface;
 use App\Services\Responder\ResponderServiceInterface;
 use App\Services\SignUp\SignUpServiceInterface;
-use App\Services\UserService\UserServiceInterface;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
-class CustomerController extends BaseController
+class CarrierController extends BaseController
 {
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
@@ -34,33 +32,18 @@ class CustomerController extends BaseController
 	protected $responderService;
 
 	/**
-	 * @var UserServiceInterface
-	 */
-	protected $userService;
-
-	/**
-	 * @var UserRepositoryInterface
-	 */
-	protected $userRepository;
-
-	/**
-	 * CustomerController constructor.
+	 * UserController constructor.
 	 *
 	 * @param SignUpServiceInterface    $signUpServiceInterface
 	 * @param ResponderServiceInterface $responderServiceInterface
-	 * @param UserServiceInterface      $userServiceInterface
-	 * @param UserRepositoryInterface   $userRepositoryInterface
 	 */
 	public function __construct(
 		SignUpServiceInterface $signUpServiceInterface,
-		ResponderServiceInterface $responderServiceInterface,
-		UserServiceInterface $userServiceInterface,
-		UserRepositoryInterface $userRepositoryInterface
+		ResponderServiceInterface $responderServiceInterface
 	) {
-		$this->userService = $userServiceInterface;
+	
 		$this->signupService = $signUpServiceInterface;
 		$this->responderService = $responderServiceInterface;
-		$this->userRepository = $userRepositoryInterface;
 	}
 
 	/**
@@ -73,7 +56,7 @@ class CustomerController extends BaseController
 	{
 		try {
 			$params = $request->all();
-			$user = $this->signupService->customer($params);
+			$user = $this->signupService->carrier($params);
 			return $this->responderService->fractal($user, UserDetailedResponse::class, 0, [false, true]);
 		} catch (ValidationException $e) {
 			throw $e;
@@ -88,7 +71,7 @@ class CustomerController extends BaseController
 	 */
 	public function navigation()
 	{
-
+		
 		return $this->responderService->response([
 			'status' => 'success',
 			'data' => [
@@ -96,27 +79,27 @@ class CustomerController extends BaseController
 					[
 						'title' => 'My Account',
 						'id' => 'MyAccount',
-						'href' => '/customer/v1/user/account',
+						'href' => '/carrier/v1/user/account',
 					],
 					[
 						'title' => 'ID Validation',
 						'id' => 'IdValidation',
-						'href' => '/customer/v1/user/id_validation',
+						'href' => '/carrier/v1/user/id_validation',
 					],
 					[
 						'title' => 'Payment Info',
 						'id' => 'PaymentInfo',
-						'href' => '/customer/v1/user/payment_info',
+						'href' => '/carrier/v1/user/payment_info',
 					],
 					[
-						'title' => 'My Orders',
+						'title' => 'My Trips',
 						'id' => 'MyOrders',
-						'href' => '/customer/v1/orders',
+						'href' => '/carrier/v1/trips',
 					],
 					[
 						'title' => 'Help & Legal',
 						'id' => 'HelpLegal',
-						'href' => '/customer/v1/help',
+						'href' => '/carrier/v1/help',
 					],
 				]
 			]

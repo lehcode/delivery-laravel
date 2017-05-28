@@ -61,14 +61,11 @@ class SignUpService implements SignUpServiceInterface
 
 		$entityUser['type'] = User::ROLE_CUSTOMER;
 		$entityUser['is_enabled'] = true;
-
-
+		
 		return DB::transaction(function () use ($entityUser, $entityCustomerProfile, $params) {
 
 			$user = User::create($entityUser);
-
 			$role = Role::where(['name' => 'customer'])->first();
-
 			$user->attachRole($role)->save();
 
 			Customer::create(array_merge([
@@ -79,9 +76,9 @@ class SignUpService implements SignUpServiceInterface
 				/** @var UploadedFile $picture */
 				$picture = $params['picture'];
 				$user->profile
-					->clearMediaCollection(ProfileCustomer::MEDIA_PICTURE)
+					->clearMediaCollection(User::PROFILE_IMAGE)
 					->addMedia($picture)
-					->toMediaLibrary(ProfileCustomer::MEDIA_PICTURE);
+					->toMediaLibrary(User::PROFILE_IMAGE);
 			}
 
 			$this->userService->sendActivationLink($user);
@@ -111,73 +108,38 @@ class SignUpService implements SignUpServiceInterface
 		return User::create($params);
 	}
 
-	public function driver(array $params)
+	/**
+	 * @param array $params
+	 *
+	 * @return mixed
+	 * @throws \Illuminate\Validation\ValidationException
+	 */
+	public function carrier(array $params)
 	{
 		$entityUser = array_only($params, app()->make(User::class)->getFillable());
-		$entityProfile = array_only($params, app()->make(ProfileDriver::class)->getFillable());
-		$entityCar = isset($params['car']) && is_array($params['car']) ? $params['car'] : [];
+		$entityProfile = array_only($params, app()->make(User\Carrier::class)->getFillable());
+		$entityProfile['is_online'] = false;
 
 		$entityUser = array_merge($entityUser, [
-			'type' => User::TYPE_DRIVER
+			'type' => User::ROLE_CARRIER,
+			'is_enabled' => true
 		]);
 
-		Validator::make($params, [
-			'phone' => 'required|phone:AUTO',
-			'name' => 'required',
-			'email' => 'required|email|unique:users,email',
-			'password' => 'required|min:5',
-			'language' => 'array',
-			'is_enabled' => 'required|boolean',
-			'referer' => 'min:1',
+		return DB::transaction(function () use ($entityUser, $entityProfile, $params) {
 
-			'car.name' => 'required',
-			'car.model' => 'required',
-			'car.type' => 'required',
-			'car.plate' => 'required',
-			'car.seats' => 'required|integer|min:1',
-
-			'cash_limit' => 'required|integer:min:1',
-			'membership_id' => 'required|exists:memberships,id',
-			'manager_id' => 'min:1',
-			'notes' => 'min:1',
-
-			ProfileDriver::MEDIA_ID_CARD => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
-			ProfileDriver::MEDIA_LICENSE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
-			ProfileDriver::MEDIA_PICTURE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
-
-			'car.' . UserCar::MEDIA_CAR => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
-			'car.' . UserCar::MEDIA_CAR_PLATE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
-		])->validate();
-
-		return DB::transaction(function () use ($entityUser, $entityProfile, $entityCar, $params) {
-			/** @var User $user */
 			$user = User::create($entityUser);
-
-			if (isset($params['language']) && is_array($params['language'])) {
-				$language_ids = array_map(function ($value) {
-					return $value['id'];
-				}, $params['language']);
-
-				$user->languages()->sync($language_ids);
-			}
-
-			$user->memberships()->sync([$params['membership_id']]);
+			$role = Role::where(['name' => 'carrier'])->first();
+			$user->attachRole($role)->save();
 
 			if (isset($params['is_online']) && $params['is_online'] == true) {
-				$entityProfile['status'] = ProfileDriver::STATUS_ONLINE;
+				$entityProfile['is_online'] = true;
 			} else {
-				$entityProfile['status'] = ProfileDriver::STATUS_OFFLINE;
+				$entityProfile['is_online'] = false;
 			}
 
-			ProfileDriver::create(array_merge([
-				'user_id' => $user->id
-			], $entityProfile));
+			User\Carrier::create(array_merge(['user_id' => $user->id], $entityProfile));
 
-			UserCar::create(array_merge([
-				'user_id' => $user->id
-			], $entityCar));
-
-			foreach ([ProfileDriver::MEDIA_PICTURE, ProfileDriver::MEDIA_LICENSE, ProfileDriver::MEDIA_ID_CARD] as $mediaName) {
+			foreach ([User::PROFILE_IMAGE, User\Carrier::ID_IMAGE] as $mediaName) {
 				if (isset($params[$mediaName]) && $params[$mediaName] instanceof UploadedFile) {
 					/** @var UploadedFile $picture */
 					$picture = $params[$mediaName];
@@ -188,16 +150,7 @@ class SignUpService implements SignUpServiceInterface
 				}
 			}
 
-			foreach ([UserCar::MEDIA_CAR, UserCar::MEDIA_CAR_PLATE] as $mediaName) {
-				if (isset($entityCar[$mediaName]) && $entityCar[$mediaName] instanceof UploadedFile) {
-					/** @var UploadedFile $picture */
-					$picture = $entityCar[$mediaName];
-					$user->car
-						->clearMediaCollection($mediaName)
-						->addMedia($picture)
-						->toMediaLibrary($mediaName);
-				}
-			}
+			$this->userService->sendActivationLink($user);
 
 			return $user;
 		});

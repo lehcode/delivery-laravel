@@ -25,11 +25,7 @@ class CreateOrdersTable extends Migration
 			$table->string('recipient_name');
 
 			$table->uuid('customer_id');
-			$table->foreign('customer_id')->references('id')->on('users')
-				->onUpdate('restrict')->onDelete('restrict');
-
-			$table->uuid('carrier_id');
-			$table->foreign('carrier_id')->references('id')->on('users')
+			$table->foreign('customer_id')->references('user_id')->on('customers')
 				->onUpdate('restrict')->onDelete('restrict');
 
 			$table->uuid('shipment_id');

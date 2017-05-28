@@ -26,7 +26,6 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 
 	const STATUS_ONLINE = 'online';
 	const STATUS_OFFLINE = 'offline';
-	const MEDIA_PICTURE = 'picture';
 
 	/**
 	 * @var bool

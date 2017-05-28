@@ -43,9 +43,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 class Customer extends Model implements HasMediaConversions, AuditableContract
 {
     use Auditable, Searchable, SoftDeletes, HasMediaTrait;
-
-    const MEDIA_PICTURE = 'picture';
-
+    
     protected $table = 'user_customer_profiles';
     protected $primaryKey = 'user_id';
     protected $fillable = ['user_id', 'name', 'is_activated'];

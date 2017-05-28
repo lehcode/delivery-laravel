@@ -7,6 +7,7 @@
 
 namespace App\Models\User;
 
+use App\Models\User;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use OwenIt\Auditing\Auditable as AuditableTrait;
@@ -17,8 +18,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Customer extends Model implements HasMediaConversions, AuditableInterface
 {
 	use AuditableTrait, SoftDeletes, HasMediaTrait;
-
-	const MEDIA_PICTURE = 'picture';
 
 	/**
 	 * @var string
@@ -42,9 +41,18 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 	protected $auditableEvents = ['deleted', 'updated', 'restored'];
 
 	/**
+	 * @var array
+	 */
+	protected $appends = ['profile'];
+
+	/**
 	 * @var bool
 	 */
 	public $incrementing = false;
+
+	protected $rules = [
+		User::PROFILE_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
+	];
 
 	/**
 	 * @throws \Spatie\Image\Exceptions\InvalidManipulation

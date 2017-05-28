@@ -7,6 +7,7 @@
 
 namespace App\Models\User;
 
+use App\Models\User;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use OwenIt\Auditing\Auditable as AuditableTrait;
@@ -18,33 +19,50 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 {
 	use AuditableTrait, SoftDeletes, HasMediaTrait;
 
-	const MEDIA_PICTURE = 'picture';
+	const STATUS_ONLINE = 'online';
+	const STATUS_OFFLINE = 'offine';
+
+	const ID_IMAGE = 'id_scan';
 
 	/**
 	 * @var string
 	 */
 	protected $table = 'carriers';
+
 	/**
 	 * @var string
 	 */
 	protected $primaryKey = 'user_id';
+
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['user_id', 'name', 'is_activated', 'is_online'];
+	protected $fillable = ['user_id', 'name', 'is_activated', 'is_online', 'current_city'];
+
 	/**
 	 * @var array
 	 */
 	protected $casts = ['is_activated' => 'boolean', 'is_online' => 'boolean'];
+
 	/**
 	 * @var array
 	 */
-	protected $auditableEvents = ['deleted', 'updated', 'restored'];
+	protected $auditableEvents = ['deleted', 'updated', 'restored', 'current_city'];
+
+	/**
+	 * @var array
+	 */
+	protected $appends = ['profile'];
 
 	/**
 	 * @var bool
 	 */
 	public $incrementing = false;
+	
+	protected $rules = [
+		self::ID_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
+		User::PROFILE_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
+	];
 
 	/**
 	 * @throws \Spatie\Image\Exceptions\InvalidManipulation
@@ -54,14 +72,12 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 		$this->addMediaConversion('fitted')
 			->fit(Manipulations::FIT_CROP, 400, 400);
 	}
-	
-	/**
-	 * @return bool
-	 */
-	protected function getIsOnlineAttribute(){
-		return true;
-	}
 
+	/**
+	 * @param Builder $builder
+	 *
+	 * @return mixed
+	 */
 	public function scopeOnline(Builder $builder) {
 		return $builder->where('is_online', true);
 	}

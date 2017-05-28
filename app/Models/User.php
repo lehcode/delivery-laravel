@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\User\Carrier;
 use App\Models\User\Customer;
+use App\Models\User\Role;
 use Jenssegers\Date\Date;
 use App\Extensions\UuidTrait;
 use Illuminate\Notifications\Notifiable;
@@ -28,6 +30,8 @@ class User extends Authenticatable implements AuditableInterface
 	const ROLE_ADMIN = 'admin';
 	const ROLE_CUSTOMER = 'customer';
 	const ROLE_CARRIER = 'carrier';
+
+	const PROFILE_IMAGE = 'picture';
 
 	/**
 	 * The attributes that are mass assignable.
@@ -109,8 +113,10 @@ class User extends Authenticatable implements AuditableInterface
 		'name.required' => "User full name is required",
 		'email.required' => "User email is required",
 		'email.unique' => "Email must be unique",
+		'email.email' => "Email has wrong format",
 		'password.required' => "User password is required",
 		'phone.required' => "User phone is required",
+		'phone.phone' => "User phone is wrong",
 	];
 
 	/**
@@ -154,6 +160,19 @@ class User extends Authenticatable implements AuditableInterface
 		$validator->validate();
 
 		$this->attributes['password'] = Hash::make($value);
+	}
+
+	/**
+	 * @param Role $role
+	 *
+	 * @return $this
+	 */
+	public function attachRole(Role $role)
+	{
+		$this->roles()->attach($this->getIdFor($role));
+		$this->flushCache();
+
+		return $this;
 	}
 
 }

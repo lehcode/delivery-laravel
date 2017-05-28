@@ -72,16 +72,16 @@ class UserService implements UserServiceInterface
                 $this->userRepository->edit($user->profile, $entityProfile);
 
                 if(isset($params['remove_picture'])) {
-                    $user->profile->clearMediaCollection(ProfileCustomer::MEDIA_PICTURE);
+                    $user->profile->clearMediaCollection(User::PROFILE_IMAGE);
                 }
 
                 if(isset($params['picture']) && $params['picture'] instanceof UploadedFile) {
                     /** @var UploadedFile $picture */
                     $picture = $params['picture'];
                     $user->profile
-                        ->clearMediaCollection(ProfileCustomer::MEDIA_PICTURE)
+                        ->clearMediaCollection(User::PROFILE_IMAGE)
                         ->addMedia($picture)
-                        ->toMediaLibrary(ProfileCustomer::MEDIA_PICTURE);
+                        ->toMediaLibrary(User::PROFILE_IMAGE);
                 }
             }
 
@@ -149,7 +149,7 @@ class UserService implements UserServiceInterface
                 ]);
             }
 
-            foreach([ProfileDriver::MEDIA_PICTURE, ProfileDriver::MEDIA_LICENSE, ProfileDriver::MEDIA_ID_CARD] as $mediaName) {
+            foreach([User::PROFILE_IMAGE, User\Carrier::ID_IMAGE] as $mediaName) {
                 if (isset($params[$mediaName]) && $params[$mediaName] instanceof UploadedFile) {
                     /** @var UploadedFile $picture */
                     $picture = $params[$mediaName];
