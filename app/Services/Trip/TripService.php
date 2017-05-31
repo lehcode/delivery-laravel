@@ -11,12 +11,13 @@ use App\Models\Trip;
 use App\Repositories\Trip\TripRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\BaseServiceInterface;
 
 /**
  * Class TripService
  * @package App\Services\Trip
  */
-class TripService implements TripServiceInterface
+class TripService implements BaseServiceInterface
 {
 	/**
 	 * @var TripRepositoryInterface
@@ -73,7 +74,7 @@ class TripService implements TripServiceInterface
 	}
 
 	/**
-	 * @param integer $id
+	 * @param int $id
 	 *
 	 * @return Trip
 	 */

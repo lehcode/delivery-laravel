@@ -6,6 +6,11 @@
  */
 
 namespace App\Http\Controllers;
+use App\Http\Responses\OrderResponse;
+use App\Services\BaseServiceInterface;
+use App\Services\Order\OrderService;
+use App\Services\Order\OrderServiceInterface;
+use App\Services\Responder\ResponderServiceInterface;
 
 /**
  * Class OrderController
@@ -19,34 +24,32 @@ class OrderController
 	protected $responderService;
 
 	/**
-	 * @var TripRepositoryInterface
-	 */
-	protected $tripRepository;
-
-	/**
 	 * @var TripServiceInterface
 	 */
-	protected $tripService;
+	protected $orderService;
+
 	/**
 	 * OrderController constructor.
 	 *
 	 * @param ResponderServiceInterface $responderServiceInterface
-	 * @param TripServiceInterface      $tripServiceInterface
-	 * @param TripRepositoryInterface   $tripRepositoryInterface
+	 * @param OrderServiceInterface     $orderServiceInterface
 	 */
 	public function __construct(
 		ResponderServiceInterface $responderServiceInterface,
-		TripServiceInterface $tripServiceInterface,
-		TripRepositoryInterface $tripRepositoryInterface
+		OrderServiceInterface $orderServiceInterface
 	) {
 		$this->responderService = $responderServiceInterface;
-		$this->tripRepository = $tripRepositoryInterface;
-		$this->tripService = $tripServiceInterface;
+		$this->orderService = $orderServiceInterface;
+	}
+
+	public function createOrder()
+	{
+
 	}
 
 	public function getOrders()
 	{
-		
+		return $this->responderService->fractal($this->orderService->all(), OrderResponse::class);
 	}
 	
 	public function getOrder()

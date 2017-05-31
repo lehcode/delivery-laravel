@@ -52,19 +52,28 @@ class Order extends Model
 	 */
 	public function trip()
 	{
-		return $this->hasOne(Trip::class);
+		return $this->belongsTo(Trip::class);
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function recipient()
 	{
-		return $this->hasOne(Recipient::class);
+		return $this->belongsTo(Recipient::class);
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function shipment()
 	{
-		return $this->hasOne(Shipment::class);
+		return $this->belongsTo(Shipment::class);
 	}
-	
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function customer()
 	{
 		return $this->belongsTo(Customer::class);

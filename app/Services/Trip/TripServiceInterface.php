@@ -1,19 +1,11 @@
 <?php
 
-/**
- * Created by Antony Repin
- * Date: 27.05.2017
- * Time: 20:20
- */
-
 namespace App\Services\Trip;
 
-use App\Models\Trip;
-use Jenssegers\Date\Date;
-
 /**
- * Interface TripServiceInterface
- * @package App\Services\Trip
+ * Created by Antony Repin
+ * Date: 31.05.2017
+ * Time: 10:35
  */
 interface TripServiceInterface
 {
@@ -37,9 +29,9 @@ interface TripServiceInterface
 	public function all();
 
 	/**
-	 * @param $trip_id
+	 * @param $id
 	 *
 	 * @return mixed
 	 */
-	public function item($trip_id);
+	public function item($id);
 }

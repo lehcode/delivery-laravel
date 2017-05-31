@@ -44,6 +44,9 @@ class Trip extends Model implements AuditableInterface
 	 */
 	protected $dates = ['deleted_at', 'created_at', 'updated_at', 'departure_date'];
 
+	/**
+	 * @var array
+	 */
 	protected $rules = [
 		'payment_type_id' => 'required',
 		'carrier_id' => 'required',
@@ -76,14 +79,20 @@ class Trip extends Model implements AuditableInterface
 		return $this->belongsTo(Order::class);
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function fromCity()
 	{
-		return $this->belongsTo(City::class, 'from_city_id');
+		return $this->belongsTo(City::class);
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function destinationCity()
 	{
 		return $this->belongsTo(City::class, 'to_city_id');
 	}
-	
+
 }

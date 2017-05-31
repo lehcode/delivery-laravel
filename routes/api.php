@@ -46,10 +46,10 @@ Route::group(['middleware' => 'api'], function () {
 				});
 			});
 
-			Route::group(['prefix' => 'order'], function () {
-				Route::get('list', ['uses' => 'OrderController@all']);
-				Route::get('{order_id}', ['uses' => 'OrderController@item']);
-				Route::post('create', ['uses' => 'OrderController@create']);
+			Route::group(['prefix' => 'order', 'middleware' => 'jwt.auth'], function () {
+				Route::get('list', ['uses' => 'OrderController@getOrders']);
+				Route::get('{id}', ['uses' => 'OrderController@getOrder']);
+				Route::post('create', ['uses' => 'OrderController@createOrder']);
 			});
 
 		});
@@ -85,7 +85,7 @@ Route::group(['middleware' => 'api'], function () {
 			Route::group(['middleware' => 'jwt.auth'], function () {
 				Route::group(['prefix' => 'order'], function () {
 					Route::get('orders', ['uses' => 'OrderController@getOrders']);
-					Route::get('{order_id}', ['uses' => 'OrderController@getOrder']);
+					Route::get('{id}', ['uses' => 'OrderController@getOrder']);
 				});
 			});
 
