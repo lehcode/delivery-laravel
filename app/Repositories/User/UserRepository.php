@@ -19,37 +19,40 @@ use Cache;
  */
 class UserRepository extends CrudRepository implements UserRepositoryInterface
 {
-    protected $model = User::class;
+	protected $model = User::class;
 
-    /**
-     * @param User $user
-     * @param $type
-     * @return array
-     */
-    public function getUserDevicesToken(User $user, $type) {
-        if(is_null($type)) {
-            return array_filter(UserDevice::where('user_id', $user->id)->pluck('reg_id')->toArray());
-        }
+	/**
+	 * @param User $user
+	 * @param $type
+	 * @return array
+	 */
+	public function getUserDevicesToken(User $user, $type)
+	{
+		if (is_null($type)) {
+			return array_filter(UserDevice::where('id', $user->id)->pluck('reg_id')->toArray());
+		}
 
-        return array_filter(UserDevice::where('type', $type)->where('user_id', $user->id)->pluck('reg_id')->toArray());
-    }
+		return array_filter(UserDevice::where('type', $type)->where('id', $user->id)->pluck('reg_id')->toArray());
+	}
 
-    /**
-     * @param User $user
-     * @return array
-     */
-    public function getUserDevicesTypes(User $user) {
-        return Cache::tags(["user{id:{$user->id}}"])->remember("deviceTypes{user:{$user->id}}", 60, function() use ($user) {
-            return array_unique(UserDevice::where('user_id', $user->id)->pluck('type')->toArray());
-        });
-    }
+	/**
+	 * @param User $user
+	 * @return array
+	 */
+	public function getUserDevicesTypes(User $user)
+	{
+		return Cache::tags(["user{id:{$user->id}}"])->remember("deviceTypes{user:{$user->id}}", 60, function () use ($user) {
+			return array_unique(UserDevice::where('id', $user->id)->pluck('type')->toArray());
+		});
+	}
 
-    /**
-     * @param string $regId
-     * @return bool
-     */
-    public function unregisterRegId($regId) {
-        return UserDevice::where('reg_id', $regId)->delete();
-    }
-    
+	/**
+	 * @param string $regId
+	 * @return bool
+	 */
+	public function unregisterRegId($regId)
+	{
+		return UserDevice::where('reg_id', $regId)->delete();
+	}
+	
 }
