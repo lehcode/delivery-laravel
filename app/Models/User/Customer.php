@@ -30,10 +30,7 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 	 * @var string
 	 */
 	protected $table = 'customers';
-	/**
-	 * @var string
-	 */
-	protected $primaryKey = 'id';
+	
 	/**
 	 * @var array
 	 */

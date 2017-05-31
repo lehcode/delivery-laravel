@@ -41,11 +41,6 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	protected $table = 'carriers';
 
 	/**
-	 * @var string
-	 */
-	protected $primaryKey = 'id';
-
-	/**
 	 * @var array
 	 */
 	protected $fillable = ['id', 'name', 'is_activated', 'is_online', 'current_city', 'default_address'];
@@ -81,7 +76,7 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	 */
 	public function trips()
 	{
-		return $this->hasMany(Trip::class);
+		return $this->hasMany(Trip::class, 'id');
 	}
 
 	public function user()

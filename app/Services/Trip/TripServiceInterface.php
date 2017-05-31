@@ -18,11 +18,11 @@ use Jenssegers\Date\Date;
 interface TripServiceInterface
 {
 	/**
-	 * @param array $tripData
-	 * @param array $tripDetails
+	 * @param array $data
+	 *
 	 * @return Trip
 	 */
-	public function create(array $tripData, array $tripDetails);
+	public function create(array $data);
 
 	/**
 	 * @param Trip $trip

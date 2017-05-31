@@ -10,6 +10,7 @@ namespace App\Services\Trip;
 use App\Models\Trip;
 use App\Repositories\Trip\TripRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class TripService
@@ -40,15 +41,15 @@ class TripService implements TripServiceInterface
 		return $this->tripRepository->getBuilder()->enabled();
 	}
 
+
 	/**
 	 * @param array $tripData
-	 * @param array $tripDetails
 	 *
 	 * @return mixed
 	 */
-	public function create(array $tripData, array $tripDetails)
+	public function create(array $tripData)
 	{
-		return DB::transaction(function () use ($tripData, $tripDetails) {
+		return DB::transaction(function () use ($tripData) {
 			$trip = Trip::create($tripData);
 			return $trip;
 		});

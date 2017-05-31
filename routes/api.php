@@ -39,17 +39,17 @@ Route::group(['middleware' => 'api'], function () {
 
 			Route::group(['prefix' => 'user'], function () {
 				Route::post('create', ['uses' => 'CustomerController@create']);
+
+				Route::group(['middleware' => 'jwt.auth'], function () {
+					Route::get('config', ['uses' => 'SettingsController@getConfig']);
+					Route::post('config', ['uses' => 'SettingsController@update']);
+				});
 			});
 
 			Route::group(['prefix' => 'order'], function () {
 				Route::get('list', ['uses' => 'OrderController@all']);
 				Route::get('{order_id}', ['uses' => 'OrderController@item']);
 				Route::post('create', ['uses' => 'OrderController@create']);
-			});
-
-			Route::group(['prefix' => 'trip'], function () {
-				Route::get('list', ['uses' => 'TripController@all']);
-				Route::get('{trip_id}', ['uses' => 'TripController@item']);
 			});
 
 		});
@@ -65,6 +65,11 @@ Route::group(['middleware' => 'api'], function () {
 
 			Route::group(['prefix' => 'user'], function () {
 				Route::post('create', ['uses' => 'CarrierController@create']);
+
+				Route::group(['middleware' => 'jwt.auth'], function () {
+					Route::get('config', ['uses' => 'SettingsController@getConfig']);
+					Route::post('config', ['uses' => 'SettingsController@update']);
+				});
 			});
 
 			Route::group(['middleware' => 'jwt.auth'], function () {

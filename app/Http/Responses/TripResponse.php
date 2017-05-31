@@ -29,10 +29,13 @@ class TripResponse extends ApiResponse
 		$carrier = $user->carrier()->with('currentCity')->first();
 		$carrier->makeHidden('current_city');
 		$paymentType = $trip->paymentType()->first();
+		//$trip = $trip->with('fromCity')->first();
 
 		$data = [
 			'id' => $trip->id,
 			'payment_type' => $paymentType,
+			'from_city' => $trip->fromCity()->first(),
+			'to_city' => $trip->destinationCity()->first(),
 			'carrier' => $carrier,
 			'created_at' => $trip->created_at,
 			'updated_at' => $trip->updated_at,

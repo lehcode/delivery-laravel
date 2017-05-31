@@ -2,15 +2,26 @@
 
 namespace App\Models;
 
+use App\Extensions\UuidTrait;
 use App\Models\User\Carrier;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
+use Watson\Validating\ValidatingTrait;
 
 /**
  * Class Trip
  * @package App\Models
  */
-class Trip extends Model
+class Trip extends Model implements AuditableInterface
 {
+
+	use UuidTrait,
+		SoftDeletes,
+		ValidatingTrait,
+		AuditableTrait;
+
 	/**
 	 * @var bool
 	 */
@@ -19,12 +30,27 @@ class Trip extends Model
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['time_length', 'payment_type_id', 'carrier_id'];
+	protected $fillable = [
+		'id',
+		'payment_type_id',
+		'carrier_id',
+		'from_city_id',
+		'to_city_id',
+		'departure_date',
+	];
 	
 	/**
 	 * @var array
 	 */
-	protected $dates = ['deleted_at', 'created_at', 'updated_at'];
+	protected $dates = ['deleted_at', 'created_at', 'updated_at', 'departure_date'];
+
+	protected $rules = [
+		'payment_type_id' => 'required',
+		'carrier_id' => 'required',
+		'from_city_id' => 'required',
+		'to_city_id' => 'required',
+		'departure_date' => 'required|date',
+	];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -49,4 +75,15 @@ class Trip extends Model
 	{
 		return $this->belongsTo(Order::class);
 	}
+
+	public function fromCity()
+	{
+		return $this->belongsTo(City::class, 'from_city_id');
+	}
+
+	public function destinationCity()
+	{
+		return $this->belongsTo(City::class, 'to_city_id');
+	}
+	
 }

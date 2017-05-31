@@ -7,10 +7,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Responses\TripDetailsResponse;
 use App\Http\Responses\TripResponse;
 use App\Services\Responder\ResponderServiceInterface;
 use App\Services\Trip\TripServiceInterface;
+use Illuminate\Http\Request;
 
 /**
  * Class TripController
@@ -23,6 +23,9 @@ class TripController
 	 */
 	protected $tripService;
 
+	/**
+	 * @var ResponderServiceInterface
+	 */
 	protected $responderService;
 
 	/**
@@ -34,7 +37,7 @@ class TripController
 	public function __construct(
 		TripServiceInterface $tripServiceInterface,
 		ResponderServiceInterface $responderServiceInterface
-) {
+	) {
 	
 		$this->tripService = $tripServiceInterface;
 		$this->responderService = $responderServiceInterface;
@@ -46,5 +49,24 @@ class TripController
 	public function getTrips()
 	{
 		return $this->responderService->fractal($this->tripService->all(), TripResponse::class);
+	}
+
+	public function getTrip($trip_id)
+	{
+		return $this->responderService->fractal($this->tripService->find($trip_id), TripResponse::class);
+	}
+
+
+	public function createTrip(Request $request)
+	{
+		try {
+			$params = $request->all();
+			$trip = $this->tripService->create($params);
+			return $this->responderService->fractal($trip, TripResponse::class);
+		} catch (ValidationException $e) {
+			throw $e;
+		} catch (\Exception $e) {
+			return $this->responderService->errorResponse($e);
+		}
 	}
 }

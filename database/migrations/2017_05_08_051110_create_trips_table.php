@@ -23,7 +23,7 @@ class CreateTripsTable extends Migration
 
 			$table->uuid('id');
 			$table->primary('id');
-			//$table->integer('time_length');
+			$table->dateTime('departure_date');
 
 			$table->integer('payment_type_id')->unsigned()->index();
 			$table->foreign('payment_type_id')->references('id')->on('payment_types')
@@ -31,6 +31,14 @@ class CreateTripsTable extends Migration
 
 			$table->uuid('carrier_id');
 			$table->foreign('carrier_id')->references('id')->on('carriers')
+				->onUpdate('restrict')->onDelete('restrict');
+
+			$table->unsignedInteger('from_city_id');
+			$table->foreign('from_city_id')->references('id')->on('cities')
+				->onUpdate('restrict')->onDelete('restrict');
+
+			$table->unsignedInteger('to_city_id');
+			$table->foreign('to_city_id')->references('id')->on('cities')
 				->onUpdate('restrict')->onDelete('restrict');
 
 			$table->timestamps();

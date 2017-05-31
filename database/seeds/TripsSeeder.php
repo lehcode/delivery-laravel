@@ -19,21 +19,26 @@ class TripsSeeder extends Seeder
 
 		$faker = Faker::create('en_GB');
 
-		$carriers = User::all()->filter(function ($item) {
-			if ($item->roles()->first()->name == User::ROLE_CARRIER) {
-				return $item;
+		$carriers = User::all()->filter(function ($u) {
+
+			if ($u->roles()->first()->name == User::ROLE_CARRIER) {
+				return $u;
 			}
 		});
 
-		$carriers->each(function ($u) use ($faker) {
+		$carriers->each(function ($c) use ($faker) {
 
-			$user = $u->carrier()->first();
+			$user = $c->carrier()->first();
 
 			for ($i = 0; $i < rand(3, 9); $i++) {
-				$user->trips()->save(factory(Trip::class)->make([
-						'id' => Uuid::generate(4),
-						'carrier_id' => $u->id,
+				try{
+					$user->trips()->save(factory(Trip::class)->make([
+						'carrier_id' => $c->id,
 					]));
+				} catch (\Exception $e) {
+					throw $e;
+				}
+
 			}
 
 		});
