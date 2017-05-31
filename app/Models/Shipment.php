@@ -35,11 +35,20 @@ class Shipment extends Model
 	protected $visible = ['id', 'width', 'height', 'length', 'weight'];
 
 	/**
+	 * @var array
+	 */
+	protected $fillable = ['id', 'width', 'height', 'length', 'weight'];
+
+	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
 	public function category()
 	{
 		return $this->hasOne(ShipmentCategory::class);
+	}
+
+	public function order(){
+		return $this->hasOne(Order::class);
 	}
 
 	/**

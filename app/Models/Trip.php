@@ -21,11 +21,21 @@ class Trip extends Model implements AuditableInterface
 		SoftDeletes,
 		ValidatingTrait,
 		AuditableTrait;
-
+	
 	/**
 	 * @var bool
 	 */
 	public $incrementing = false;
+
+	/**
+	 * @var array
+	 */
+	protected $dates = [
+		'deleted_at',
+		'created_at',
+		'updated_at',
+		'departure_date'
+	];
 
 	/**
 	 * @var array
@@ -38,11 +48,17 @@ class Trip extends Model implements AuditableInterface
 		'to_city_id',
 		'departure_date',
 	];
-	
-	/**
-	 * @var array
-	 */
-	protected $dates = ['deleted_at', 'created_at', 'updated_at', 'departure_date'];
+
+	protected $visible = [
+		'id',
+		'payment_type_id',
+		'carrier_id',
+		'from_city_id',
+		'to_city_id',
+		'departure_date',
+		'created_at',
+		'updated_at',
+	];
 
 	/**
 	 * @var array

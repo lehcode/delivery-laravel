@@ -27,7 +27,8 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	 */
 	public function all()
 	{
-		return Order::all();
+		$result = Order::all();
+		return $result;
 	}
 
 	/**

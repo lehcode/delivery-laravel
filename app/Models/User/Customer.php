@@ -18,6 +18,10 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Customer
+ * @package App\Models\User
+ */
 class Customer extends Model implements HasMediaConversions, AuditableInterface
 {
 	use AuditableTrait,
@@ -30,7 +34,7 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 	 * @var string
 	 */
 	protected $table = 'customers';
-	
+
 	/**
 	 * @var array
 	 */
@@ -49,6 +53,9 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 	 */
 	public $incrementing = false;
 
+	/**
+	 * @var array
+	 */
 	protected $rules = [
 		User::PROFILE_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
 	];
@@ -62,17 +69,4 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 			->fit(Manipulations::FIT_CROP, 400, 400);
 	}
 
-//	public function user()
-//	{
-//		return $this->belongsTo(User::class);
-//	}
-	
-	public function order()
-	{
-		return $this->hasMany(Order::class);
-	}
-
-//	public function recipients(){
-//		return $this->hasManyThrough(Recipient::class, Order::class, 'recipient_id');
-//	}
 }
