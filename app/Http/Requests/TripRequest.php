@@ -8,8 +8,15 @@
 namespace App\Http\Requests;
 
 
+/**
+ * Class TripRequest
+ * @package App\Http\Requests
+ */
 class TripRequest extends ApiRequest
 {
+	/**
+	 * @return array
+	 */
 	public function rules()
 	{
 		return [

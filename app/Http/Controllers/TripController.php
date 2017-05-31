@@ -51,12 +51,22 @@ class TripController
 		return $this->responderService->fractal($this->tripService->all(), TripResponse::class);
 	}
 
-	public function getTrip($trip_id)
+	/**
+	 * @param integer $id
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getTrip($id)
 	{
-		return $this->responderService->fractal($this->tripService->find($trip_id), TripResponse::class);
+		return $this->responderService->fractal($this->tripService->item($id), TripResponse::class);
 	}
 
-
+	/**
+	 * @param Request $request
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws ValidationException
+	 */
 	public function createTrip(Request $request)
 	{
 		try {

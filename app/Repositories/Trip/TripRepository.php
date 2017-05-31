@@ -30,10 +30,23 @@ class TripRepository extends CrudRepository implements TripRepositoryInterface
 		return Trip::all();
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function userTrips()
 	{
 		$user = Auth::getUser();
 		$result = Trip::where('carrier_id', $user->id);
 		return $result;
+	}
+
+	/**
+	 * @param int $id
+	 *
+	 * @return $this
+	 */
+	public function find($id)
+	{
+		return parent::find($id);
 	}
 }

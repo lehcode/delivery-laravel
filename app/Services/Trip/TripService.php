@@ -73,11 +73,13 @@ class TripService implements TripServiceInterface
 	}
 
 	/**
-	 * @param $trip_id
+	 * @param integer $id
+	 *
+	 * @return Trip
 	 */
-	public function item($trip_id)
+	public function item($id)
 	{
-		// TODO: Implement item() method.
+		return $this->tripRepository->find($id);
 	}
 
 

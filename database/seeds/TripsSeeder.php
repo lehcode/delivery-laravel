@@ -4,8 +4,10 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Trip;
 use Faker\Factory as Faker;
-use Webpatser\Uuid\Uuid;
 
+/**
+ * Class TripsSeeder
+ */
 class TripsSeeder extends Seeder
 {
 	/**
@@ -31,7 +33,7 @@ class TripsSeeder extends Seeder
 			$user = $c->carrier()->first();
 
 			for ($i = 0; $i < rand(3, 9); $i++) {
-				try{
+				try {
 					$user->trips()->save(factory(Trip::class)->make([
 						'carrier_id' => $c->id,
 					]));
