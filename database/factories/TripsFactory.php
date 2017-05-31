@@ -8,7 +8,6 @@
 use App\Models\Trip;
 use Faker\Generator as Faker;
 use App\Models\PaymentType;
-use App\Models\Country;
 
 $factory->define(Trip::class, function (Faker $faker) {
 	
