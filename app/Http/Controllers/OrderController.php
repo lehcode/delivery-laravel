@@ -49,7 +49,7 @@ class OrderController
 
 	public function getOrders()
 	{
-		return $this->responderService->fractal($this->orderService->all(), OrderResponse::class);
+		return $this->responderService->fractal($this->orderService->userOrders(), OrderResponse::class);
 	}
 	
 	public function getOrder()

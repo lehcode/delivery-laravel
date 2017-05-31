@@ -41,5 +41,9 @@ class OrderService implements OrderServiceInterface
 	{
 		// TODO: Implement item() method.
 	}
+	
+	public function userOrders(){
+		return $this->orderRepository->userOrders();
+	}
 
 }
