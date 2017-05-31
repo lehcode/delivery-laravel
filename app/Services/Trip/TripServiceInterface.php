@@ -8,8 +8,13 @@
 
 namespace App\Services\Trip;
 
+use App\Models\Trip;
 use Jenssegers\Date\Date;
 
+/**
+ * Interface TripServiceInterface
+ * @package App\Services\Trip
+ */
 interface TripServiceInterface
 {
 	/**
@@ -29,7 +34,12 @@ interface TripServiceInterface
 	/**
 	 * @return Builder
 	 */
-	public function getList();
+	public function all();
 
-	public function getTripsByCity(Trip $trip, $day, Date $date);
+	/**
+	 * @param $trip_id
+	 *
+	 * @return mixed
+	 */
+	public function item($trip_id);
 }
