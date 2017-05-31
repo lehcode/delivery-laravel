@@ -17,7 +17,8 @@ class CreateCarriersTable extends Migration
 	{
 		Schema::create($this->name, function (Blueprint $table) {
 
-			$table->uuid('id')->primary();
+			$table->uuid('id');
+			$table->primary('id');
 			$table->foreign('id')->references('id')->on('users')
 				->onDelete('restrict')->onUpdate('restrict');
 

@@ -6,10 +6,9 @@
  * Time: 22:18
  */
 
-use Faker\Generator as Faker;
 use App\Models\Shipment;
 
-$factory->define(Shipment::class, function (Faker $faker) {
+$factory->define(Shipment::class, function (Faker\Generator $faker) {
 	
 	$sizes = [10, 20, 25, 50, 60, 100, 120];
 	

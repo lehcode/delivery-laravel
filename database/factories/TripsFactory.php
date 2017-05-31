@@ -6,13 +6,12 @@
  */
 
 use App\Models\Trip;
-use Faker\Generator as Faker;
 use App\Models\PaymentType;
 use App\Models\City;
 use Jenssegers\Date\Date;
 use Webpatser\Uuid\Uuid;
 
-$factory->define(Trip::class, function (Faker $faker) {
+$factory->define(Trip::class, function (Faker\Generator $faker) {
 	
 	$paymentTypes = PaymentType::all();
 	$cities = City::all();

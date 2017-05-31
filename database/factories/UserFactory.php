@@ -13,11 +13,10 @@
 
 use Jenssegers\Date\Date;
 use App\Models\User;
-use Faker\Generator as Faker;
 use Webpatser\Uuid\Uuid;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(User::class, function (Faker\Generator $faker) {
 	
 	$userData = [
 		'id' => Uuid::generate(4),
