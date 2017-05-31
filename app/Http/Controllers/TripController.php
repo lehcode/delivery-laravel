@@ -52,6 +52,14 @@ class TripController
 	}
 
 	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getUserTrips()
+	{
+		return $this->responderService->fractal($this->tripService->all(), TripResponse::class);
+	}
+
+	/**
 	 * @param integer $id
 	 *
 	 * @return \Illuminate\Http\JsonResponse

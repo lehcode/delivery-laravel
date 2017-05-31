@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services\Trip;
+use App\Models\Trip;
 
 /**
  * Created by Antony Repin

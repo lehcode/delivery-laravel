@@ -17,7 +17,7 @@ use App\Services\BaseServiceInterface;
  * Class TripService
  * @package App\Services\Trip
  */
-class TripService implements BaseServiceInterface
+class TripService implements TripServiceInterface
 {
 	/**
 	 * @var TripRepositoryInterface
@@ -60,6 +60,14 @@ class TripService implements BaseServiceInterface
 	 * @return \Illuminate\Database\Eloquent\Collection|static[]
 	 */
 	public function all()
+	{
+		return $this->tripRepository->all();
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function userTrips()
 	{
 		return $this->tripRepository->userTrips();
 	}
