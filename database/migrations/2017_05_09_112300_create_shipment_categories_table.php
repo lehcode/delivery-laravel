@@ -14,10 +14,13 @@ class CreateShipmentCategoriesTable extends Migration
 	public function up()
 	{
 		Schema::create('shipment_categories', function (Blueprint $table) {
+
 			$table->increments('id');
-			$table->timestamps();
 			$table->string('name', 32);
 			$table->string('description');
+
+			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 

@@ -33,14 +33,12 @@ class CreateRoutesTable extends Migration
 			$table->foreign('to_city_id')->references('id')->on('cities');
 
 			$table->enum('type', ['order', 'trip']);
-			$table->dateTime('departure_date');
+			//$table->dateTime('departure_date');
 			$table->softDeletes();
 			$table->timestamps();
 
 		});
 		
-		DB::statement("ALTER TABLE {$this->name} ADD COLUMN startPoint POINT");
-		DB::statement("ALTER TABLE {$this->name} ADD COLUMN endPoint POINT");
 	}
 
 	/**

@@ -14,11 +14,9 @@ class CreateUserDevicesTable extends Migration
 	public function up()
 	{
 		Schema::create('user_devices', function (Blueprint $table) {
-			
-			$table->increments('id');
-			
-			$table->uuid('user_id');
-			$table->foreign('user_id')->references('id')->on('users')
+
+			$table->uuid('id')->primary();
+			$table->foreign('id')->references('id')->on('users')
 				->onUpdate('CASCADE')->onDelete('CASCADE');
 			
 			$table->enum('type', ['ios', 'android', 'pc'])->index();

@@ -17,14 +17,14 @@ class CreateCarriersTable extends Migration
 	{
 		Schema::create($this->name, function (Blueprint $table) {
 
-			$table->uuid('user_id')->primary();
-			$table->foreign('user_id')->references('id')->on('users')
+			$table->uuid('id')->primary();
+			$table->foreign('id')->references('id')->on('users')
 				->onDelete('restrict')->onUpdate('restrict');
 
 			$table->string('name');
 			$table->string('default_address')->nullable();
 
-			$table->unsignedInteger('current_city')->nullable()->index();
+			$table->unsignedInteger('current_city')->index();
 			$table->foreign('current_city')->references('id')->on('cities')
 				->onDelete('restrict')->onUpdate('restrict');
 

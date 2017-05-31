@@ -23,14 +23,14 @@ class CreateTripsTable extends Migration
 
 			$table->uuid('id');
 			$table->primary('id');
-			$table->integer('time_length');
+			//$table->integer('time_length');
 
 			$table->integer('payment_type_id')->unsigned()->index();
 			$table->foreign('payment_type_id')->references('id')->on('payment_types')
 				->onUpdate('cascade')->onDelete('restrict');
 
 			$table->uuid('carrier_id');
-			$table->foreign('carrier_id')->references('user_id')->on('carriers')
+			$table->foreign('carrier_id')->references('id')->on('carriers')
 				->onUpdate('restrict')->onDelete('restrict');
 
 			$table->timestamps();

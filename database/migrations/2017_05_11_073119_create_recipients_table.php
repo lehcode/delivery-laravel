@@ -23,11 +23,8 @@ class CreateRecipientsTable extends Migration
 			$table->string('phone');
 			$table->text('notes');
 
-			$table->uuid('sender_id');
-			$table->foreign('sender_id')->references('user_id')->on('customers')
-				->onUpdate('cascade');
-
 			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 

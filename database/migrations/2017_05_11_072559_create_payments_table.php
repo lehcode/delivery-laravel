@@ -7,6 +7,7 @@ use Illuminate\Database\Migrations\Migration;
 class CreatePaymentsTable extends Migration
 {
 	protected $name = 'payments';
+
 	/**
 	 * Run the migrations.
 	 *
@@ -15,16 +16,17 @@ class CreatePaymentsTable extends Migration
 	public function up()
 	{
 		Schema::create($this->name, function (Blueprint $table) {
+			
 			$table->uuid('id');
 			$table->primary('id');
 
 			$table->uuid('order_id')->index();
-			$table->foreign('order_id')->references('id')->on('orders');
 
 			$table->float('amount');
 
-			$table->integer('type_id')->unsigned()->index();
-			$table->foreign('type_id')->references('id')->on('payment_types');
+			$table->integer('payment_type_id')->unsigned()->index();
+			$table->foreign('payment_type_id')->references('id')->on('payment_types')
+				->onDelete('restrict')->onUpdate('restrict');
 
 			$table->boolean('success')->default(0);
 

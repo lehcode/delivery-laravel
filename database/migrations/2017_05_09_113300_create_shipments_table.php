@@ -22,7 +22,7 @@ class CreateShipmentsTable extends Migration
 			$table->integer('height')->unsigned();
 			$table->integer('length')->unsigned();
 			$table->integer('width')->unsigned();
-			$table->integer('weight')->unsigned();
+			$table->float('weight')->unsigned();
 			$table->integer('category_id')->unsigned();
 			$table->foreign('category_id')
 				->references('id')->on('shipment_categories');

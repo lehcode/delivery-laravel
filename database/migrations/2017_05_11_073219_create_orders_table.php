@@ -19,33 +19,39 @@ class CreateOrdersTable extends Migration
 			$table->uuid('id');
 			$table->primary('id');
 
-			$table->dateTime('departure_date');
-			$table->dateTime('expected_delivery_date');
+			$table->dateTime('departure_date')->index();
+			$table->dateTime('expected_delivery_date')->index();
 
-			$table->string('recipient_name');
-
-			$table->uuid('customer_id');
-			$table->foreign('customer_id')->references('user_id')->on('customers')
+			$table->uuid('recipient_id')->index();
+			$table->foreign('recipient_id')->references('id')->on('recipients')
 				->onUpdate('restrict')->onDelete('restrict');
 
-			$table->uuid('shipment_id');
+			$table->uuid('customer_id')->index();
+			$table->foreign('customer_id')->references('id')->on('customers')
+				->onUpdate('restrict')->onDelete('restrict');
+
+			$table->uuid('shipment_id')->index()->unique();
 			$table->foreign('shipment_id')->references('id')->on('shipments')
 				->onUpdate('restrict')->onDelete('restrict');
 
-			$table->uuid('route_id');
+			$table->uuid('route_id')->index()->unique();
 			$table->foreign('route_id')->references('id')->on('routes')
 				->onUpdate('restrict')->onDelete('restrict');
 
-			$table->uuid('trip_id');
+			$table->uuid('trip_id')->index();
 			$table->foreign('trip_id')->references('id')->on('trips')
+				->onUpdate('restrict')->onDelete('restrict');
+
+			$table->uuid('payment_id')->nullable();
+			$table->foreign('payment_id')->references('id')->on('payments')
 				->onUpdate('restrict')->onDelete('restrict');
 
 			$table->timestamps();
 			$table->softDeletes();
 		});
 
-		DB::statement("ALTER TABLE {$this->name} ADD COLUMN startPoint POINT");
-		DB::statement("ALTER TABLE {$this->name} ADD COLUMN endPoint POINT");
+		DB::statement("ALTER TABLE {$this->name} ADD COLUMN geo_start POINT");
+		DB::statement("ALTER TABLE {$this->name} ADD COLUMN geo_end POINT");
 	}
 
 	/**
