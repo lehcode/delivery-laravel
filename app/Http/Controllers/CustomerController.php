@@ -5,13 +5,15 @@
  * Time: 7:22
  */
 
-namespace App\Http\Controllers\Customer;
+namespace App\Http\Controllers;
 
 use App\Http\Requests\SignUpCustomerRequest;
+use App\Http\Responses\TripDetailsResponse;
 use App\Http\Responses\UserDetailedResponse;
 use App\Repositories\User\UserRepositoryInterface;
 use App\Services\Responder\ResponderServiceInterface;
 use App\Services\SignUp\SignUpServiceInterface;
+use App\Services\Trip\TripServiceInterface;
 use App\Services\UserService\UserServiceInterface;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -19,6 +21,10 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
+/**
+ * Class CustomerController
+ * @package App\Http\Controllers\Customer
+ */
 class CustomerController extends BaseController
 {
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -44,23 +50,32 @@ class CustomerController extends BaseController
 	protected $userRepository;
 
 	/**
+	 * @var TripServiceInterface
+	 */
+	protected $tripService;
+
+	/**
 	 * CustomerController constructor.
 	 *
 	 * @param SignUpServiceInterface    $signUpServiceInterface
 	 * @param ResponderServiceInterface $responderServiceInterface
 	 * @param UserServiceInterface      $userServiceInterface
 	 * @param UserRepositoryInterface   $userRepositoryInterface
+	 * @param TripServiceInterface      $tripService
 	 */
 	public function __construct(
 		SignUpServiceInterface $signUpServiceInterface,
 		ResponderServiceInterface $responderServiceInterface,
 		UserServiceInterface $userServiceInterface,
-		UserRepositoryInterface $userRepositoryInterface
+		UserRepositoryInterface $userRepositoryInterface,
+		TripServiceInterface $tripServiceInterface
 	) {
+	
 		$this->userService = $userServiceInterface;
 		$this->signupService = $signUpServiceInterface;
 		$this->responderService = $responderServiceInterface;
 		$this->userRepository = $userRepositoryInterface;
+		$this->tripService = $tripServiceInterface;
 	}
 
 	/**
@@ -121,5 +136,13 @@ class CustomerController extends BaseController
 				]
 			]
 		]);
+	}
+
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getTrips()
+	{
+		return $this->responderService->fractal($this->tripService->all(), TripDetailsResponse::class);
 	}
 }

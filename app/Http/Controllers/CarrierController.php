@@ -8,15 +8,22 @@
 namespace App\Http\Controllers\Carrier;
 
 use App\Http\Requests\SignUpCustomerRequest;
+use App\Http\Responses\TripDetailsResponse;
+use App\Http\Responses\TripResponse;
 use App\Http\Responses\UserDetailedResponse;
 use App\Services\Responder\ResponderServiceInterface;
 use App\Services\SignUp\SignUpServiceInterface;
+use App\Services\Trip\TripServiceInterface;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
+/**
+ * Class CarrierController
+ * @package App\Http\Controllers\Carrier
+ */
 class CarrierController extends BaseController
 {
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -32,18 +39,25 @@ class CarrierController extends BaseController
 	protected $responderService;
 
 	/**
-	 * UserController constructor.
+	 * @var TripServiceInterface
+	 */
+	protected $tripService;
+
+	/**
+	 * CarrierController constructor.
 	 *
 	 * @param SignUpServiceInterface    $signUpServiceInterface
 	 * @param ResponderServiceInterface $responderServiceInterface
+	 * @param TripServiceInterface      $tripService
 	 */
 	public function __construct(
 		SignUpServiceInterface $signUpServiceInterface,
-		ResponderServiceInterface $responderServiceInterface
+		ResponderServiceInterface $responderServiceInterface,
+		TripServiceInterface $tripService
 	) {
-	
 		$this->signupService = $signUpServiceInterface;
 		$this->responderService = $responderServiceInterface;
+		$this->tripService = $tripService;
 	}
 
 	/**
@@ -104,5 +118,13 @@ class CarrierController extends BaseController
 				]
 			]
 		]);
+	}
+
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getTrips()
+	{
+		return $this->responderService->fractal($this->tripService->all(), TripResponse::class);
 	}
 }

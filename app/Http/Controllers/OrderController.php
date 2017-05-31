@@ -5,7 +5,7 @@
  * Time: 19:54
  */
 
-namespace App\Http\Controllers\Customer;
+namespace App\Http\Controllers;
 
 /**
  * Class OrderController
@@ -44,24 +44,13 @@ class OrderController
 		$this->tripService = $tripServiceInterface;
 	}
 
-	/**
-	 * @param Request $request
-	 *
-	 * @return mixed
-	 */
-	public function trips(Request $request) {
-		$trips = $this->tripService->getList();
-		$trips = $this->responderService->filterQuery($trips, $request);
-
-		return $this->responderService->fractal($trips, TripResponse::class, $request->get('page'), [false]);
+	public function getOrders()
+	{
+		
 	}
-
-	/**
-	 * @param Trip $trip
-	 *
-	 * @return mixed
-	 */
-	public function trip(Trip $trip) {
-		return $this->responderService->fractal($trip, TripResponse::class, -1);
+	
+	public function getOrder()
+	{
+		//
 	}
 }
