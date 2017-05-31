@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Trip\TripRepository;
+use App\Repositories\Trip\TripRepositoryInterface;
 use App\Repositories\UserSignupRequest\UserSignupRepository;
 use App\Repositories\UserSignupRequest\UserSignupRepositoryInterface;
 use App\Services\Maintenance\MaintenanceService;
@@ -12,6 +14,7 @@ use App\Services\Settings\SettingsService;
 use App\Services\Settings\SettingsServiceInterface;
 use App\Services\SignUp\SignUpService;
 use App\Services\SignUp\SignUpServiceInterface;
+use App\Services\Trip\TripService;
 use App\Services\Trip\TripServiceInterface;
 use App\Services\UserService\UserService;
 use App\Services\UserService\UserServiceInterface;
@@ -47,6 +50,8 @@ class AppServiceProvider extends ServiceProvider
         app()->singleton(UserRepositoryInterface::class, UserRepository::class);
         app()->singleton(UserSignupRepositoryInterface::class, UserSignupRepository::class);
         app()->singleton(SettingRepositoryInterface::class, SettingRepository::class);
+        app()->singleton(TripRepositoryInterface::class, TripRepository::class);
+        app()->singleton(ShipmentRepositoryInterface::class, ShipmentRepository::class);
         /*
          * Services
          */
@@ -56,6 +61,8 @@ class AppServiceProvider extends ServiceProvider
         app()->singleton(MaintenanceServiceInterface::class, MaintenanceService::class);
         app()->singleton(SettingsServiceInterface::class, SettingsService::class);
         app()->singleton(TripServiceInterface::class, TripService::class);
+        app()->singleton(ShipmentServiceInterface::class, ShipmentService::class);
+        app()->singleton(CustomerServiceInterface::class, CustomerService::class);
 
         if ($this->app->environment('local', 'testing')) {
             $this->app->register(DuskServiceProvider::class);
