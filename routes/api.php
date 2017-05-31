@@ -77,14 +77,15 @@ Route::group(['middleware' => 'api'], function () {
 
 				Route::group(['prefix' => 'trip'], function () {
 					Route::post('create', ['uses' => 'TripController@createTrip']);
-					Route::get('list', ['uses' => 'TripController@getTrips']);
+					Route::get('list', ['uses' => 'TripController@getUserTrips']);
+					Route::get('all', ['uses' => 'TripController@getTrips']);
 					Route::get('{trip_id}', ['uses' => 'TripController@getTrip']);
 				});
 			});
 
 			Route::group(['middleware' => 'jwt.auth'], function () {
 				Route::group(['prefix' => 'order'], function () {
-					Route::get('orders', ['uses' => 'OrderController@getOrders']);
+					Route::get('orders', ['uses' => 'OrderController@getUserOrders']);
 					Route::get('{id}', ['uses' => 'OrderController@getOrder']);
 				});
 			});
