@@ -17,16 +17,6 @@ use App\Models\User;
 class OrderResponse extends ApiResponse
 {
 	/**
-	 * @var bool
-	 */
-	protected $showDetails;
-
-	/**
-	 * @var bool
-	 */
-	protected $showAdminDetails;
-
-	/**
 	 * @param Order $order
 	 *
 	 * @return array

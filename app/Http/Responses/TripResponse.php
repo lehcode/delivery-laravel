@@ -17,28 +17,6 @@ use App\Models\User;
 class TripResponse extends ApiResponse
 {
 	/**
-	 * @var bool
-	 */
-	protected $showDetails;
-
-	/**
-	 * @var bool
-	 */
-	protected $showAdminDetails;
-
-	/**
-	 * TripResponse constructor.
-	 *
-	 * @param bool $showDetails
-	 * @param bool $showAdminDetails
-	 */
-	public function __construct($showDetails = true, $showAdminDetails = false)
-	{
-		$this->showDetails = $showDetails;
-		$this->showAdminDetails = $showAdminDetails;
-	}
-
-	/**
 	 * @param Trip $trip
 	 *
 	 * @return array
@@ -50,7 +28,6 @@ class TripResponse extends ApiResponse
 		$carrier = $user->carrier()->with('currentCity')->first();
 		$carrier->makeHidden('current_city');
 		$paymentType = $trip->paymentType()->first();
-		//$trip = $trip->with('fromCity')->first();
 
 		$data = [
 			'id' => $trip->id,
