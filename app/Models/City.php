@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User\Carrier;
 use Illuminate\Database\Eloquent\Model;
 
 class City extends Model
@@ -23,7 +24,17 @@ class City extends Model
 
 	public function country()
 	{
-		return $this->belongsTo('App\Models\Country');
+		return $this->belongsTo(Country::class);
+	}
+
+	public function carrier()
+	{
+		return $this->hasMany(Carrier::class);
+	}
+
+	public function customer()
+	{
+		return $this->hasMany(Customer::class);
 	}
 
 

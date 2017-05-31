@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\User\Customer;
 use Bosnadev\Database\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 use Watson\Validating\ValidatingTrait;
 
@@ -11,7 +13,8 @@ class Recipient extends Model
 {
 	use UuidTrait,
 		ValidatingTrait,
-		Auditable;
+		Auditable,
+		SoftDeletes;
 
 	/**
 	 * @var array
@@ -48,4 +51,14 @@ class Recipient extends Model
 		'name.required' => "Recipient name is required",
 		'phone.required' => "Recipient phone is required",
 	];
+
+	public function order()
+	{
+		return $this->belongsTo(Order::class);
+	}
+
+	public function customer()
+	{
+		return $this->belongsTo(Customer::class, 'sender_id');
+	}
 }

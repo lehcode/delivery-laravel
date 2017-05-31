@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Extensions\ProfileAttributeTrait;
 use App\Models\User\Carrier;
 use App\Models\User\Customer;
 use App\Models\User\Role;
@@ -24,7 +25,8 @@ class User extends Authenticatable implements AuditableInterface
 		UuidTrait,
 		SoftDeletes,
 		ValidatingTrait,
-		AuditableTrait;
+		AuditableTrait,
+		ProfileAttributeTrait;
 
 	const ROLE_ROOT = 'root';
 	const ROLE_ADMIN = 'admin';
@@ -120,35 +122,6 @@ class User extends Authenticatable implements AuditableInterface
 	];
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
-	 * @throws \Exception
-	 */
-	public function getProfileAttribute()
-	{
-		switch ($this->roles()->first()->name) {
-			case self::ROLE_CUSTOMER:
-				return Customer::find($this->id);
-				break;
-
-			case self::ROLE_CARRIER:
-				return Carrier::find($this->id);
-				break;
-
-			case self::ROLE_ADMIN:
-				return Admin::find($this->id);
-				break;
-
-			case self::ROLE_ROOT:
-				return Root::find($this->id);
-			break;
-
-			default:
-				throw new \Exception("Cannot get user profile.");
-
-		}
-	}
-
-	/**
 	 * @param string $value
 	 */
 	public function setPasswordAttribute($value)
@@ -177,12 +150,12 @@ class User extends Authenticatable implements AuditableInterface
 
 	public function customer()
 	{
-		return $this->hasOne('App\Models\User\Customer');
+		return $this->hasOne(Customer::class, 'id');
 	}
 
 	public function carrier()
 	{
-		return $this->hasOne('App\Models\User\Carrier');
+		return $this->hasOne(Carrier::class, 'id');
 	}
 
 }

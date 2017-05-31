@@ -7,7 +7,11 @@
 
 namespace App\Models\User;
 
+use App\Extensions\ProfileAttributeTrait;
+use App\Models\City;
+use App\Models\Trip;
 use App\Models\User;
+use Laratrust\Traits\LaratrustUserTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use OwenIt\Auditing\Auditable as AuditableTrait;
@@ -17,7 +21,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Carrier extends Model implements HasMediaConversions, AuditableInterface
 {
-	use AuditableTrait, SoftDeletes, HasMediaTrait;
+	use AuditableTrait,
+		SoftDeletes,
+		HasMediaTrait,
+		ProfileAttributeTrait,
+		LaratrustUserTrait;
 
 	const STATUS_ONLINE = 1;
 	const STATUS_OFFLINE = 0;
@@ -35,12 +43,12 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	/**
 	 * @var string
 	 */
-	protected $primaryKey = 'user_id';
+	protected $primaryKey = 'id';
 
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['user_id', 'name', 'is_activated', 'is_online', 'current_city'];
+	protected $fillable = ['id', 'name', 'is_activated', 'is_online', 'current_city', 'default_address'];
 
 	/**
 	 * @var array
@@ -53,11 +61,6 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	protected $auditableEvents = ['deleted', 'updated', 'restored', 'current_city'];
 
 	/**
-	 * @var array
-	 */
-	protected $appends = ['profile'];
-
-	/**
 	 * @var bool
 	 */
 	public $incrementing = false;
@@ -67,6 +70,7 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	 */
 	protected $rules = [
 		'name' => 'required|string|min:3',
+		'default_address' => 'required|string',
 		'current_city' => 'nullable|integer',
 		self::ID_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
 		User::PROFILE_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
@@ -77,7 +81,17 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	 */
 	public function trips()
 	{
-		return $this->hasMany('App\Models\Trip', 'carrier_id');
+		return $this->hasMany(Trip::class);
+	}
+
+	public function user()
+	{
+		return $this->belongsTo(User::class);
+	}
+
+	public function currentCity()
+	{
+		return $this->belongsTo(City::class, 'current_city');
 	}
 
 	/**
@@ -97,10 +111,5 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	public function scopeOnline(Builder $builder)
 	{
 		return $builder->where('is_online', true);
-	}
-
-	public function user()
-	{
-		return $this->belongsTo('App\Models\User');
 	}
 }

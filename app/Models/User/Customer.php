@@ -7,8 +7,10 @@
 
 namespace App\Models\User;
 
-use App\Models\Recipient;
+use App\Extensions\ProfileAttributeTrait;
 use App\Models\User;
+use App\Models\Order;
+use Laratrust\Traits\LaratrustUserTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use OwenIt\Auditing\Auditable as AuditableTrait;
@@ -18,7 +20,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Customer extends Model implements HasMediaConversions, AuditableInterface
 {
-	use AuditableTrait, SoftDeletes, HasMediaTrait;
+	use AuditableTrait,
+		SoftDeletes,
+		HasMediaTrait,
+		ProfileAttributeTrait,
+		LaratrustUserTrait;
 
 	/**
 	 * @var string
@@ -27,11 +33,11 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 	/**
 	 * @var string
 	 */
-	protected $primaryKey = 'user_id';
+	protected $primaryKey = 'id';
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['user_id', 'name', 'is_activated'];
+	protected $fillable = ['id', 'name', 'is_activated'];
 	/**
 	 * @var array
 	 */
@@ -40,11 +46,6 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 	 * @var array
 	 */
 	protected $auditableEvents = ['deleted', 'updated', 'restored'];
-
-	/**
-	 * @var array
-	 */
-	protected $appends = ['profile'];
 
 	/**
 	 * @var bool
@@ -63,9 +64,18 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 		$this->addMediaConversion('fitted')
 			->fit(Manipulations::FIT_CROP, 400, 400);
 	}
+
+//	public function user()
+//	{
+//		return $this->belongsTo(User::class);
+//	}
 	
-	public function user()
+	public function order()
 	{
-		return $this->belongsTo(User::class);
+		return $this->hasMany(Order::class);
 	}
+
+//	public function recipients(){
+//		return $this->hasManyThrough(Recipient::class, Order::class, 'recipient_id');
+//	}
 }

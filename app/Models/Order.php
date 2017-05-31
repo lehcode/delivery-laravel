@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User\Customer;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -20,6 +21,7 @@ class Order extends Model
 		'customer_id',
 		'shipment_id',
 		'trip_id',
+		'payment_id',
 	];
 
 	/**
@@ -42,6 +44,7 @@ class Order extends Model
 		'customer_id' => 'required|integer',
 		'shipment_id' => 'required|integer',
 		'trip_id' => 'required|integer',
+		'payment_id' => 'integer',
 	];
 
 	/**
@@ -49,12 +52,7 @@ class Order extends Model
 	 */
 	public function trip()
 	{
-		return $this->hasOne(Trip::class, 'trip_id');
-	}
-
-	public function customer()
-	{
-		return $this->hasOne(User::class);
+		return $this->hasOne(Trip::class);
 	}
 
 	public function recipient()
@@ -62,9 +60,14 @@ class Order extends Model
 		return $this->hasOne(Recipient::class);
 	}
 
-	public function shipmentCategory()
+	public function shipment()
 	{
-		return $this->hasOne(ShipmentCategory::class);
+		return $this->hasOne(Shipment::class);
+	}
+	
+	public function customer()
+	{
+		return $this->belongsTo(Customer::class);
 	}
 
 }

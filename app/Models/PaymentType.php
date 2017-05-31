@@ -21,5 +21,12 @@ class PaymentType extends Model
 	 */
 	public $timestamps = false;
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function trips()
+	{
+		return $this->hasMany(Trip::class);
+	}
 
 }
