@@ -17,10 +17,9 @@ class SetupAclTablesSeed extends Seeder
 	var $pwd = 'Qrab17';
 
 	var $usersAmt = [
-		'admin' => 2,
-		'customer' => 5,
-		'carrier' => 5,
-		'recipient' => 5,
+		'admin' => 1,
+		'customer' => 6,
+		'carrier' => 6,
 	];
 
 	var $phoneSfx = 0;
@@ -116,18 +115,22 @@ class SetupAclTablesSeed extends Seeder
 
 							switch ($key) {
 								case 'customer':
-									User\Customer::create(array_merge(['user_id' => $user->id, 'name' => $user->name], ['notes' => $faker->text(128)]));
+									User\Customer::create(array_merge(['id' => $user->id, 'name' => $user->name], ['notes' => $faker->text(128)]));
 									break;
 
 								case 'carrier':
-									User\Carrier::create(array_merge(['user_id' => $user->id, 'name' => $user->name],
-										['current_city' => $cities->random()->id, 'notes' => $faker->text(128)]));
+									User\Carrier::create(array_merge(['id' => $user->id, 'name' => $user->name],
+										[
+											'current_city' => $cities->random()->id,
+											'default_address' => $faker->streetAddress,
+											'notes' => $faker->text(128)
+										]));
 									break;
 							}
 
 
 						} catch (ValidationException $e) {
-							var_dump($user->phone);
+							var_dump($user->toArray());
 							print_r($e->getErrors());
 							die();
 						}
