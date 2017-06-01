@@ -37,7 +37,6 @@ class OrdersSeeder extends Seeder
 			$shipment = factory(Shipment::class)->create([
 				'category_id' => ShipmentCategory::all()->random()->id
 			]);
-			$route = factory(Route::class)->create();
 			$customer = $u->customer()->first();
 
 			$data = [
@@ -45,13 +44,12 @@ class OrdersSeeder extends Seeder
 				'trip_id' => $trip->id,
 				'recipient_id' => $recipient->id,
 				'shipment_id' => $shipment->id,
-				'route_id' => $route->id,
 				'payment_id' => null,
 			];
 
 			$order = factory(Order::class)->create($data);
 
-			if (!is_null($order->validationErrors) && count($order->validationErrors)) {
+			if (!is_null($order->validationErrors)) {
 				foreach ($order->validationErrors as $error) {
 					foreach ($error->messages as $param => $message) {
 						throw new \Exception($message);

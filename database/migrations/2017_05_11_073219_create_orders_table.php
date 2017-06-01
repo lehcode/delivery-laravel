@@ -33,11 +33,7 @@ class CreateOrdersTable extends Migration
 			$table->uuid('shipment_id')->index()->unique();
 			$table->foreign('shipment_id')->references('id')->on('shipments')
 				->onUpdate('restrict')->onDelete('restrict');
-
-			$table->uuid('route_id')->index()->unique();
-			$table->foreign('route_id')->references('id')->on('routes')
-				->onUpdate('restrict')->onDelete('restrict');
-
+			
 			$table->uuid('trip_id')->index();
 			$table->foreign('trip_id')->references('id')->on('trips')
 				->onUpdate('restrict')->onDelete('restrict');

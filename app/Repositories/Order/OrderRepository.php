@@ -36,8 +36,7 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	 */
 	public function userOrders()
 	{
-		$user = Auth::getUser();
-		$result = Order::where('customer_id', $user->id);
+		$result = Order::where('customer_id', Auth::getUser()->id);
 		return $result;
 	}
 
@@ -49,5 +48,29 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	public function find($id)
 	{
 		return parent::find($id);
+	}
+
+	/**
+	 * @param array $data
+	 *
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public function create(array $data)
+	{
+
+		if (isset($data['XDEBUG_SESSION_START'])){
+			unset($data['XDEBUG_SESSION_START']);
+		}
+
+		$data['customer_id'] = Auth::getUser()->customer()->id;
+
+		$order = factory(Order::class)->create($data);
+
+		if (!is_null($order->validationErrors)) {
+			throw new \Exception($order->validationErrors->getMessages());
+		}
+		
+		return $order;
 	}
 }

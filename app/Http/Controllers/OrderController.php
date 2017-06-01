@@ -6,11 +6,13 @@
  */
 
 namespace App\Http\Controllers;
+
 use App\Http\Responses\OrderResponse;
 use App\Services\BaseServiceInterface;
 use App\Services\Order\OrderService;
 use App\Services\Order\OrderServiceInterface;
 use App\Services\Responder\ResponderServiceInterface;
+use Illuminate\Http\Request;
 
 /**
  * Class OrderController
@@ -42,9 +44,10 @@ class OrderController
 		$this->orderService = $orderServiceInterface;
 	}
 
-	public function createOrder()
+	public function createOrder(Request $request)
 	{
-
+		$data = $request->all();
+		return $this->responderService->fractal($this->orderService->create($data), OrderResponse::class);
 	}
 
 	public function getOrders()

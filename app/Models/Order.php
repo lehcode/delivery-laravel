@@ -60,7 +60,7 @@ class Order extends Model implements AuditableInterface
 		'customer_id' => 'required',
 		'shipment_id' => 'required',
 		'trip_id' => 'required',
-		'payment_id' => 'present',
+		'payment_id' => 'nullable',
 	];
 
 	/**

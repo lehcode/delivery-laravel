@@ -12,37 +12,66 @@ use App\Repositories\Order\OrderRepository;
 use App\Services\Builder;
 use App\Services\Trip;
 
+/**
+ * Class OrderService
+ * @package App\Services\Order
+ */
 class OrderService implements OrderServiceInterface
 {
 
+	/**
+	 * @var OrderRepository
+	 */
 	protected $orderRepository;
 
+	/**
+	 * OrderService constructor.
+	 *
+	 * @param OrderRepository $orderRepository
+	 */
 	public function __construct(OrderRepository $orderRepository)
 	{
 		$this->orderRepository = $orderRepository;
 	}
 
+	/**
+	 * @param array $data
+	 */
 	public function create(array $data)
 	{
-		// TODO: Implement create() method.
+		$this->orderRepository->create($data);
 	}
 
+	/**
+	 * @param Order $order
+	 * @param array $data
+	 */
 	public function edit(Order $order, array $data)
 	{
 		// TODO: Implement edit() method.
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function all()
 	{
 		return $this->orderRepository->all();
 	}
 
+	/**
+	 * @param $id
+	 */
 	public function item($id)
 	{
 		// TODO: Implement item() method.
 	}
-	
-	public function userOrders(){
+
+	/**
+	 * @return mixed
+	 */
+	public function userOrders()
+	{
 		return $this->orderRepository->userOrders();
 	}
 
