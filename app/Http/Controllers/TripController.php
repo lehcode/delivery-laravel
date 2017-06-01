@@ -7,10 +7,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TripRequest;
 use App\Http\Responses\TripResponse;
+use App\Services\Responder\ResponderService;
 use App\Services\Responder\ResponderServiceInterface;
+use App\Services\Trip\TripService;
 use App\Services\Trip\TripServiceInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class TripController
@@ -31,22 +36,22 @@ class TripController
 	/**
 	 * TripController constructor.
 	 *
-	 * @param TripServiceInterface      $tripServiceInterface
-	 * @param ResponderServiceInterface $responderServiceInterface
+	 * @param TripService      $tripService
+	 * @param ResponderService $responderService
 	 */
 	public function __construct(
-		TripServiceInterface $tripServiceInterface,
-		ResponderServiceInterface $responderServiceInterface
+		TripService $tripService,
+		ResponderService $responderService
 	) {
 	
-		$this->tripService = $tripServiceInterface;
-		$this->responderService = $responderServiceInterface;
+		$this->tripService = $tripService;
+		$this->responderService = $responderService;
 	}
 
 	/**
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function getTrips()
+	public function all()
 	{
 		return $this->responderService->fractal($this->tripService->all(), TripResponse::class);
 	}
@@ -54,9 +59,9 @@ class TripController
 	/**
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function getUserTrips()
+	public function fromCurrentCity()
 	{
-		return $this->responderService->fractal($this->tripService->all(), TripResponse::class);
+		return $this->responderService->objectResponse($this->tripService->getTripsFromCurrentCity());
 	}
 
 	/**
@@ -64,18 +69,18 @@ class TripController
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function getTrip($id)
+	public function get($id)
 	{
 		return $this->responderService->fractal($this->tripService->item($id), TripResponse::class);
 	}
 
 	/**
-	 * @param Request $request
+	 * @param TripRequest $request
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws ValidationException
 	 */
-	public function createTrip(Request $request)
+	public function create(TripRequest $request)
 	{
 		try {
 			$params = $request->all();

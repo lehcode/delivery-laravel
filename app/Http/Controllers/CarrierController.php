@@ -5,7 +5,7 @@
  * Time: 7:22
  */
 
-namespace App\Http\Controllers\Carrier;
+namespace App\Http\Controllers;
 
 use App\Http\Requests\SignUpCustomerRequest;
 use App\Http\Responses\TripDetailsResponse;
@@ -13,7 +13,7 @@ use App\Http\Responses\TripResponse;
 use App\Http\Responses\UserDetailedResponse;
 use App\Services\Responder\ResponderServiceInterface;
 use App\Services\SignUp\SignUpServiceInterface;
-use App\Services\Trip\TripServiceInterface;
+use App\Services\Trip\TripService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -39,7 +39,7 @@ class CarrierController extends BaseController
 	protected $responderService;
 
 	/**
-	 * @var TripServiceInterface
+	 * @var TripService
 	 */
 	protected $tripService;
 
@@ -48,12 +48,12 @@ class CarrierController extends BaseController
 	 *
 	 * @param SignUpServiceInterface    $signUpServiceInterface
 	 * @param ResponderServiceInterface $responderServiceInterface
-	 * @param TripServiceInterface      $tripService
+	 * @param TripService      $tripService
 	 */
 	public function __construct(
 		SignUpServiceInterface $signUpServiceInterface,
 		ResponderServiceInterface $responderServiceInterface,
-		TripServiceInterface $tripService
+		TripService $tripService
 	) {
 		$this->signupService = $signUpServiceInterface;
 		$this->responderService = $responderServiceInterface;
@@ -85,35 +85,44 @@ class CarrierController extends BaseController
 	 */
 	public function navigation()
 	{
-		
 		return $this->responderService->response([
 			'status' => 'success',
 			'data' => [
 				'data' => [
 					[
-						'title' => 'My Account',
-						'id' => 'MyAccount',
-						'href' => '/carrier/v1/user/account',
+						'title' => 'Profile',
+						'id' => 'UserProfile',
+						'href' => '/carrier/v1/user/profile',
 					],
 					[
-						'title' => 'ID Validation',
-						'id' => 'IdValidation',
-						'href' => '/carrier/v1/user/id_validation',
+						'title' => 'Trips',
+						'id' => 'TripsAll',
+						'href' => '/carrier/v1/trip/all',
 					],
 					[
-						'title' => 'Payment Info',
-						'id' => 'PaymentInfo',
-						'href' => '/carrier/v1/user/payment_info',
+						'title' => 'Orders',
+						'id' => 'OrdersAll',
+						'href' => '/carrier/v1/order/all',
 					],
 					[
-						'title' => 'My Trips',
-						'id' => 'MyOrders',
-						'href' => '/carrier/v1/trips',
+						'title' => 'Payments',
+						'id' => 'PaymentsAll',
+						'href' => '/carrier/v1/payment/all',
 					],
 					[
-						'title' => 'Help & Legal',
-						'id' => 'HelpLegal',
-						'href' => '/carrier/v1/help',
+						'title' => 'Help',
+						'id' => 'InfoHelp',
+						'href' => '/carrier/v1/info/help',
+					],
+					[
+						'title' => 'About',
+						'id' => 'InfoAbout',
+						'href' => '/carrier/v1/info/about',
+					],
+					[
+						'title' => 'Legal',
+						'id' => 'InfoLegal',
+						'href' => '/carrier/v1/info/legal',
 					],
 				]
 			]
@@ -123,8 +132,8 @@ class CarrierController extends BaseController
 	/**
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function getTrips()
+	public function getUserTrips()
 	{
-		return $this->responderService->fractal($this->tripService->all(), TripResponse::class);
+		return $this->responderService->fractal($this->tripService->userTrips(), TripResponse::class);
 	}
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services\Trip;
 use App\Models\Trip;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Created by Antony Repin
@@ -35,4 +36,9 @@ interface TripServiceInterface
 	 * @return mixed
 	 */
 	public function item($id);
+
+	/**
+	 * @return Collection
+	 */
+	public function getTripsFromCurrentCity();
 }
