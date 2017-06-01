@@ -5,6 +5,10 @@ namespace App\Models;
 use App\Models\User\Carrier;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class City
+ * @package App\Models
+ */
 class City extends Model
 {
 	/**
@@ -22,16 +26,25 @@ class City extends Model
 	 */
 	public $timestamps = false;
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function country()
 	{
-		return $this->belongsTo(Country::class);
+		return $this->belongsTo(Country::class, 'country_id');
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
 	public function carrier()
 	{
 		return $this->hasMany(Carrier::class);
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
 	public function customer()
 	{
 		return $this->hasMany(Customer::class);
