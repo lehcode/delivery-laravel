@@ -19,6 +19,10 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Carrier
+ * @package App\Models\User
+ */
 class Carrier extends Model implements HasMediaConversions, AuditableInterface
 {
 	use AuditableTrait,
@@ -79,11 +83,17 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 		return $this->hasMany(Trip::class, 'id');
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function user()
 	{
 		return $this->belongsTo(User::class);
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function currentCity()
 	{
 		return $this->belongsTo(City::class, 'current_city');
