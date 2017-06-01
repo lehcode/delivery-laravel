@@ -16,12 +16,28 @@ use Illuminate\Http\Request;
 Route::group(['middleware' => 'api'], function () {
 
 	Route::group(['middleware' => 'maintenance'], function () {
+		/*
+		 * Common role-depending routes
+		 */
 		Route::group(['prefix' => '{user_type}/v1'], function () {
+
 			Route::post('authenticate', ['uses' => 'AuthController@authenticate']);
-			Route::post('user/restore-password', ['uses' => 'RestorePasswordController@sendLink']);
-			Route::any('user/me', ['middleware' => 'jwt.auth', 'uses' => 'AuthController@me']);
-			Route::get('user/navigation', ['middleware' => 'jwt.auth', 'uses' => 'AuthController@navigation']);
-			Route::get('shipment-categories', ['middleware' => 'jwt.auth', 'uses' => 'ShipmentController@categories']);
+
+			Route::group(['middleware' => 'jwt.auth'], function () {
+				Route::get('shipment-categories', ['uses' => 'ShipmentController@categories']);
+
+				Route::group(['prefix' => 'user'], function () {
+					Route::any('me', ['uses' => 'AuthController@me']);
+					Route::post('restore-password', ['uses' => 'RestorePasswordController@sendLink']);
+				});
+
+				Route::group(['prefix' => 'info'], function () {
+					Route::get('help', ['uses' => 'InfoController@help']);
+					Route::get('about', ['uses' => 'InfoController@about']);
+					Route::get('legal', ['uses' => 'InfoController@legal']);
+				});
+			});
+
 		});
 
 		/*
@@ -30,26 +46,37 @@ Route::group(['middleware' => 'api'], function () {
 		Route::group(['prefix' => 'customer/v1'], function () {
 
 			Route::group(['prefix' => 'user'], function () {
-				Route::post('edit', ['uses' => 'UserController@edit']);
+				Route::post('create', ['uses' => 'CustomerController@create']);
 			});
 
 			Route::group(['middleware' => 'jwt.auth'], function () {
-				Route::get('navigation', ['uses' => 'CustomerController@navigation']);
-			});
 
-			Route::group(['prefix' => 'user'], function () {
-				Route::post('create', ['uses' => 'CustomerController@create']);
+				Route::group(['prefix' => 'user'], function () {
+					Route::get('navigation', ['uses' => 'CustomerController@navigation']);
+					Route::post('edit', ['uses' => 'UserController@edit']);
 
-				Route::group(['middleware' => 'jwt.auth'], function () {
-					Route::get('config', ['uses' => 'SettingsController@getConfig']);
-					Route::post('config', ['uses' => 'SettingsController@update']);
+					Route::get('setings', ['uses' => 'SettingsController@getSettings']);
+					Route::post('setings', ['uses' => 'SettingsController@updateSettings']);
+
+					Route::get('payment-info', ['uses'=>'PaymentController@getUserPaymentInfo']);
+					Route::post('payment-info', ['uses'=>'PaymentController@storeUserPaymentInfo']);
 				});
-			});
 
-			Route::group(['prefix' => 'order', 'middleware' => 'jwt.auth'], function () {
-				Route::get('list', ['uses' => 'OrderController@getOrders']);
-				Route::get('{id}', ['uses' => 'OrderController@getOrder']);
-				Route::post('create', ['uses' => 'OrderController@createOrder']);
+				Route::group(['prefix' => 'order'], function () {
+					Route::get('all', ['uses' => 'OrderController@all']);
+					Route::get('active', ['uses' => 'OrderController@active']);
+					Route::get('{id}', ['uses' => 'OrderController@get']);
+					Route::post('create', ['uses' => 'OrderController@create']);
+				});
+
+				Route::group(['prefix' => 'trip'], function () {
+					Route::get('all', ['uses' => 'TripController@fromCurrentCity']);
+					Route::get('{trip_id}', ['uses' => 'TripController@get']);
+				});
+
+				Route:: group(['prefix'=>'payment'], function(){
+					Route::post('create', ['uses'=>'PaymentController@createPayment']);
+				});
 			});
 
 		});
@@ -60,34 +87,36 @@ Route::group(['middleware' => 'api'], function () {
 		Route::group(['prefix' => 'carrier/v1'], function () {
 
 			Route::group(['prefix' => 'user'], function () {
-				Route::post('edit', ['uses' => 'UserController@edit']);
-			});
-
-			Route::group(['prefix' => 'user'], function () {
 				Route::post('create', ['uses' => 'CarrierController@create']);
-
-				Route::group(['middleware' => 'jwt.auth'], function () {
-					Route::get('config', ['uses' => 'SettingsController@getConfig']);
-					Route::post('config', ['uses' => 'SettingsController@update']);
-				});
 			});
 
 			Route::group(['middleware' => 'jwt.auth'], function () {
-				Route::get('navigation', ['uses' => 'CarrierController@navigation']);
+
+				Route::group(['prefix' => 'user'], function () {
+					Route::get('navigation', ['uses' => 'CarrierController@navigation']);
+					Route::post('edit', ['uses' => 'UserController@edit']);
+					Route::get('settings', ['uses' => 'SettingsController@get']);
+					Route::post('settings', ['uses' => 'SettingsController@update']);
+				});
 
 				Route::group(['prefix' => 'trip'], function () {
-					Route::post('create', ['uses' => 'TripController@createTrip']);
-					Route::get('list', ['uses' => 'TripController@getUserTrips']);
-					Route::get('all', ['uses' => 'TripController@getTrips']);
-					Route::get('{trip_id}', ['uses' => 'TripController@getTrip']);
-				});
-			});
+					//Route::get('my-trips', ['uses' => 'CarrierController@getUserTrips']);
+					Route::get('active-trips', ['uses' => 'CarrierController@getActiveTrips']);
 
-			Route::group(['middleware' => 'jwt.auth'], function () {
-				Route::group(['prefix' => 'order'], function () {
-					Route::get('orders', ['uses' => 'OrderController@getUserOrders']);
-					Route::get('{id}', ['uses' => 'OrderController@getOrder']);
+					Route::get('all', ['uses' => 'TripController@all']);
+					Route::get('{trip_id}', ['uses' => 'TripController@get']);
+					Route::post('create', ['uses' => 'TripController@create']);
 				});
+
+				Route::group(['prefix' => 'order'], function () {
+					Route::get('all', ['uses' => 'OrderController@all']);
+					Route::get('{id}', ['uses' => 'OrderController@get']);
+				});
+
+				Route::group(['prefix'=>'payment'], function(){
+					Route::get('types', ['uses' => 'PaymentController@types']);
+				});
+
 			});
 
 		});
