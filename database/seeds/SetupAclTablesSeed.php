@@ -24,6 +24,8 @@ class SetupAclTablesSeed extends Seeder
 
 	var $phoneSfx = 0;
 
+	var $cardTypes = ['Visa', 'MasterCard'];
+
 	/**
 	 * Run the database seeds.
 	 *
@@ -115,7 +117,17 @@ class SetupAclTablesSeed extends Seeder
 
 							switch ($key) {
 								case 'customer':
-									User\Customer::create(array_merge(['id' => $user->id, 'name' => $user->name], ['notes' => $faker->text(128)]));
+									$cardType = $faker->randomElement($this->cardTypes);
+									User\Customer::create(array_merge(['id' => $user->id, 'name' => $user->name],
+										[
+											'notes' => $faker->text(128),
+											'current_city' => $cities->random()->id,
+											'card_number' => $faker->creditCardNumber($cardType),
+											'card_type' => $cardType,
+											'card_name' => $user->name,
+											'card_expiry' => $faker->creditCardExpirationDate,
+											'card_cvc' => $faker->randomNumber(3),
+										]));
 									break;
 
 								case 'carrier':
@@ -123,7 +135,7 @@ class SetupAclTablesSeed extends Seeder
 										[
 											'current_city' => $cities->random()->id,
 											'default_address' => $faker->streetAddress,
-											'notes' => $faker->text(128)
+											'notes' => $faker->text(128),
 										]));
 									break;
 							}
