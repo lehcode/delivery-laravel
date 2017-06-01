@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repositories\Order\OrderRepository;
 use App\Repositories\Order\OrderRepositoryInterface;
+use App\Repositories\Payment\PaymentRepository;
+use App\Repositories\Payment\PaymentRepositoryInterface;
 use App\Repositories\Trip\TripRepository;
 use App\Repositories\Trip\TripRepositoryInterface;
 use App\Repositories\UserSignupRequest\UserSignupRepository;
@@ -12,6 +14,8 @@ use App\Services\Maintenance\MaintenanceService;
 use App\Services\Maintenance\MaintenanceServiceInterface;
 use App\Services\Order\OrderService;
 use App\Services\Order\OrderServiceInterface;
+use App\Services\Payment\PaymentService;
+use App\Services\Payment\PaymentServiceInterface;
 use App\Services\Responder\ResponderService;
 use App\Services\Responder\ResponderServiceInterface;
 use App\Services\Settings\SettingsService;
@@ -57,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
         app()->singleton(TripRepositoryInterface::class, TripRepository::class);
         app()->singleton(ShipmentRepositoryInterface::class, ShipmentRepository::class);
         app()->singleton(OrderRepositoryInterface::class, OrderRepository::class);
+        app()->singleton(PaymentRepositoryInterface::class, PaymentRepository::class);
         /*
          * Services
          */
@@ -69,6 +74,7 @@ class AppServiceProvider extends ServiceProvider
         app()->singleton(ShipmentServiceInterface::class, ShipmentService::class);
         app()->singleton(CustomerServiceInterface::class, CustomerService::class);
         app()->singleton(OrderServiceInterface::class, OrderService::class);
+        app()->singleton(PaymentServiceInterface::class, PaymentService::class);
 
         if ($this->app->environment('local', 'testing')) {
             $this->app->register(DuskServiceProvider::class);
