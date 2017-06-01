@@ -191,6 +191,7 @@ return [
 		Spatie\Fractal\FractalServiceProvider::class,
 		'GrahamCampbell\Flysystem\FlysystemServiceProvider',
 		Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
+		Rap2hpoutre\LaravelCreditCardValidator\ServiceProvider::class,
 
 
 	], (env('APP_DEBUG') == true ? [

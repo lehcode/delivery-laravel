@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "840cedc0d0c584c58b75fa886c961a67",
+    "content-hash": "d8fec2e2bdc391d4057681c2a0ad2454",
     "packages": [
         {
             "name": "alexpechkarev/google-geocoder",
@@ -1624,6 +1624,57 @@
                 "stream"
             ],
             "time": "2014-10-12T19:18:40+00:00"
+        },
+        {
+            "name": "inacho/php-credit-card-validator",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/inacho/php-credit-card-validator.git",
+                "reference": "e71ea730a9059ea75cc6d94e7c42993eacf44dc1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/inacho/php-credit-card-validator/zipball/e71ea730a9059ea75cc6d94e7c42993eacf44dc1",
+                "reference": "e71ea730a9059ea75cc6d94e7c42993eacf44dc1",
+                "shasum": ""
+            },
+            "require": {
+                "lib-pcre": ">=7.3",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Inacho\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ignacio de Tomás",
+                    "email": "nacho@inacho.es"
+                }
+            ],
+            "description": "Validates popular debit and credit cards numbers against regular expressions and Luhn algorithm. Also validates the CVC and the expiration date",
+            "keywords": [
+                "card",
+                "cards",
+                "credit",
+                "creditcard",
+                "creditcards",
+                "cvc",
+                "debit",
+                "laravel",
+                "validator"
+            ],
+            "time": "2015-07-03T19:13:29+00:00"
         },
         {
             "name": "intervention/image",
@@ -3594,6 +3645,52 @@
                 "uuid"
             ],
             "time": "2017-03-26T20:37:53+00:00"
+        },
+        {
+            "name": "rap2hpoutre/laravel-credit-card-validator",
+            "version": "v0.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rap2hpoutre/laravel-credit-card-validator.git",
+                "reference": "597f9223e510c55d6ab60284d1329b6512d21618"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rap2hpoutre/laravel-credit-card-validator/zipball/597f9223e510c55d6ab60284d1329b6512d21618",
+                "reference": "597f9223e510c55d6ab60284d1329b6512d21618",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.*",
+                "inacho/php-credit-card-validator": "^1.0",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rap2hpoutre\\LaravelCreditCardValidator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "rap2hpoutre",
+                    "email": "raphaelht@gmail.com"
+                }
+            ],
+            "description": "Laravel credit card validator",
+            "keywords": [
+                "credit card",
+                "laravel",
+                "validator"
+            ],
+            "time": "2016-08-30T14:37:14+00:00"
         },
         {
             "name": "react/promise",
