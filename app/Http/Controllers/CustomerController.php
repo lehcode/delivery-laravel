@@ -61,7 +61,7 @@ class CustomerController extends BaseController
 	 * @param ResponderServiceInterface $responderServiceInterface
 	 * @param UserServiceInterface      $userServiceInterface
 	 * @param UserRepositoryInterface   $userRepositoryInterface
-	 * @param TripServiceInterface      $tripService
+	 * @param TripServiceInterface      $tripServiceInterface
 	 */
 	public function __construct(
 		SignUpServiceInterface $signUpServiceInterface,
@@ -108,30 +108,59 @@ class CustomerController extends BaseController
 			'status' => 'success',
 			'data' => [
 				'data' => [
+					/*
+					 * Main menu items
+					 */
 					[
-						'title' => 'My Account',
-						'id' => 'MyAccount',
-						'href' => '/customer/v1/user/account',
+						'title' => 'Profile',
+						'id' => 'UserAccount',
+						'href' => '/customer/v1/user/profile',
 					],
 					[
-						'title' => 'ID Validation',
-						'id' => 'IdValidation',
-						'href' => '/customer/v1/user/id_validation',
+						'title' => 'Orders',
+						'id' => 'OrdersAll',
+						'href' => '/customer/v1/orders/all',
 					],
 					[
-						'title' => 'Payment Info',
-						'id' => 'PaymentInfo',
-						'href' => '/customer/v1/user/payment_info',
+						'title' => 'Settings',
+						'id' => 'ProfileSettings',
+						'href' => '/customer/v1/user/profile/settings',
 					],
 					[
-						'title' => 'My Orders',
-						'id' => 'MyOrders',
-						'href' => '/customer/v1/orders',
+						'title' => 'Help',
+						'id' => 'InfoHelp',
+						'href' => '/customer/v1/info/help',
 					],
 					[
-						'title' => 'Help & Legal',
-						'id' => 'HelpLegal',
-						'href' => '/customer/v1/help',
+						'title' => 'About',
+						'id' => 'InfoAbout',
+						'href' => '/customer/v1/info/about',
+					],
+					[
+						'title' => 'Legal',
+						'id' => 'InfoLegal',
+						'href' => '/customer/v1/info/legal',
+					],
+					/*
+					 * Settings child items
+					 */
+					[
+						'title' => "Payment Info",
+						'id' => 'SettingsPaymentInfo',
+						'href' => '/customer/v1/account/settings/payment-info',
+						'parent' => 'Settings'
+					],
+					[
+						'title' => "Notifications",
+						'id' => 'SettingsNotifications',
+						'href' => '/customer/v1/account/settings/notifications',
+						'parent' => 'Settings'
+					],
+					[
+						'title' => "Sign Out",
+						'id' => 'SettingsSignOut',
+						'href' => '/user/v1/account/sign-out',
+						'parent' => 'Settings'
 					],
 				]
 			]
