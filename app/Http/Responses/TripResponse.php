@@ -20,11 +20,17 @@ class TripResponse extends ApiResponse
 	 * @param Trip $trip
 	 *
 	 * @return array
+	 * @throws \Exception
 	 */
 	public function transform(Trip $trip)
 	{
 
 		$user = User::where(['id' => $trip->carrier_id])->first();
+
+		if (!$user){
+			throw new \Exception("Carrier not found", 404);
+		}
+
 		$carrier = $user->carrier()->with('currentCity')->first();
 		$carrier->makeHidden('current_city');
 		$paymentType = $trip->paymentType()->first();
@@ -35,6 +41,7 @@ class TripResponse extends ApiResponse
 			'from_city' => $trip->fromCity()->first(),
 			'to_city' => $trip->destinationCity()->first(),
 			'carrier' => $carrier,
+			'departure_date' => $trip->departure_date,
 			'created_at' => $trip->created_at,
 			'updated_at' => $trip->updated_at,
 		];
