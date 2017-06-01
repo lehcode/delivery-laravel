@@ -8,6 +8,7 @@
 namespace App\Models\User;
 
 use App\Extensions\ProfileAttributeTrait;
+use App\Models\City;
 use App\Models\User;
 use App\Models\Order;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -17,18 +18,21 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Watson\Validating\ValidatingInterface;
+use Watson\Validating\ValidatingTrait;
 
 /**
  * Class Customer
  * @package App\Models\User
  */
-class Customer extends Model implements HasMediaConversions, AuditableInterface
+class Customer extends Model implements HasMediaConversions, AuditableInterface, ValidatingInterface
 {
 	use AuditableTrait,
 		SoftDeletes,
 		HasMediaTrait,
 		ProfileAttributeTrait,
-		LaratrustUserTrait;
+		LaratrustUserTrait,
+		ValidatingTrait;
 
 	/**
 	 * @var string
@@ -38,7 +42,18 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['id', 'name', 'is_activated'];
+	protected $fillable = [
+		'id',
+		'name',
+		'is_activated',
+		'current_city',
+		'card_name',
+		'card_type',
+		'card_number',
+		'card_expiry',
+		'card_cvc',
+	];
+
 	/**
 	 * @var array
 	 */
@@ -49,14 +64,38 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 	protected $auditableEvents = ['deleted', 'updated', 'restored'];
 
 	/**
+	 * @var array
+	 */
+	protected $auditInclude = [
+		'name',
+		'is_activated',
+		'current_city',
+		'card_name',
+		'card_type',
+		'card_number',
+		'card_expiry',
+		'card_cvc',
+	];
+
+	/**
 	 * @var bool
 	 */
 	public $incrementing = false;
 
 	/**
+	 * Model validation rules
+	 *
 	 * @var array
 	 */
 	protected $rules = [
+		'name' => 'required|string|min:3',
+		'notes' => 'string',
+		'current_city' => 'required|integer',
+		'card_name' => 'required|string',
+		'card_number' => 'required|ccn',
+		'card_expiry' => 'required|date',
+		'card_vc' => 'required|cvc',
+		'card_type' => 'required|in:Visa,MasterCard',
 		User::PROFILE_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
 	];
 
@@ -67,6 +106,30 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface
 	{
 		$this->addMediaConversion('fitted')
 			->fit(Manipulations::FIT_CROP, 400, 400);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function currentCity()
+	{
+		return $this->belongsTo(City::class, 'current_city');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function user()
+	{
+		return $this->belongsTo(User::class, 'id');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function orders()
+	{
+		return $this->hasMany(Order::class, 'customer_id');
 	}
 
 }

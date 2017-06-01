@@ -22,9 +22,19 @@ class CreateCustomersTable extends Migration
 			$table->foreign('id')->references('id')->on('users')
 				->onDelete('restrict')->onUpdate('restrict');
 
+			$table->unsignedInteger('current_city');
+			$table->foreign('current_city')->references('id')->on('cities')
+				->onDelete('restrict')->onUpdate('restrict');
+
 			$table->string('name');
 			$table->text('notes')->nullable();
-			
+
+			$table->string('card_name')->nullable();
+			$table->enum('card_type', ['Visa', 'MasterCard'])->nullable();
+			$table->string('card_number', 16)->nullable();
+			$table->date('card_expiry')->nullable();
+			$table->string('card_cvc', 3)->nullable();
+
 			$table->timestamps();
 			$table->softDeletes();
 		});
