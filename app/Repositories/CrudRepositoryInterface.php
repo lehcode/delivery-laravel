@@ -7,6 +7,7 @@
 
 namespace App\Repositories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -53,4 +54,11 @@ interface CrudRepositoryInterface
      * @return Builder
      */
     public function getBuilder();
+
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function store(array $data);
 }

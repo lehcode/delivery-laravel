@@ -8,9 +8,11 @@
 
 namespace App\Repositories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class CrudRepository
@@ -22,6 +24,11 @@ class CrudRepository implements CrudRepositoryInterface
      * @var mixed
      */
     protected $model = null;
+
+    /**
+     * @var null
+     */
+    protected $user = null;
 
     /**
      * @param int $id
@@ -83,4 +90,17 @@ class CrudRepository implements CrudRepositoryInterface
         $m = $this->model;
         return $m::select();
     }
+
+	/**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function store(array $data)
+    {
+        $m = $this->model;
+        return $m::create($data);
+    }
+
+
 }
