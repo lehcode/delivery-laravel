@@ -68,9 +68,9 @@ class UserDetailedResponse extends TransformerAbstract
 				$data = [
 					'is_enabled' => $user->is_enabled,
 					'name' => $user->name,
-					'picture' => !is_null($user->profile->getFirstMedia(User::PROFILE_IMAGE))
-						? $user->profile->getFirstMedia(User::PROFILE_IMAGE)->getFullUrl('fitted')
-						: null
+//					'picture' => !is_null($user->profile->getFirstMedia(User::PROFILE_IMAGE))
+//						? $user->profile->getFirstMedia(User::PROFILE_IMAGE)->getFullUrl('fitted')
+//						: null
 				];
 
 				break;
@@ -82,9 +82,9 @@ class UserDetailedResponse extends TransformerAbstract
 					'is_online' => $profile->is_online == User\Carrier::STATUS_ONLINE,
 					'name' => $user->name,
 					'notes' => $profile->notes,
-					'picture' => !is_null($profile->getFirstMedia(User::PROFILE_IMAGE))
-						? $profile->getFirstMedia(User::PROFILE_IMAGE)->getFullUrl('fitted')
-						: null,
+//					'picture' => !is_null($profile->getFirstMedia(User::PROFILE_IMAGE))
+//						? $profile->getFirstMedia(User::PROFILE_IMAGE)->getFullUrl('fitted')
+//						: null,
 				];
 
 				if ($this->includeDetails == true) {
