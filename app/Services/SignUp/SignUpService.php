@@ -7,11 +7,7 @@
 
 namespace App\Services\SignUp;
 
-use App\Models\ProfileCustomer;
-use App\Models\ProfileDriver;
 use App\Models\User;
-use App\Models\User\Customer;
-use App\Models\User\Role;
 use App\Models\UserSignupRequest;
 use App\Repositories\User\UserRepositoryInterface;
 use App\Services\UserService\UserServiceInterface;
@@ -68,7 +64,7 @@ class SignUpService implements SignUpServiceInterface
 			$role = Role::where(['name' => 'customer'])->first();
 			$user->attachRole($role)->save();
 
-			Customer::create(array_merge([ 'id' => $user->id ], $entityCustomerProfile));
+			User\Customer::create(array_merge([ 'id' => $user->id ], $entityCustomerProfile));
 
 			if (isset($params['picture']) && $params['picture'] instanceof UploadedFile) {
 				/** @var UploadedFile $picture */
@@ -115,18 +111,16 @@ class SignUpService implements SignUpServiceInterface
 	public function carrier(array $params)
 	{
 		$entityUser = array_only($params, app()->make(User::class)->getFillable());
+		$entityUser['type'] = User::ROLE_CARRIER;
+		$entityUser['is_enabled'] = true;
+
 		$entityProfile = array_only($params, app()->make(User\Carrier::class)->getFillable());
 		$entityProfile['is_online'] = false;
 
-		$entityUser = array_merge($entityUser, [
-			'type' => User::ROLE_CARRIER,
-			'is_enabled' => true
-		]);
-
-		return DB::transaction(function () use ($entityUser, $entityProfile, $params) {
+		return DB::transaction(function () use ($entityProfile, $params, $entityUser) {
 
 			$user = User::create($entityUser);
-			$role = Role::where(['name' => 'carrier'])->first();
+			$role = User\Role::where(['name' => 'carrier'])->first();
 			$user->attachRole($role)->save();
 
 			if (isset($params['is_online']) && $params['is_online'] == true) {
@@ -137,7 +131,7 @@ class SignUpService implements SignUpServiceInterface
 
 			$data = array_merge([ 'id' => $user->id ], $entityProfile);
 
-			$created = User\Carrier::create($data);
+			User\Carrier::create($data);
 
 			foreach ([User::PROFILE_IMAGE, User\Carrier::ID_IMAGE] as $mediaName) {
 				if (isset($params[$mediaName]) && $params[$mediaName] instanceof UploadedFile) {
