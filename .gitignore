@@ -20,3 +20,4 @@ storage/
 !storage/framework/cache/.gitkeep
 !storage/framework/sessions/.gitkeep
 !storage/framework/views/.gitkeep
+.gitmodules
