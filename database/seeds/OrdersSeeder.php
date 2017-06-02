@@ -39,6 +39,10 @@ class OrdersSeeder extends Seeder
 			]);
 			$customer = $u->customer()->first();
 
+			if (!$customer){
+				throw new \Exception("Customer not found!", 1);
+			}
+
 			$data = [
 				'customer_id' => $customer->id,
 				'trip_id' => $trip->id,
@@ -49,10 +53,12 @@ class OrdersSeeder extends Seeder
 
 			$order = factory(Order::class)->create($data);
 
-			if (!is_null($order->validationErrors)) {
-				foreach ($order->validationErrors as $error) {
-					foreach ($error->messages as $param => $message) {
-						throw new \Exception($message);
+			if (!is_null($order->validationErrors) && !empty($order->validationErrors)) {
+				foreach ($order->validationErrors['messages'] as $messages) {
+					foreach ($messages as $column => $errors) {
+						foreach ($errors as $error) {
+							throw new \Exception($column.': '.$error, 1);
+						}
 					}
 				}
 			}

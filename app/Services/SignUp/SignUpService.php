@@ -68,9 +68,7 @@ class SignUpService implements SignUpServiceInterface
 			$role = Role::where(['name' => 'customer'])->first();
 			$user->attachRole($role)->save();
 
-			Customer::create(array_merge([
-				'user_id' => $user->id
-			], $entityCustomerProfile));
+			Customer::create(array_merge([ 'id' => $user->id ], $entityCustomerProfile));
 
 			if (isset($params['picture']) && $params['picture'] instanceof UploadedFile) {
 				/** @var UploadedFile $picture */
@@ -137,7 +135,9 @@ class SignUpService implements SignUpServiceInterface
 				$entityProfile['is_online'] = false;
 			}
 
-			User\Carrier::create(array_merge(['user_id' => $user->id], $entityProfile));
+			$data = array_merge([ 'id' => $user->id ], $entityProfile);
+
+			$created = User\Carrier::create($data);
 
 			foreach ([User::PROFILE_IMAGE, User\Carrier::ID_IMAGE] as $mediaName) {
 				if (isset($params[$mediaName]) && $params[$mediaName] instanceof UploadedFile) {

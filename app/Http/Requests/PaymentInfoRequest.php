@@ -22,7 +22,7 @@ class PaymentInfoRequest extends ApiRequest
 			'card_name' => 'required|string',
 			'card_number' => 'required|ccn',
 			'card_expiry' => 'required|ccd',
-			'card_vc' => 'required|cvc',
+			'card_cvc' => 'required|cvc',
 		];
 	}
 }

@@ -14,17 +14,17 @@ use App\Models\City;
 class SetupAclTablesSeed extends Seeder
 {
 
-	var $pwd = 'Qrab17';
+	public $pwd = 'Qrab17';
 
-	var $usersAmt = [
+	public $usersAmt = [
 		'admin' => 1,
 		'customer' => 6,
 		'carrier' => 6,
 	];
 
-	var $phoneSfx = 0;
+	public $phoneSfx = 0;
 
-	var $cardTypes = ['Visa', 'MasterCard'];
+	public $cardTypes = ['Visa', 'MasterCard'];
 
 	/**
 	 * Run the database seeds.
@@ -117,17 +117,22 @@ class SetupAclTablesSeed extends Seeder
 
 							switch ($key) {
 								case 'customer':
-									$cardType = $faker->randomElement($this->cardTypes);
-									User\Customer::create(array_merge(['id' => $user->id, 'name' => $user->name],
-										[
-											'notes' => $faker->text(128),
-											'current_city' => $cities->random()->id,
-											'card_number' => $faker->creditCardNumber($cardType),
-											'card_type' => $cardType,
-											'card_name' => $user->name,
-											'card_expiry' => $faker->creditCardExpirationDate,
-											'card_cvc' => $faker->randomNumber(3),
-										]));
+									$customer = factory(User\Customer::class)->create([
+									'id' => $user->id,
+									'name' => $user->name,
+									'card_name' => $user->name,
+								]);
+
+									if (!is_null($customer->validationErrors) && !empty($customer->validationErrors)) {
+										foreach ($customer->validationErrors['messages'] as $messages) {
+											foreach ($messages as $column => $errors) {
+												foreach ($errors as $error) {
+													throw new \Exception($column.': '.$error, 1);
+												}
+											}
+										}
+									}
+//							
 									break;
 
 								case 'carrier':
@@ -141,10 +146,9 @@ class SetupAclTablesSeed extends Seeder
 							}
 
 
-						} catch (ValidationException $e) {
+						} catch (\Exception $e) {
 							var_dump($user->toArray());
-							print_r($e->getErrors());
-							die();
+							throw $e;
 						}
 					});
 			}

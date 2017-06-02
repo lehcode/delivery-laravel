@@ -22,7 +22,7 @@ class CreateCustomersTable extends Migration
 			$table->foreign('id')->references('id')->on('users')
 				->onDelete('restrict')->onUpdate('restrict');
 
-			$table->unsignedInteger('current_city');
+			$table->unsignedInteger('current_city')->nullable()->index();
 			$table->foreign('current_city')->references('id')->on('cities')
 				->onDelete('restrict')->onUpdate('restrict');
 

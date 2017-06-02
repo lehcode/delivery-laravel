@@ -90,12 +90,12 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 	protected $rules = [
 		'name' => 'required|string|min:3',
 		'notes' => 'string',
-		'current_city' => 'required|integer',
-		'card_name' => 'required|string',
-		'card_number' => 'required|ccn',
-		'card_expiry' => 'required|date',
-		'card_vc' => 'required|cvc',
-		'card_type' => 'required|in:Visa,MasterCard',
+		'current_city' => 'integer',
+		'card_name' => 'string',
+		'card_number' => 'ccn',
+		'card_expiry' => 'date',
+		'card_cvc' => 'cvc',
+		'card_type' => 'in:Visa,MasterCard',
 		User::PROFILE_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
 	];
 

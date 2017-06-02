@@ -7,19 +7,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SignUpCustomerRequest;
+use App\Http\Requests\SignupCustomerRequest;
 use App\Http\Responses\TripDetailsResponse;
 use App\Http\Responses\UserDetailedResponse;
 use App\Repositories\User\UserRepositoryInterface;
-use App\Services\Responder\ResponderServiceInterface;
-use App\Services\SignUp\SignUpServiceInterface;
-use App\Services\Trip\TripServiceInterface;
-use App\Services\UserService\UserServiceInterface;
+use App\Services\Responder\ResponderService;
+use App\Services\SignUp\SignUpService;
+use App\Services\Trip\TripService;
+use App\Services\UserService\UserService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\Request;
 
 /**
  * Class CustomerController
@@ -30,7 +29,7 @@ class CustomerController extends BaseController
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
 	/**
-	 * @var SignUpServiceInterface
+	 * @var SignUpService
 	 */
 	protected $signupService;
 
@@ -57,37 +56,33 @@ class CustomerController extends BaseController
 	/**
 	 * CustomerController constructor.
 	 *
-	 * @param SignUpServiceInterface    $signUpServiceInterface
-	 * @param ResponderServiceInterface $responderServiceInterface
-	 * @param UserServiceInterface      $userServiceInterface
-	 * @param UserRepositoryInterface   $userRepositoryInterface
-	 * @param TripServiceInterface      $tripServiceInterface
+	 * @param SignUpService   $signUpService
+	 * @param ResponderService $responderService
+	 * @param UserService      $userService
+	 * @param TripService      $tripService
 	 */
 	public function __construct(
-		SignUpServiceInterface $signUpServiceInterface,
-		ResponderServiceInterface $responderServiceInterface,
-		UserServiceInterface $userServiceInterface,
-		UserRepositoryInterface $userRepositoryInterface,
-		TripServiceInterface $tripServiceInterface
+		SignupService $signUpService,
+		ResponderService $responderService,
+		UserService $userService,
+		TripService $tripService
 	) {
-	
-		$this->userService = $userServiceInterface;
-		$this->signupService = $signUpServiceInterface;
-		$this->responderService = $responderServiceInterface;
-		$this->userRepository = $userRepositoryInterface;
-		$this->tripService = $tripServiceInterface;
+		$this->signupService = $signUpService;
+		$this->responderService = $responderService;
+		$this->userService = $userService;
+		$this->tripService = $tripService;
 	}
 
 	/**
-	 * @param Request $request
+	 * @param SignUpCustomerRequest $request
 	 *
-	 * @return mixed
+	 * @return \Illuminate\Http\JsonResponse
 	 * @throws ValidationException
 	 */
-	public function create(Request $request)
+	public function create(SignupCustomerRequest $request)
 	{
 		try {
-			$params = $request->all();
+			$params = $request->except('XDEBUG_SESSION_START');
 			$user = $this->signupService->customer($params);
 			return $this->responderService->fractal($user, UserDetailedResponse::class, 0, [false, true]);
 		} catch (ValidationException $e) {

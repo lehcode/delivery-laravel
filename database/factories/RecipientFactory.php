@@ -1,21 +1,16 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| Here you may define all of your model factories. Model factories give
-| you a convenient way to create models for testing and seeding your
-| database. Just tell the factory how a default model should look.
-|
-*/
-
 use Jenssegers\Date\Date;
 use App\Models\Recipient;
 use Webpatser\Uuid\Uuid;
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+/**
+ * Created by Antony Repin
+ * Date: 02.06.2017
+ * Time: 16:46
+ *
+ * @var \Illuminate\Database\Eloquent\Factory $factory
+ */
 $factory->define(Recipient::class, function (Faker\Generator $faker) {
 
 	return [
