@@ -7,14 +7,14 @@
 
 namespace App\Services\Shipment;
 
-use App\Models\Shipment;
-use App\Repositories\Shipment\ShipmentRepository;
+use App\Models\ShipmentCategory;
+use App\Models\Trip;
 
 /**
- * Class CustomerService
- * @package App\Services\Customer
+ * Class ShipmentService
+ * @package App\Services\Shipment
  */
-class ShipmentService
+class ShipmentService implements ShipmentServiceInterface
 {
 	/**
 	 * @return mixed
@@ -22,5 +22,12 @@ class ShipmentService
 	public function getTrips()
 	{
 		return Trip::all();
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Collection|static[]
+	 */
+	public function getCategories(){
+		return ShipmentCategory::all();
 	}
 }

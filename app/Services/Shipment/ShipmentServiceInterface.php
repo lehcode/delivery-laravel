@@ -8,6 +8,10 @@
 
 namespace App\Services\Shipment;
 
+/**
+ * Interface ShipmentServiceInterface
+ * @package App\Services\Shipment
+ */
 interface ShipmentServiceInterface
 {
 
