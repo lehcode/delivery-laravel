@@ -198,6 +198,7 @@ return [
 		Barryvdh\Debugbar\ServiceProvider::class,
 		Way\Generators\GeneratorsServiceProvider::class,
 		Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
+		L5Swagger\L5SwaggerServiceProvider::class
 	] : [])),
 
 	/*
