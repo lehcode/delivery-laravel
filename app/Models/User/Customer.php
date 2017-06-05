@@ -90,7 +90,7 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 	protected $rules = [
 		'name' => 'required|string|min:3',
 		'notes' => 'string',
-		'current_city' => 'integer',
+		'current_city' => 'integer|exists:cities,id',
 		'card_name' => 'string',
 		'card_number' => 'ccn',
 		'card_expiry' => 'date',

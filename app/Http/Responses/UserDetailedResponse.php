@@ -70,11 +70,11 @@ class UserDetailedResponse extends TransformerAbstract
 
 		switch ($role->name) {
 			case User::ROLE_ADMIN:
-				$data = [];
 				break;
 
 			case User::ROLE_CUSTOMER:
 				$data = [
+					'current_city' => $user->customer()->first()->currentCity()->first(),
 					'is_enabled' => $user->is_enabled,
 					'name' => $user->name,
 //					'picture' => !is_null($user->profile->getFirstMedia(User::PROFILE_IMAGE))
@@ -87,6 +87,7 @@ class UserDetailedResponse extends TransformerAbstract
 			case User::ROLE_CARRIER:
 				$profile = $user->profile;
 				$data = [
+					'current_city' => $user->carrier()->first()->currentCity()->first(),
 					'is_enabled' => $user->is_enabled,
 					'is_online' => $profile->is_online == User\Carrier::STATUS_ONLINE,
 					'name' => $user->name,
