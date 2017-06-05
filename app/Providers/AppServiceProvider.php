@@ -6,6 +6,8 @@ use App\Repositories\Order\OrderRepository;
 use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\Payment\PaymentRepository;
 use App\Repositories\Payment\PaymentRepositoryInterface;
+use App\Repositories\Shipment\ShipmentRepository;
+use App\Repositories\Shipment\ShipmentRepositoryInterface;
 use App\Repositories\Trip\TripRepository;
 use App\Repositories\Trip\TripRepositoryInterface;
 use App\Repositories\UserSignupRequest\UserSignupRepository;
