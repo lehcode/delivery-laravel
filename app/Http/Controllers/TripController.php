@@ -12,9 +12,6 @@ use App\Http\Responses\TripResponse;
 use App\Services\Responder\ResponderService;
 use App\Services\Responder\ResponderServiceInterface;
 use App\Services\Trip\TripService;
-use App\Services\Trip\TripServiceInterface;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
