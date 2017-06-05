@@ -22,3 +22,4 @@ storage/
 !storage/framework/views/.gitkeep
 .gitmodules
 public/vendor/
+app/app-spec.php
