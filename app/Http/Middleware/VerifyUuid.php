@@ -8,9 +8,8 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\MultipleExceptions;
+use App\Models\Trip;
 use App\Models\User;
-use App\Repositories\Trip\TripRepository;
-use App\Repositories\User\UserRepository;
 use Illuminate\Http\Request;
 
 /**
@@ -29,19 +28,19 @@ class VerifyUuid
 	public function handle(Request $request, \Closure $next) {
 
 		if ($uuid = $request->get('carrier_id')){
-			if (!UserRepository::find($uuid)){
+			if (!User::find($uuid)){
 				throw new MultipleExceptions("Carrier not found", 400);
 			}
 		}
 
 		if ($uuid = $request->get('customer_id')){
-			if (!UserRepository::find($uuid)){
+			if (!User::find($uuid)){
 				throw new MultipleExceptions("Customer not found", 400);
 			}
 		}
 
 		if ($uuid = $request->get('trip_id')){
-			if (!TripRepository::find($uuid)){
+			if (!Trip::find($uuid)){
 				throw new MultipleExceptions("Trip not found", 400);
 			}
 		}
