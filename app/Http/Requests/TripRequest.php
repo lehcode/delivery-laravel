@@ -20,10 +20,10 @@ class TripRequest extends ApiRequest
 	public function rules()
 	{
 		return [
-			'payment_type_id' => 'required|integer',
-			'carrier_id' => 'required|string',
-			'from_city_id' => 'required|integer',
-			'to_city_id' => 'required|integer',
+			'payment_type_id' => 'required|integer|exists:payment_types,id',
+			'carrier_id' => 'required|string|exists:carriers,id',
+			'from_city_id' => 'required|integer|exists:cities,id',
+			'to_city_id' => 'required|integer|exists:cities,id',
 			'departure_date' => 'required|date'
 		];
 	}

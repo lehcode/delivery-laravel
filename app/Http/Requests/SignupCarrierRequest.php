@@ -1,26 +1,28 @@
 <?php
-
-namespace App\Http\Requests;
-
 /**
  * Created by Antony Repin
  * Date: 02.06.2017
  * Time: 18:41
+ */
+
+namespace App\Http\Requests;
+
+/**
  *
  * Class SignupCustomerRequest
  * @package App\Http\Requests
  *
  * @SWG\Definition(
- *     definition="customerRegistrationRequest",
+ *     definition="carrierRegistrationRequest",
  *     required={"name", "email", "phone", "password", "password_confirmation"},
- *     @SWG\Property(property="name", type="string", description="User full name", example="Customer John Doe"),
- *     @SWG\Property(property="email", type="string", description="User registration email", example="new.customer@example.com"),
- *     @SWG\Property(property="phone", type="string", description="User mobile number with country prefix", example="+375291234561"),
+ *     @SWG\Property(property="name", type="string", description="User full name", example="Carrier John Doe"),
+ *     @SWG\Property(property="email", type="string", description="User registration email", example="new.carrier@email.com"),
+ *     @SWG\Property(property="phone", type="string", description="User mobile number with country prefix", example="+375291234581"),
  *     @SWG\Property(property="password", type="string", description="User defined password", example="SomePassword"),
  *     @SWG\Property(property="password_confirmation", type="string", description="User password confirmation", example="SomePassword")
  * )
  */
-class SignupCustomerRequest extends ApiRequest
+class SignupCarrierRequest extends ApiRequest
 {
 	/**
 	 * @return array

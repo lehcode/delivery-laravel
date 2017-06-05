@@ -7,10 +7,15 @@
 
 namespace App\Http\Requests;
 
+/**
+ * Class EditUserProfileRequest
+ * @package App\Http\Requests
+ */
 class EditUserProfileRequest extends ApiRequest
 {
 	/**
 	 * @return array
+	 *
 	 */
 	public function rules()
 	{
