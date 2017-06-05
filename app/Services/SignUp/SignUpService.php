@@ -53,7 +53,7 @@ class SignUpService implements SignUpServiceInterface
 	{
 
 		$entityUser = array_only($params, app()->make(User::class)->getFillable());
-		$entityCustomerProfile = array_only($params, app()->make(Customer::class)->getFillable());
+		$entityCustomerProfile = array_only($params, app()->make(User\Customer::class)->getFillable());
 
 		$entityUser['type'] = User::ROLE_CUSTOMER;
 		$entityUser['is_enabled'] = true;
@@ -61,7 +61,7 @@ class SignUpService implements SignUpServiceInterface
 		return DB::transaction(function () use ($entityUser, $entityCustomerProfile, $params) {
 
 			$user = User::create($entityUser);
-			$role = Role::where(['name' => 'customer'])->first();
+			$role = User\Role::where(['name' => 'customer'])->first();
 			$user->attachRole($role)->save();
 
 			User\Customer::create(array_merge([ 'id' => $user->id ], $entityCustomerProfile));
