@@ -21,3 +21,4 @@ storage/
 !storage/framework/sessions/.gitkeep
 !storage/framework/views/.gitkeep
 .gitmodules
+public/vendor/
