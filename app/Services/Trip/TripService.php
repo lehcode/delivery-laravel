@@ -7,6 +7,7 @@
 
 namespace App\Services\Trip;
 
+use App\Exceptions\MultipleExceptions;
 use App\Http\Responses\TripResponse;
 use App\Models\Trip;
 use App\Models\User;
@@ -15,6 +16,7 @@ use App\Repositories\Trip\TripRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Services\BaseServiceInterface;
+use Jenssegers\Date\Date;
 
 /**
  * Class TripService
@@ -50,11 +52,17 @@ class TripService implements TripServiceInterface
 	 * @param array $tripData
 	 *
 	 * @return mixed
+	 * @throws MultipleExceptions
 	 */
 	public function create(array $tripData)
 	{
 
+		$now = Date::now();
+		$dd = Date::createFromFormat('Y-m-d H:i:s', $tripData['departure_date']);
 
+		if ($dd->lte($now)){
+			throw new MultipleExceptions("Trip departure date must be in the future", 400);
+		}
 
 		return DB::transaction(function () use ($tripData) {
 			$trip = Trip::create($tripData);
@@ -88,13 +96,20 @@ class TripService implements TripServiceInterface
 	}
 
 	/**
-	 * @param int $id
+	 * @param $id
 	 *
-	 * @return Trip
+	 * @return $this|bool
+	 * @throws MultipleExceptions
 	 */
 	public function item($id)
 	{
-		return $this->tripRepository->find($id);
+		$item = $this->tripRepository->find($id);
+
+		if (!$item){
+			throw new MultipleExceptions("Trip not found", 400);
+		}
+
+		return $item;
 	}
 
 	/**
