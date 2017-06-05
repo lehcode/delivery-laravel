@@ -56,17 +56,18 @@ class CustomerController extends BaseController
 	/**
 	 * CustomerController constructor.
 	 *
-	 * @param SignUpService   $signUpService
+	 * @param SignUpService    $signUpService
 	 * @param ResponderService $responderService
 	 * @param UserService      $userService
 	 * @param TripService      $tripService
 	 */
 	public function __construct(
-		SignupService $signUpService,
+		SignUpService $signUpService,
 		ResponderService $responderService,
 		UserService $userService,
 		TripService $tripService
-	) {
+	)
+	{
 		$this->signupService = $signUpService;
 		$this->responderService = $responderService;
 		$this->userService = $userService;
@@ -78,6 +79,33 @@ class CustomerController extends BaseController
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws ValidationException
+	 *
+	 * @SWG\Post(
+	 *     path="/customer/v1/user/create",
+	 *     summary="Create new user account",
+	 *     tags={"Register & Login"},
+	 *     operationId="POST_customer-v1-user-create",
+	 *
+	 *     @SWG\Schema(
+	 *      @SWG\Parameter(ref="#/parameters/userName"),
+	 *      @SWG\Parameter(ref="#/parameters/userEmail"),
+	 *      @SWG\Parameter(ref="#/parameters/userPhone"),
+	 *      @SWG\Parameter(ref="#/parameters/userPassword"),
+	 *      @SWG\Parameter(ref="#/parameters/userPasswordConfirmation"),
+	 *      @SWG\Parameter(ref="#/parameters/userProfileImage")
+	 *     ),
+	 *
+	 *     @SWG\Response(
+	 *      response="200",
+	 *      description="success",
+	 *      @SWG\Schema(ref="#/definitions/userDetailedResponse"),
+	 *     ),
+	 *     @SWG\Response(
+	 *      response="default",
+	 *      description="General error",
+	 *      @SWG\Schema(ref="#/definitions/errorResponse"),
+	 *   )
+	 * )
 	 */
 	public function create(SignupCustomerRequest $request)
 	{
