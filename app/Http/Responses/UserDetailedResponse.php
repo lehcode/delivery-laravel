@@ -19,6 +19,15 @@ use JWTAuth;
 /**
  * Class UserDetailedResponse
  * @package App\Http\Responses
+ *
+ * @SWG\Response(
+ *     response="userDetailedResponse",
+ *     description="User profile",
+ *     @SWG\Schema(
+ *      @SWG\Property(property="status", ref="#/definitions/textStatusProperty"),
+ *      @SWG\Property(property="data", type="object", description="User data")
+ *      )
+ * )
  */
 class UserDetailedResponse extends TransformerAbstract
 {
