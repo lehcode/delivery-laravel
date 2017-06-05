@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['middleware' => 'api'], function () {
+Route::group(['middleware' => 'api', 'api.host'], function () {
 
-	Route::group(['middleware' => 'maintenance'], function () {
+	Route::group(['middleware' => ['maintenance']], function () {
 		/*
 		 * Common role-depending routes
 		 */
@@ -100,12 +100,10 @@ Route::group(['middleware' => 'api'], function () {
 				});
 
 				Route::group(['prefix' => 'trip'], function () {
-					//Route::get('my-trips', ['uses' => 'CarrierController@getUserTrips']);
+					Route::get('my', ['uses' => 'CarrierController@getUserTrips']);
 					Route::get('active-trips', ['uses' => 'CarrierController@getActiveTrips']);
-
-					Route::get('all', ['uses' => 'TripController@all']);
-					Route::get('{trip_id}', ['uses' => 'TripController@get']);
-					Route::post('create', ['uses' => 'TripController@create']);
+					Route::get('{trip_id}', ['middleware'=>'api.uuid', 'uses' => 'TripController@get']);
+					Route::post('create', ['middleware'=>'api.uuid', 'uses' => 'TripController@create']);
 				});
 
 				Route::group(['prefix' => 'order'], function () {
