@@ -64,11 +64,11 @@ class Trip extends Model implements AuditableInterface
 	 * @var array
 	 */
 	protected $rules = [
-		'payment_type_id' => 'required',
-		'carrier_id' => 'required',
-		'from_city_id' => 'required',
-		'to_city_id' => 'required',
-		'departure_date' => 'required|date',
+		'payment_type_id' => 'required|integer|exists:payment_types,id',
+		'carrier_id' => 'required|string|exists:carriers,id',
+		'from_city_id' => 'required|integer|exists:cities,id',
+		'to_city_id' => 'required|integer|exists:cities,id',
+		'departure_date' => 'required|date'
 	];
 
 	/**
