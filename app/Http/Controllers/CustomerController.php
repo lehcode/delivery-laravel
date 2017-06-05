@@ -16,7 +16,6 @@ use App\Services\SignUp\SignUpService;
 use App\Services\Trip\TripService;
 use App\Services\UserService\UserService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -24,7 +23,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
  * Class CustomerController
  * @package App\Http\Controllers\Customer
  */
-class CustomerController extends BaseController
+class CustomerController extends Controller
 {
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
@@ -94,7 +93,6 @@ class CustomerController extends BaseController
 	 *      @SWG\Parameter(ref="#/parameters/userPasswordConfirmation"),
 	 *      @SWG\Parameter(ref="#/parameters/userProfileImage")
 	 *     ),
-	 *
 	 *     @SWG\Response(
 	 *      response="200",
 	 *      description="success",
@@ -109,15 +107,8 @@ class CustomerController extends BaseController
 	 */
 	public function create(SignupCustomerRequest $request)
 	{
-		try {
-			$params = $request->except('XDEBUG_SESSION_START');
-			$user = $this->signupService->customer($params);
-			return $this->responderService->fractal($user, UserDetailedResponse::class, 0, [false, true]);
-		} catch (ValidationException $e) {
-			throw $e;
-		} catch (\Exception $e) {
-			return $this->responderService->errorResponse($e);
-		}
+		$params = $request->except(['XDEBUG_SESSION_START']);
+		return $this->responderService->fractal($this->signupService->customer($params), UserDetailedResponse::class, 0, [false, true]);
 
 	}
 

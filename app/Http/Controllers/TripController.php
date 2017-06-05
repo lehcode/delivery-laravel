@@ -10,25 +10,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TripRequest;
 use App\Http\Responses\TripResponse;
 use App\Services\Responder\ResponderService;
-use App\Services\Responder\ResponderServiceInterface;
 use App\Services\Trip\TripService;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Class TripController
  * @package App\Http\Controllers
  */
-class TripController
+class TripController extends Controller
 {
 	/**
-	 * @var
+	 * @var TripService
 	 */
 	protected $tripService;
-
-	/**
-	 * @var ResponderServiceInterface
-	 */
-	protected $responderService;
 
 	/**
 	 * TripController constructor.
@@ -79,14 +72,8 @@ class TripController
 	 */
 	public function create(TripRequest $request)
 	{
-		try {
-			$params = $request->all();
-			$trip = $this->tripService->create($params);
-			return $this->responderService->fractal($trip, TripResponse::class);
-		} catch (ValidationException $e) {
-			throw $e;
-		} catch (\Exception $e) {
-			return $this->responderService->errorResponse($e);
-		}
+		$params = $request->except(['XDEBUG_SESSION_START']);
+		$trip = $this->tripService->create($params);
+		return $this->responderService->fractal($trip, TripResponse::class);
 	}
 }
