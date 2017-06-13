@@ -6207,7 +6207,8 @@
 								"$ref": "AAAAAAFbGj4i9KIRPro="
 							},
 							"name": "customer_id",
-							"length": 0,
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": false,
 							"foreignKey": true,
 							"referenceTo": {
@@ -6223,7 +6224,8 @@
 								"$ref": "AAAAAAFbGj4i9KIRPro="
 							},
 							"name": "shipment_id",
-							"length": 0,
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": false,
 							"foreignKey": true,
 							"referenceTo": {
@@ -6238,8 +6240,9 @@
 							"_parent": {
 								"$ref": "AAAAAAFbGj4i9KIRPro="
 							},
-							"name": "trip",
-							"length": 0,
+							"name": "trip_id",
+							"type": "CHAR",
+							"length": "36",
 							"primaryKey": false,
 							"foreignKey": true,
 							"referenceTo": {

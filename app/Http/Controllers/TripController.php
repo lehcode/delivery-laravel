@@ -11,6 +11,8 @@ use App\Http\Requests\TripRequest;
 use App\Http\Responses\TripResponse;
 use App\Services\Responder\ResponderService;
 use App\Services\Trip\TripService;
+use Illuminate\Http\Request;
+use Jenssegers\Date\Date;
 
 /**
  * Class TripController
@@ -76,4 +78,23 @@ class TripController extends Controller
 		$trip = $this->tripService->create($params);
 		return $this->responderService->fractal($trip, TripResponse::class);
 	}
+
+	/**
+	 * @param Request $request
+	 * @param string $startDate
+	 * @param string $endDate
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function getByDate(Request $request, $startDate, $endDate)
+	{
+		$dates = [
+			'start'=> Date::createFromFormat('Y-m-d', $startDate),
+			'end'=> Date::createFromFormat('Y-m-d', $endDate),
+		];
+		return $this->responderService->objectResponse($this->tripService->getListByStartAndEnd($dates));
+	}
+
+	
 }

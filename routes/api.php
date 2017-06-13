@@ -72,9 +72,10 @@ Route::group(['middleware' => 'api', 'api.host'], function () {
 				Route::group(['prefix' => 'trip'], function () {
 					Route::get('all', ['uses' => 'TripController@fromCurrentCity']);
 					Route::get('{trip_id}', ['uses' => 'TripController@get']);
+					Route::get('find/start/{start_date}/end/{end_date}', ['uses' => 'TripController@getByDate']);
 				});
 
-				Route:: group(['prefix'=>'payment'], function(){
+				Route:: group(['prefix'=>'payment'], function () {
 					Route::post('create', ['uses'=>'PaymentController@createPayment']);
 				});
 			});
@@ -111,7 +112,7 @@ Route::group(['middleware' => 'api', 'api.host'], function () {
 					Route::get('{id}', ['uses' => 'OrderController@get']);
 				});
 
-				Route::group(['prefix'=>'payment'], function(){
+				Route::group(['prefix'=>'payment'], function () {
 					Route::get('types', ['uses' => 'PaymentController@types']);
 				});
 

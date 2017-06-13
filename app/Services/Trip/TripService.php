@@ -13,6 +13,7 @@ use App\Models\Trip;
 use App\Models\User;
 use App\Repositories\Trip\TripRepository;
 use App\Repositories\Trip\TripRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Services\BaseServiceInterface;
@@ -60,7 +61,7 @@ class TripService implements TripServiceInterface
 		$now = Date::now();
 		$dd = Date::createFromFormat('Y-m-d H:i:s', $tripData['departure_date']);
 
-		if ($dd->lte($now)){
+		if ($dd->lte($now)) {
 			throw new MultipleExceptions("Trip departure date must be in the future", 400);
 		}
 
@@ -105,7 +106,7 @@ class TripService implements TripServiceInterface
 	{
 		$item = $this->tripRepository->find($id);
 
-		if (!$item){
+		if (!$item) {
 			throw new MultipleExceptions("Trip not found", 400);
 		}
 
@@ -139,6 +140,34 @@ class TripService implements TripServiceInterface
 				$response = new TripResponse();
 				return $response->transform($item);
 			});
+
+		return $result;
+	}
+
+	/**
+	 * @param array $dates
+	 *
+	 * @return mixed
+	 */
+	public function getListByStartAndEnd(array $dates)
+	{
+
+		$result = Trip::where('departure_date', '>=', $dates['start'])
+			->where('departure_date', '<=', $dates['end'])
+			->get()
+			->map(function ($item) {
+				return $item->paymentType()->get();
+				//$item->payment_type = $item->paymentType()->get();
+				//return $item->makeHidden('payment_type_id');
+			})
+		;
+
+//		if (is_a($result, Collection::class) && $result->count()){
+//			$result->each(function($item){
+//				$item->payment_type
+//			});
+//		}
+
 
 		return $result;
 	}
