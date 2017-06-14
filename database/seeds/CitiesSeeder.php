@@ -5,6 +5,276 @@ use App\Models\City;
 
 class CitiesSeeder extends Seeder
 {
+
+	protected $cities = [
+		['name' => 'Abha', 'active' => true, 'country_id' => 195, 'geo' => [
+			'18.308140, 42.478371', '18.312051, 42.600594', '18.184889, 42.615014', '18.184237, 42.484551'
+		]],
+		['name' => 'Al-Gwei\'iyyah', 'active' => true, 'country_id' => 195, 'geo' => [
+			'24.089896, 45.263498', '24.091150, 45.313967', '24.065447, 45.319460', '24.058237, 45.270021'
+		]],
+		['name' => 'Al-Hareeq', 'active' => true, 'country_id' => 195, 'geo' => [
+			'23.630997, 46.496951', '23.631468, 46.529481', '23.612202, 46.529481', '23.612438, 46.500470'
+		]],
+		['name' => 'Al-Kharj', 'active' => true, 'country_id' => 195, 'geo' => [
+			'24.196932, 47.273020', '24.196932, 47.391466', '24.102636, 47.392839', '24.095114, 47.268557'
+		]],
+		['name' => 'Al-Mubarraz', 'active' => true, 'country_id' => 195, 'geo' => [
+			'25.447811, 49.503835', '25.452771, 49.594128', '25.397888, 49.596875', '25.391685, 49.513104'
+		]],
+		['name' => 'Al-Namas', 'active' => true, 'country_id' => 195, 'geo' => [
+			'19.167530, 42.116034', '19.168179, 42.187617', '19.070377, 42.199290', '19.064536, 42.119983'
+		]],
+		['name' => 'Al-`Ula', 'active' => true, 'country_id' => 195, 'geo' => [
+			'26.664287, 37.899955', '26.665821, 37.981322', '26.519381, 38.021148', '26.510472, 37.925017'
+		]],
+		['name' => 'Al Artaweeiyah', 'active' => true, 'country_id' => 195, 'geo' => [
+			'26.537642, 45.326650', '26.537950, 45.363643', '26.481266, 45.369995', '26.481420, 45.331113'
+		]],
+		['name' => 'Al Bahah', 'active' => true, 'country_id' => 195, 'geo' => [
+			'20.044897, 41.419615', '20.044413, 41.497206', '19.975055, 41.498065', '19.976184, 41.425623'
+		]],
+		['name' => 'Al Jafer', 'active' => true, 'country_id' => 195, 'geo' => [
+			'24.413507, 39.141841', '24.414015, 39.164028', '24.388299, 39.163513', '24.388064, 39.143858'
+		]],
+		['name' => 'Al Kharj', 'active' => true, 'country_id' => 195, 'geo' => [
+			'24.203821, 47.267527', '24.203821, 47.390779', '24.089473, 47.391123', '24.077562, 47.256540'
+		]],
+		['name' => 'Al Lith', 'active' => true, 'country_id' => 195, 'geo' => [
+			'20.161627, 40.257199', '20.164044, 40.283807', '20.107152, 40.288098', '20.125850, 40.263036'
+		]],
+		['name' => 'Al Majma\'ah', 'active' => true, 'country_id' => 195, 'geo' => [
+			'25.938281, 45.323279', '25.931488, 45.441382', '25.853656, 45.435546', '25.855510, 45.329459'
+		]],
+		['name' => 'Al Mawain', 'active' => true, 'country_id' => 195, 'geo' => [
+			'18.668240, 42.407505', '18.667264, 42.443554', '18.633759, 42.443383', '18.634735, 42.409136'
+		]],
+		['name' => 'Al Qunfudhah', 'active' => true, 'country_id' => 195, 'geo' => [
+			'19.155539, 41.068267', '19.156026, 41.097793', '19.120347, 41.101398', '19.121320, 41.073589'
+		]],
+		['name' => 'Ar Rass', 'active' => true, 'country_id' => 195, 'geo' => [
+			'25.920567, 43.415214', '25.924273, 43.647300', '25.742573, 43.645927', '25.730821, 43.427573'
+		]],
+		['name' => 'As Sulayyil', 'active' => true, 'country_id' => 195, 'geo' => [
+			'20.510932, 45.499532', '20.521864, 45.608366', '20.419582, 45.617292', '20.408642, 45.512922'
+		]],
+		['name' => 'Al Wajh', 'active' => true, 'country_id' => 195, 'geo' => [
+			'26.275083, 36.422509', '26.272928, 36.494778', '26.208877, 36.500271', '26.208723, 36.430405'
+		]],
+		['name' => 'Badr', 'active' => true, 'country_id' => 195, 'geo' => [
+			'23.809775, 38.729789', '23.810874, 38.801028', '23.748510, 38.801887', '23.742696, 38.727900'
+		]],
+		['name' => 'Baljurashi', 'active' => true, 'country_id' => 195, 'geo' => [
+			'19.881513, 41.535959', '19.883288, 41.597585', '19.831300, 41.600675', '19.828555, 41.549863'
+		]],
+		['name' => 'Bisha', 'active' => true, 'country_id' => 195, 'geo' => [
+			'20.062400, 42.535284', '20.059498, 42.666433', '19.877505, 42.671926', '19.887191, 42.530821'
+		]],
+		['name' => 'Bareg', 'active' => true, 'country_id' => 195, 'geo' => [
+			'18.949391, 41.899151', '18.951988, 41.965756', '18.905061, 41.970734', '18.905223, 41.898293'
+		]],
+		['name' => 'Buraydah', 'active' => true, 'country_id' => 195, 'geo' => [
+			'26.497038, 43.858186', '26.494580, 44.058000', '26.214629, 44.077226', '26.211548, 43.856126'
+		]],
+		['name' => 'Dammam', 'active' => true, 'country_id' => 195, 'geo' => [
+			'26.449981, 49.865444', '26.457973, 50.050839', '26.327577, 50.063885', '26.314653, 49.887417'
+		]],
+		['name' => 'Dhahran', 'active' => true, 'country_id' => 195, 'geo' => [
+			'26.370827, 50.096918', '26.368367, 50.177256', '26.236638, 50.180002', '26.235406, 50.103785'
+		]],
+		['name' => 'Dhurma', 'active' => true, 'country_id' => 195, 'geo' => [
+			'24.620694, 46.097515', '24.616325, 46.214588', '24.574806, 46.215961', '24.573869, 46.099231'
+		]],
+		['name' => 'Dahaban', 'active' => true, 'country_id' => 195, 'geo' => [
+			'21.974859, 38.942939', '21.981226, 39.150305', '21.858922, 39.146872', '21.861471, 38.973151'
+		]],
+		['name' => 'Diriyah', 'active' => true, 'country_id' => 195, 'geo' => [
+			'24.792737, 46.494698', '24.791335, 46.564908', '24.719783, 46.570572', '24.712922, 46.510148'
+		]],
+		['name' => 'Dumat Al-Jandal', 'active' => true, 'country_id' => 195, 'geo' => [
+			'29.832785, 39.829300', '29.832785, 39.917877', '29.776480, 39.919594', '29.774096, 39.837196'
+		]],
+		['name' => 'Dawadmi', 'active' => true, 'country_id' => 195, 'geo' => [
+			'24.537912, 44.350860', '24.541348, 44.464500', '24.462934, 44.475830', '24.454496, 44.356697'
+		]],
+		['name' => 'Farasan', 'active' => true, 'country_id' => 195, 'geo' => [
+			'16.709579, 42.104695', '16.710427, 42.125440', '16.692617, 42.125124', '16.691284, 42.107794'
+		]],
+		['name' => 'Gurayat', 'active' => true, 'country_id' => 195, 'geo' => [
+			'31.400916, 37.256697', '31.405311, 37.443808', '31.272770, 37.435224', '31.268661, 37.272833'
+		]],
+		['name' => 'Ha\'il', 'active' => true, 'country_id' => 195, 'geo' => [
+			'27.598239, 41.646673', '27.604932, 41.800481', '27.426503, 41.795675', '27.433207, 41.596547'
+		]],
+		['name' => 'Habala', 'active' => true, 'country_id' => 195, 'geo' => [
+			'18.044969, 42.839706', '18.046846, 42.873094', '18.021383, 42.874467', '18.016486, 42.840392'
+		]],
+		['name' => 'Hafar Al-Batin', 'active' => true, 'country_id' => 195, 'geo' => [
+			'28.461663, 45.885335', '28.464077, 46.069356', '28.331797, 46.065923', '28.329380, 45.901128'
+		]],
+		['name' => 'Hajrah', 'active' => true, 'country_id' => 195, 'geo' => [
+			'20.238402, 41.049342', '20.238482, 41.060371', '20.228778, 41.061530', '20.228093, 41.050029'
+		]],
+		['name' => 'Haql', 'active' => true, 'country_id' => 195, 'geo' => [
+			'29.299526, 34.933615', '29.298478, 34.968806', '29.275421, 34.968291', '29.272576, 34.933100'
+		]],
+		['name' => 'Harmah', 'active' => true, 'country_id' => 195, 'geo' => [
+			'25.975061, 45.309741', '25.976296, 45.373084', '25.936938, 45.372569', '25.930763, 45.314719'
+		]],
+		['name' => 'Hautat Sudair', 'active' => true, 'country_id' => 195, 'geo' => [
+			'25.611920, 45.613560', '25.612694, 45.653386', '25.588079, 45.655789', '25.585912, 45.610299'
+		]],
+		['name' => 'Al Hufuf', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'25.370821, 49.546701', '25.372683, 49.635278', '25.270271, 49.633218', '25.268409, 49.551507'
+		]],
+		['name' => 'Howtat Bani Tamim', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'23.537801, 46.818192', '23.536228, 46.895783', '23.483022, 46.904366', '23.484597, 46.830209'
+		]],
+		['name' => 'Huraymila', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'25.131990, 46.078805', '25.131990, 46.118631', '25.102303, 46.118631', '25.102303, 46.078805'
+		]],
+		['name' => 'Hafr Al-Batin', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'28.456230, 45.911428', '28.467096, 46.061117', '28.331193, 46.063177', '28.336028, 45.894948'
+		]],
+		['name' => 'Jalajil', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'25.705110, 45.440483', '25.702636, 45.473099', '25.667055, 45.474815', '25.666126, 45.443487'
+		]],
+		['name' => 'Jeddah', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'21.732736, 39.083531', '21.742941, 39.278538', '21.252285, 39.340336', '21.244605, 39.150822'
+		]],
+		['name' => 'Jubail', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'27.110054, 49.373026', '27.110054, 49.573527', '26.938785, 49.573527', '26.110054, 49.573527'
+		]],
+		['name' => 'Jizan', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'16.968030, 42.539983', '16.968030, 42.612081', '16.855034, 42.612081', '16.855034, 42.612081'
+		]],
+		['name' => 'Khafji', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'28.463142, 48.445553', '28.463142, 48.499111', '28.392794, 48.499111', '28.463142, 48.499111'
+		]],
+		['name' => 'Khamis Mushait', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'18.332260, 42.701728', '18.332260, 42.799918', '18.241637, 42.799918', '18.332260, 42.712028'
+		]],
+		['name' => 'Khaybar', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'25.714718, 39.272883', '25.710928, 39.297602', '25.653843, 39.301207', '25.654539, 39.289706'
+		]],
+		['name' => 'King Abdullah Economic City', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'22.511980, 39.079049', '22.511980, 39.171746', '22.405690, 39.171746', '22.405690, 39.079049'
+		]],
+		['name' => 'Khobar', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'26.358517, 50.181669', '26.358517, 50.226987', '26.185500, 50.226987', '26.185500, 50.183042'
+		]],
+		['name' => 'Layla', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'22.332125, 46.698932', '22.329902, 46.738071', '22.273521, 46.741161', '22.271455, 46.695327'
+		]],
+		['name' => 'Mastoorah', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'23.136187, 38.810491', '23.136187, 38.882246', '23.078873, 38.882246', '23.078873, 38.810491'
+		]],
+		['name' => 'Mecca', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'21.482607, 39.777873', '21.482607, 39.972194', '21.327901, 39.980434', '21.327901, 39.777873'
+		]],
+		['name' => 'Medina', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'24.592817, 39.442454', '24.592817, 39.759685', '24.354711, 39.759685', '24.354711, 39.442454'
+		]],
+		['name' => 'Muzahmiyya', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'24.503401, 46.205790', '24.503401, 46.310504', '24.427777, 46.310504', '24.427777, 46.205790'
+		]],
+		['name' => 'Najran', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'17.575167, 44.175007', '17.575167, 44.276287', '17.530976, 44.276287', '17.530976, 44.175007'
+		]],
+		['name' => 'Qatif', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'26.591658, 49.952289', '26.591658, 50.019237', '26.535462, 50.019237', '26.535462, 49.952289'
+		]],
+		['name' => 'Qaisumah', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'28.319178, 46.095800', '28.319178, 46.146268', '28.287287, 46.146268', '28.287287, 46.095800'
+		]],
+		['name' => 'Rabigh', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'22.820466, 38.965210', '22.820466, 39.052070', '22.735948, 39.052070', '22.735948, 38.965210'
+		]],
+		['name' => 'Rafha', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'29.649971, 43.492426', '29.649971, 43.548903', '29.610430, 43.548903', '29.610430, 43.492426'
+		]],
+		['name' => 'Ras Tanura', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'26.753573, 50.008927', '26.753573, 50.062829', '26.692855, 50.062829', '26.692855, 50.008927'
+		]],
+		['name' => 'Riyadh', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'25.006523, 46.543716', '25.006523, 47.054581', '24.510195, 47.054581', '24.510195, 46.543716'
+		]],
+		['name' => 'Al Rumailah', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'25.416691, 49.725848', '25.416691, 49.737693', '25.408745, 49.737693', '25.408745, 49.725848'
+		]],
+		['name' => 'Saihat', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'26.504363, 50.004621', '26.504363, 50.036206', '26.473942, 50.036206', '26.473942, 50.004621'
+		]],
+		['name' => 'Safwa city', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'26.688871, 49.803509', '26.688871, 49.928135', '26.595276, 49.928135', '26.595276, 49.803509'
+		]],
+		['name' => 'Sakakah', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'30.025551, 40.070907', '30.025551, 40.296813', '29.841085, 40.296813', '29.841085, 40.070907'
+		]],
+		['name' => 'Shaqraa', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'25.259165, 45.219211', '25.259165, 45.267105', '25.223763, 45.267105', '25.223763, 45.219211'
+		]],
+		['name' => 'Shaybah', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'22.525237, 53.948342', '22.525237, 54.024732', '22.504781, 54.024732', '22.504781, 53.948342'
+		]],
+		['name' => 'Ta\'if', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'21.434100, 40.349942', '21.434100, 40.551129', '21.231988, 40.551129', '21.231988, 40.349942'
+		]],
+		['name' => 'Tabuk', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'28.325389, 35.263466', '28.325389, 37.656166', '27.453393, 37.656166', '27.453393, 35.263466'
+		]],
+		['name' => 'Tanomah', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'18.949603, 42.146558', '18.949603, 42.207670', '18.911769, 42.207670', '18.911769, 42.146558'
+		]],
+		['name' => 'Tarout', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'26.591842, 50.053126', '26.591842, 50.077588', '26.560907, 50.077588', '26.560907, 50.053126'
+		]],
+		['name' => 'Tayma', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'27.629505, 38.495750', '27.629505, 38.556518', '27.600909, 38.556518', '27.600909, 38.495750'
+		]],
+		['name' => 'Thadiq', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'25.297160, 45.851440', '25.297160, 45.879164', '25.254395, 45.879164', '25.254395, 45.851440'
+		]],
+		['name' => 'Thuwal', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'22.324540, 39.092641', '22.324540, 39.140019', '22.272287, 39.140019', '22.272287, 39.092641'
+		]],
+		['name' => 'Thuqbah', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'26.283169, 50.181478', '26.283169, 50.196709', '26.265994, 50.196709', '26.265994, 50.181478'
+		]],
+		['name' => 'Turaif', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'31.688892, 38.642435', '31.688892, 38.727750', '31.651930, 38.727750', '31.651930, 38.642435'
+		]],
+		['name' => 'Tabarjal', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'30.526391, 38.187952', '30.526391, 38.232755', '30.490305, 38.232755', '30.490305, 38.187952'
+		]],
+		['name' => 'Udhailiyah', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'25.152117, 49.293508', '25.152117, 49.326038', '25.124222, 49.326038', '25.124222, 49.293508'
+		]],
+		['name' => 'Um Al-Sahek', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'26.653279, 49.909548', '26.653279, 49.916264', '26.648849, 49.916264', '26.648849, 49.909548'
+		]],
+		['name' => 'Unaizah', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'26.134171, 43.944538', '26.134171, 44.039982', '26.070351, 44.039982', '26.070351, 43.944538'
+		]],
+		['name' => 'Uyayna', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'24.906404, 46.364922', '24.906404, 46.400456', '24.891845, 46.400456', '24.891845, 46.364922'
+		]],
+		['name' => 'Zulfi', 'active' => true, 'country_id' => 195, 'geo'=>[
+			'26.336919, 44.773577', '26.336919, 44.898546', '26.287987, 44.898546', '26.287987, 44.773577'
+		]],
+		['name' => 'London', 'active' => true, 'country_id' => 235, 'geo'=>[
+			'51.654048, -0.465509', '51.654048, 0.141486', '51.315398, 0.141486', '51.315398, -0.465509'
+		]],
+		['name' => 'Amsterdam', 'active' => true, 'country_id' => 157, 'geo'=>[
+			'52.417685, 4.737934', '52.417685, 4.956287', '52.346015, 4.956287', '52.346015, 4.737934'
+		]],
+		['name' => 'New York', 'active' => true, 'country_id' => 236, 'geo'=>[
+			'40.818689, -73.951939', '40.818689, -73.791264', '40.591739, -73.791264', '40.591739, -73.951939'
+		]]
+
+
+	];
+
 	/**
 	 * Run the database seeds.
 	 *
@@ -12,119 +282,14 @@ class CitiesSeeder extends Seeder
 	 */
 	public function run()
 	{
-		City::create(['name' => 'Abha', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al-Abwa', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al-Gwei\'iyyah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al-Hareeq', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al-Kharj', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al-Khutt', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al-Mubarraz', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al-Namas', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al-Omran', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al-Oyoon', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al-`Ula', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Artaweeiyah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Bahah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Jafer', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Jawf', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Kharj', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Lith', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Majma\'ah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Mawain', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Mikhwah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Qunfudhah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Ar Rass', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'As Sulayyil', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Al Wajh', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Az Zaimah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Badr', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Baljurashi', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Bisha', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Bareg', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Buraydah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Dammam', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Dhahran', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Dhurma', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Dahaban', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Diriyah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Duba', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Dumat Al-Jandal', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Dawadmi', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Farasan city', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Gatgat', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Gerrha', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Gurayat', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Ha\'il', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Habala', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Hafar Al-Batin', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Hajrah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Haql', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Harmah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Hautat Sudair', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Hofuf', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Hotat Bani Tamim', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Huraymila', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Hafr Al-Batin', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Jabal Umm al Ru\'us', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Jalajil', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Jeddah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Jubail', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Jizan', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Jizan Economic City', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Jubail', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Khafji', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Khamis Mushait', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Khaybar', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'King Abdullah Economic City', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Khamis Mushayt', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Khobar', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Layla', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Lihyan', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Mastoorah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Mastoorah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Mecca', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Medina', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Muzahmiyya', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Najran', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Omloj', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Qadeimah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Qatif', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Qaisumah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Rabigh', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Rafha', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Ras Tanura', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Riyadh', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Rumailah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Saihat', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Safwa city', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Sakakah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Sharurah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Shaqraa', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Shaybah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Ta\'if', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Tabuk', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Tanomah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Tarout', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Tayma', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Thadiq', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Thuwal', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Thuqbah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Turaif', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Tabarjal', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Udhailiyah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Um Al-Sahek', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Unaizah', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Uqair', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Uyayna', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Uyun AlJiwa', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Wadi Al-Dawasir', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Yanbu', 'active' => true, 'country_id' => 195]);
-		City::create(['name' => 'Zulfi', 'active' => true, 'country_id' => 195]);
+		foreach ($this->cities as $city){
+			City::create([
+				'name' => $city['name'],
+				'active' => $city['active'],
+				'country_id' => $city['country_id'],
+			]);
+		}
 
-		City::create(['name' => 'London', 'active' => true, 'country_id' => 235]);
 
-		City::create(['name' => 'Amsterdam', 'active' => true, 'country_id' => 157]);
-
-		City::create(['name' => 'New York', 'active' => true, 'country_id' => 236]);
 	}
 }

@@ -68,15 +68,8 @@ class CarrierController extends BaseController
 	 */
 	public function create(Request $request)
 	{
-		try {
-			$params = $request->except('XDEBUG_SESSION_START');
-			$user = $this->signupService->carrier($params);
-			return $this->responderService->fractal($user, UserDetailedResponse::class, 0, [false, true]);
-		} catch (ValidationException $e) {
-			throw $e;
-		} catch (\Exception $e) {
-			return $this->responderService->errorResponse($e);
-		}
+		$params = $request->except(['XDEBUG_SESSION_START']);
+		return $this->responderService->fractal($this->signupService->carrier($params), UserDetailedResponse::class, 0, [false, true]);
 
 	}
 

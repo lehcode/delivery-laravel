@@ -18,8 +18,8 @@ class SetupAclTablesSeed extends Seeder
 
 	public $usersAmt = [
 		'admin' => 1,
-		'customer' => 6,
-		'carrier' => 6,
+		'customer' => 5,
+		'carrier' => 5,
 	];
 
 	public $phoneSfx = 0;
@@ -91,7 +91,7 @@ class SetupAclTablesSeed extends Seeder
 					$user->save();
 					$user->attachRole($role);
 				} catch (ValidationException $e) {
-					var_dump($user->phone);
+					var_dump($user->toArray());
 					print_r($e->getErrors());
 					die();
 				}

@@ -9,10 +9,15 @@ use Jenssegers\Date\Date;
 use App\Models\Recipient;
 use App\Models\Shipment;
 use App\Models\ShipmentCategory;
-use App\Models\Route;
 
+/**
+ * Class OrdersSeeder
+ */
 class OrdersSeeder extends Seeder
 {
+	/**
+	 * Default date format
+	 */
 	const DATE_FORMAT = 'Y-m_d H:i:s';
 
 	/**
@@ -24,24 +29,14 @@ class OrdersSeeder extends Seeder
 	{
 
 		$trips = Trip::all();
-		$customers = User::all()->filter(function ($item) {
-			if ($item->roles()->first()->name == User::ROLE_CUSTOMER) {
-				return $item;
-			}
-		});
 
-		$customers->each(function ($u) use ($trips) {
+		User\Customer::all()->each(function ($customer) use ($trips) {
 
 			$trip = $trips->random();
 			$recipient = factory(Recipient::class)->create();
 			$shipment = factory(Shipment::class)->create([
 				'category_id' => ShipmentCategory::all()->random()->id
 			]);
-			$customer = $u->customer()->first();
-
-			if (!$customer){
-				throw new \Exception("Customer not found!", 1);
-			}
 
 			$data = [
 				'customer_id' => $customer->id,
@@ -57,7 +52,7 @@ class OrdersSeeder extends Seeder
 				foreach ($order->validationErrors['messages'] as $messages) {
 					foreach ($messages as $column => $errors) {
 						foreach ($errors as $error) {
-							throw new \Exception($column.': '.$error, 1);
+							throw new \Exception($column . ': ' . $error, 1);
 						}
 					}
 				}

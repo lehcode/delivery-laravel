@@ -33,7 +33,7 @@ class SignupCarrierRequest extends ApiRequest
 			'name' => 'required|min:3',
 			'email' => 'required|email',
 			'password' => 'required|min:5',
-			'phone' => 'required|phone:AUTO,mobile',
+			//'phone' => 'required|phone:AUTO,mobile',
 			'password_confirmation' => 'required|min:5|required_with:password|same:password',
 		];
 	}
