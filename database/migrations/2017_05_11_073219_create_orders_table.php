@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
 
 			$table->dateTime('departure_date')->index();
 			$table->dateTime('expected_delivery_date')->index();
+			$table->enum('status', OrdersSeeder::STATUSES);
 
 			$table->uuid('recipient_id')->index();
 			$table->foreign('recipient_id')->references('id')->on('recipients')

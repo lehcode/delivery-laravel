@@ -6,7 +6,7 @@ use App\Models\City;
 class CitiesSeeder extends Seeder
 {
 
-	protected $cities = [
+	const CITIES = [
 		['name' => 'Abha', 'active' => true, 'country_id' => 195, 'geo' => [
 			'18.308140, 42.478371', '18.312051, 42.600594', '18.184889, 42.615014', '18.184237, 42.484551'
 		]],
@@ -282,7 +282,7 @@ class CitiesSeeder extends Seeder
 	 */
 	public function run()
 	{
-		foreach ($this->cities as $city){
+		foreach (self::CITIES as $city){
 			City::create([
 				'name' => $city['name'],
 				'active' => $city['active'],
