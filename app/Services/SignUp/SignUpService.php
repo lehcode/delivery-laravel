@@ -57,6 +57,11 @@ class SignUpService implements SignUpServiceInterface
 
 		$entityUser['type'] = User::ROLE_CUSTOMER;
 		$entityUser['is_enabled'] = true;
+
+		Validator::make($params, [
+			'email' => 'required|email|unique:users,email',
+			'password' => 'required|min:5|confirmed',
+		])->validate();
 		
 		return DB::transaction(function () use ($entityUser, $entityCustomerProfile, $params) {
 
@@ -95,7 +100,6 @@ class SignUpService implements SignUpServiceInterface
 
 		Validator::make($params, [
 			'email' => 'required|email|unique:users,email',
-			'phone' => 'required|phone:AUTO|unique:users,phone',
 			'password' => 'required|min:5|confirmed',
 		])->validate();
 
@@ -116,6 +120,11 @@ class SignUpService implements SignUpServiceInterface
 
 		$entityProfile = array_only($params, app()->make(User\Carrier::class)->getFillable());
 		$entityProfile['is_online'] = false;
+
+		Validator::make($params, [
+			'email' => 'required|email|unique:users,email',
+			'password' => 'required|min:5|confirmed',
+		])->validate();
 
 		return DB::transaction(function () use ($entityProfile, $params, $entityUser) {
 

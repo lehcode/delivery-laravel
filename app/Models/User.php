@@ -104,7 +104,7 @@ class User extends Authenticatable implements AuditableInterface
 	protected $rules = [
 		'name' => 'required',
 		'email' => 'required|email|unique:users,email',
-		'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
+		//'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
 		'password' => 'required|min:5'
 	];
 
@@ -117,7 +117,7 @@ class User extends Authenticatable implements AuditableInterface
 		'email.unique' => "Email must be unique",
 		'email.email' => "Email has wrong format",
 		'password.required' => "User password is required",
-		'phone.required' => "User phone is required",
+		//'phone.required' => "User phone is required",
 		'phone.phone' => "User phone is wrong",
 	];
 
