@@ -9,6 +9,7 @@ namespace App\Services\Trip;
 
 use App\Exceptions\MultipleExceptions;
 use App\Http\Responses\TripResponse;
+use App\Models\City;
 use App\Models\Trip;
 use App\Models\User;
 use App\Repositories\Trip\TripRepository;
@@ -178,7 +179,7 @@ class TripService implements TripServiceInterface
 	public function getListByDate($date)
 	{
 		$df = $date->format("Y-m-d");
-		$trips = Trip::where('departure_date', 'LIKE', $df.'%')
+		$trips = Trip::where('departure_date', 'LIKE', $df . '%')
 			->get()
 			->map(function ($item) {
 
@@ -199,6 +200,14 @@ class TripService implements TripServiceInterface
 			});
 
 		return $trips;
+	}
+
+	/**
+	 * @param int $cityId
+	 */
+	public function getCity($cityId)
+	{
+		return City::where('id', '=', $cityId)->get();
 	}
 
 }

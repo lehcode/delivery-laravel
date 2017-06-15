@@ -34,8 +34,9 @@ class TripController extends Controller
 	public function __construct(
 		TripService $tripService,
 		ResponderService $responderService
-	) {
-	
+	)
+	{
+
 		$this->tripService = $tripService;
 		$this->responderService = $responderService;
 	}
@@ -81,8 +82,8 @@ class TripController extends Controller
 
 	/**
 	 * @param Request $request
-	 * @param string $startDate
-	 * @param string $endDate
+	 * @param string  $startDate
+	 * @param string  $endDate
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Exception
@@ -90,17 +91,34 @@ class TripController extends Controller
 	public function getByDatePeriod(Request $request, $startDate, $endDate)
 	{
 		$dates = [
-			'start'=> Date::createFromFormat('Y-m-d', $startDate),
-			'end'=> Date::createFromFormat('Y-m-d', $endDate),
+			'start' => Date::createFromFormat('Y-m-d', $startDate),
+			'end' => Date::createFromFormat('Y-m-d', $endDate),
 		];
 		return $this->responderService->objectResponse($this->tripService->getListByStartAndEnd($dates));
 	}
 
+	/**
+	 * @param Request $request
+	 * @param string  $date
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 */
 	public function getByDate(Request $request, $date)
 	{
 		$d = Date::createFromFormat('Y-m-d', $date);
 		return $this->responderService->objectResponse($this->tripService->getListByDate($d));
 	}
 
-	
+	/**
+	 * @param Request $request
+	 * @param int     $cityId
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getCity(Request $request, $cityId)
+	{
+		return $this->responderService->objectResponse($this->tripService->getCity($cityId));
+	}
+
+
 }
