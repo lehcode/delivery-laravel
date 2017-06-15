@@ -29,7 +29,7 @@ class CreateCarriersTable extends Migration
 			$table->foreign('current_city')->references('id')->on('cities')
 				->onDelete('restrict')->onUpdate('restrict');
 
-			$table->double('rating', 2, 2)->unsigned()->nullable();
+			$table->double('rating', 2, 2)->unsigned()->nullable()->default(0);
 			$table->text('notes')->nullable();
 			$table->boolean('is_online')->default(false);
 
