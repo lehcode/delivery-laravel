@@ -18,8 +18,8 @@ class SetupAclTablesSeed extends Seeder
 
 	public $usersAmt = [
 		'admin' => 1,
-		'customer' => 5,
-		'carrier' => 5,
+		'customer' => 9,
+		'carrier' => 9,
 	];
 
 	public $phoneSfx = 0;
@@ -115,36 +115,45 @@ class SetupAclTablesSeed extends Seeder
 							$user->save();
 							$user->attachRole($role);
 
+							$created = null;
+
 							switch ($key) {
 								case 'customer':
-									$customer = factory(User\Customer::class)->create([
-									'id' => $user->id,
-									'name' => $user->name,
-									'card_name' => $user->name,
-								]);
-
-									if (!is_null($customer->validationErrors) && !empty($customer->validationErrors)) {
-										foreach ($customer->validationErrors['messages'] as $messages) {
-											foreach ($messages as $column => $errors) {
-												foreach ($errors as $error) {
-													throw new \Exception($column.': '.$error, 1);
-												}
-											}
-										}
-									}
-//							
+									$created = factory(User\Customer::class)->create(
+										[
+											'id' => $user->id,
+											'name' => $user->name,
+											'card_name' => $user->name,
+										]
+									);
 									break;
 
 								case 'carrier':
-									User\Carrier::create(array_merge(['id' => $user->id, 'name' => $user->name],
+									$created = User\Carrier::create(array_merge(
+										[
+											'id' => $user->id,
+											'name' => $user->name
+										],
 										[
 											'current_city' => $cities->random()->id,
 											'default_address' => $faker->streetAddress,
 											'notes' => $faker->text(128),
-										]));
+										]
+									));
 									break;
 							}
 
+							if (!is_null($created)) {
+								if(!is_null($created->validationErrors) && !empty($created->validationErrors)){
+									foreach ($created->validationErrors['messages'] as $messages) {
+										foreach ($messages as $column => $errors) {
+											foreach ($errors as $error) {
+												throw new \Exception($column . ': ' . $error, 1);
+											}
+										}
+									}
+								}
+							}
 
 						} catch (\Exception $e) {
 							var_dump($user->toArray());
