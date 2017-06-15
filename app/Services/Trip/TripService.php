@@ -151,25 +151,29 @@ class TripService implements TripServiceInterface
 	 */
 	public function getListByStartAndEnd(array $dates)
 	{
-
 		$result = Trip::where('departure_date', '>=', $dates['start'])
 			->where('departure_date', '<=', $dates['end'])
-			->get()
-			->map(function ($item) {
-				return $item->paymentType()->get();
-				//$item->payment_type = $item->paymentType()->get();
-				//return $item->makeHidden('payment_type_id');
-			})
-		;
+			->get();
 
-//		if (is_a($result, Collection::class) && $result->count()){
-//			$result->each(function($item){
-//				$item->payment_type
-//			});
-//		}
+		$trips = $result->map(function ($item) use (&$trips) {
 
+			$carrier = $item->carrier;
+			$paymentType = $item->paymentType;
+			$fromCity = $item->fromCity;
+			$destCity = $item->destinationCity;
 
-		return $result;
+			$new = $item->toArray();
+			unset($new['carrier_id'], $new['payment_type_id'], $new['from_city_id'], $new['to_city_id']);
+
+			$new['carrier'] = $carrier->toArray();
+			$new['payment_type'] = $paymentType->toArray();
+			$new['from_city'] = $fromCity->toArray();
+			$new['dest_city'] = $destCity->toArray();
+
+			return $new;
+		});
+
+		return $trips;
 	}
 
 }
