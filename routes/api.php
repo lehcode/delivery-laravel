@@ -23,7 +23,9 @@ Route::group(['middleware' => 'api', 'api.host'], function () {
 			Route::post('authenticate', ['uses' => 'AuthController@authenticate']);
 
 			Route::group(['middleware' => 'jwt.auth'], function () {
+
 				Route::get('shipment-categories', ['uses' => 'ShipmentController@categories']);
+				Route::get('city/{city_id}', ['uses' => 'TripController@getCity']);
 
 				Route::group(['prefix' => 'user'], function () {
 					Route::any('me', ['uses' => 'AuthController@me']);
