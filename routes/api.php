@@ -62,10 +62,10 @@ Route::group(['middleware' => 'api', 'api.host'], function () {
 				});
 
 				Route::group(['prefix' => 'order'], function () {
-					Route::get('all', ['uses' => 'OrderController@all']);
-					Route::get('active', ['uses' => 'OrderController@active']);
-					Route::get('{id}', ['uses' => 'OrderController@get']);
-					Route::post('create', ['uses' => 'OrderController@create']);
+					Route::get('all', ['uses' => 'OrderController@getCustomerOrders']);
+					Route::get('active', ['uses' => 'OrderController@getActiveOrders']);
+					Route::get('{id}', ['uses' => 'OrderController@getOrder']);
+					Route::post('create', ['uses' => 'OrderController@createOrder']);
 				});
 
 				Route::group(['prefix' => 'trip'], function () {
@@ -77,6 +77,10 @@ Route::group(['middleware' => 'api', 'api.host'], function () {
 
 				Route:: group(['prefix'=>'payment'], function () {
 					Route::post('create', ['uses'=>'PaymentController@createPayment']);
+				});
+
+				Route:: group(['prefix'=>'shipment'], function () {
+					Route::post('create', ['uses'=>'ShipmentController@createShipment']);
 				});
 			});
 
@@ -108,7 +112,7 @@ Route::group(['middleware' => 'api', 'api.host'], function () {
 				});
 
 				Route::group(['prefix' => 'order'], function () {
-					Route::get('all', ['uses' => 'OrderController@all']);
+					Route::get('all', ['uses' => 'OrderController@getCarrierOrders']);
 					Route::get('{id}', ['uses' => 'OrderController@get']);
 				});
 
