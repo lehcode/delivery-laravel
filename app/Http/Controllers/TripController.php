@@ -87,13 +87,19 @@ class TripController extends Controller
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Exception
 	 */
-	public function getByDate(Request $request, $startDate, $endDate)
+	public function getByDatePeriod(Request $request, $startDate, $endDate)
 	{
 		$dates = [
 			'start'=> Date::createFromFormat('Y-m-d', $startDate),
 			'end'=> Date::createFromFormat('Y-m-d', $endDate),
 		];
 		return $this->responderService->objectResponse($this->tripService->getListByStartAndEnd($dates));
+	}
+
+	public function getByDate(Request $request, $date)
+	{
+		$d = Date::createFromFormat('Y-m-d', $date);
+		return $this->responderService->objectResponse($this->tripService->getListByDate($d));
 	}
 
 	

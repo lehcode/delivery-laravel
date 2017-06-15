@@ -151,27 +151,52 @@ class TripService implements TripServiceInterface
 	 */
 	public function getListByStartAndEnd(array $dates)
 	{
-		$result = Trip::where('departure_date', '>=', $dates['start'])
+		$trips = Trip::where('departure_date', '>=', $dates['start'])
 			->where('departure_date', '<=', $dates['end'])
-			->get();
+			->get()
+			->map(function ($item) {
 
-		$trips = $result->map(function ($item) use (&$trips) {
+				$arr = $item->toArray();
+				unset(
+					$arr['carrier_id'],
+					$arr['payment_type_id'],
+					$arr['from_city_id'],
+					$arr['to_city_id']
+				);
 
-			$carrier = $item->carrier;
-			$paymentType = $item->paymentType;
-			$fromCity = $item->fromCity;
-			$destCity = $item->destinationCity;
+				$arr['carrier'] = $item->carrier;
+				$arr['payment_type'] = $item->paymentType;
+				$arr['from_city'] = $item->fromCity;
+				$arr['dest_city'] = $item->destinationCity;
 
-			$new = $item->toArray();
-			unset($new['carrier_id'], $new['payment_type_id'], $new['from_city_id'], $new['to_city_id']);
+				return $arr;
+			});
 
-			$new['carrier'] = $carrier->toArray();
-			$new['payment_type'] = $paymentType->toArray();
-			$new['from_city'] = $fromCity->toArray();
-			$new['dest_city'] = $destCity->toArray();
+		return $trips;
+	}
 
-			return $new;
-		});
+	public function getListByDate($date)
+	{
+		$df = $date->format("Y-m-d");
+		$trips = Trip::where('departure_date', 'LIKE', $df.'%')
+			->get()
+			->map(function ($item) {
+
+				$arr = $item->toArray();
+				unset(
+					$arr['carrier_id'],
+					$arr['payment_type_id'],
+					$arr['from_city_id'],
+					$arr['to_city_id']
+				);
+
+				$arr['carrier'] = $item->carrier;
+				$arr['payment_type'] = $item->paymentType;
+				$arr['from_city'] = $item->fromCity;
+				$arr['dest_city'] = $item->destinationCity;
+
+				return $arr;
+			});
 
 		return $trips;
 	}
