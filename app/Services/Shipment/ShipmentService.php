@@ -31,8 +31,13 @@ class ShipmentService implements ShipmentServiceInterface
 	{
 		return ShipmentCategory::all();
 	}
-	public function create()
+
+	/**
+	 * @param $data
+	 */
+	public function create($data)
 	{
-		
+		// TODO: Implement create() method.
 	}
+
 }
