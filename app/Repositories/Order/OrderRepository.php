@@ -10,6 +10,7 @@ namespace App\Repositories\Order;
 use App\Models\Order;
 use App\Repositories\CrudRepository;
 use Illuminate\Support\Facades\Auth;
+use Jenssegers\Date\Date;
 
 /**
  * Class TripRepository
@@ -34,9 +35,32 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	/**
 	 * @return mixed
 	 */
-	public function userOrders()
+	public function customerOrders()
 	{
-		$result = Order::where('customer_id', Auth::getUser()->id);
+		$result = Order::with(['recipient', 'customer', 'shipment', 'trip.fromCity'])
+			->where('customer_id', Auth::getUser()->id)
+			->get(['id'])
+			->map(function ($item) {
+				$item->makeHidden(['recipient_id', 'customer_id', 'shipment_id', 'trip_id']);
+				$clone = $item->toArray();
+				
+				$clone['expected_delivery_date'] = Date::createFromFormat($item->dateFormat, $clone['expected_delivery_date']);
+				$clone['created_at'] = Date::createFromFormat($item->dateFormat, $clone['created_at']);
+				$clone['updated_at'] = Date::createFromFormat($item->dateFormat, $clone['updated_at']);
+				$clone['departure_date'] = Date::createFromFormat($item->dateFormat, $clone['departure_date']);
+
+				return $clone;
+			});
+
+		return $result;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function carrierOrders()
+	{
+		$result = Order::all('customer_id', Auth::getUser()->id);
 		return $result;
 	}
 
@@ -59,18 +83,14 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	public function create(array $data)
 	{
 
-		if (isset($data['XDEBUG_SESSION_START'])){
-			unset($data['XDEBUG_SESSION_START']);
-		}
-
-		$data['customer_id'] = Auth::getUser()->customer()->id;
+		$data['customer_id'] = Auth::user()->customer->id;
 
 		$order = factory(Order::class)->create($data);
 
 		if (!is_null($order->validationErrors)) {
 			throw new \Exception($order->validationErrors->getMessages());
 		}
-		
+
 		return $order;
 	}
 }

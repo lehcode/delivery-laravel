@@ -70,9 +70,19 @@ class OrderService implements OrderServiceInterface
 	/**
 	 * @return mixed
 	 */
-	public function userOrders()
+	public function customerOrders()
 	{
-		return $this->orderRepository->userOrders();
+		$orders = $this->orderRepository->customerOrders();
+
+		return $orders;
+	}
+	
+	/**
+	 * @return mixed
+	 */
+	public function carrierOrders()
+	{
+		return $this->orderRepository->carrierOrders();
 	}
 
 }

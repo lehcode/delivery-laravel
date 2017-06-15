@@ -19,9 +19,9 @@ class OrdersSeeder extends Seeder
 	/**
 	 * Default date format
 	 */
-	const DATE_FORMAT = 'Y-m_d H:i:s';
+	const DATE_FORMAT = 'Y-m-d H:i:s';
 
-	const STATUSES = ['created', 'picked', 'delivered', 'completed'];
+	const STATUSES = ['created', 'accepted', 'picked', 'delivered', 'completed'];
 
 	/**
 	 * Run the database seeds.
@@ -53,8 +53,8 @@ class OrdersSeeder extends Seeder
 					'recipient_id' => $recipient->id,
 					'shipment_id' => $shipment->id,
 					'payment_id' => null,
-					'geo_start' => \DB::raw("ST_GeomFromText('POINT(" . implode(" ", $this->makePoint($this->getGeoData($trip->fromCity()->first()))) . ")')"),
-					'geo_end' => \DB::raw("ST_GeomFromText('POINT(" . implode(' ', $this->makePoint($this->getGeoData($trip->destinationCity()->first()))) . ")')"),
+					'geo_start' => $this->makePoint($this->getGeoData($trip->fromCity()->first())),
+					'geo_end' => $this->makePoint($this->getGeoData($trip->destinationCity()->first())),
 				];
 
 				$order = factory(Order::class)->create($data);
@@ -68,7 +68,6 @@ class OrdersSeeder extends Seeder
 						}
 					}
 				}
-
 			}
 		});
 	}
