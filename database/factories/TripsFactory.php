@@ -18,10 +18,10 @@ $factory->define(Trip::class, function (Faker\Generator $faker) {
 	$departureDate = Date::now();
 
 	return [
-		'carrier_id' => Uuid::generate(4),
+		'carrier_id' => null,
 		'payment_type_id' => $paymentTypes->random()->id,
 		'from_city_id' => $cities->random(),
 		'to_city_id' => $cities->random(),
-		'departure_date' => $departureDate->addDays(rand(1, 5)),
+		'departure_date' => $departureDate->addDays(rand(1, 30)),
 	];
 });
