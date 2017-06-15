@@ -38,6 +38,9 @@ class Order extends Model implements AuditableInterface
 		'shipment_id',
 		'trip_id',
 		'payment_id',
+		'delivery_id',
+		'geo_start',
+		'geo_end'
 	];
 
 	/**
@@ -48,7 +51,8 @@ class Order extends Model implements AuditableInterface
 		'expected_delivery_date',
 		'deleted_at',
 		'created_at',
-		'updated_at'];
+		'updated_at'
+	];
 
 	/**
 	 * @var array
@@ -62,6 +66,18 @@ class Order extends Model implements AuditableInterface
 		'trip_id' => 'required',
 		'payment_id' => 'nullable',
 	];
+
+	/**
+	 * @var array
+	 */
+	protected $geofields = ['geo_start', 'geo_end'];
+
+	/**
+	 * The storage format of the model's date columns.
+	 *
+	 * @var string
+	 */
+	public $dateFormat = 'Y-m-d H:i:s';
 
 	/**
 	 * @var array
@@ -103,6 +119,75 @@ class Order extends Model implements AuditableInterface
 	public function customer()
 	{
 		return $this->belongsTo(Customer::class);
+	}
+
+	/**
+	 * @param array $value
+	 */
+	public function setGeoStartAttribute(array $value)
+	{
+		$this->attributes['geo_start'] = \DB::raw("ST_GeomFromText('POINT(" . implode(' ', $value) . ")')");
+	}
+
+	/**
+	 * @param $value
+	 *
+	 * @return string
+	 */
+	public function getGeoStartAttribute($value)
+	{
+		return $this->formatLocationAttribute($value);
+	}
+
+	/**
+	 * @param array $value
+	 */
+	public function setGeoEndAttribute(array $value)
+	{
+		$this->attributes['geo_end'] = \DB::raw("ST_GeomFromText('POINT(" . implode(' ', $value) . ")')");
+	}
+
+	/**
+	 * @param $value
+	 *
+	 * @return string
+	 */
+	public function getGeoEndAttribute($value)
+	{
+		return $this->formatLocationAttribute($value);
+	}
+
+	/**
+	 * @return $this
+	 */
+	public function newQuery()
+	{
+		$raw = [];
+		foreach ($this->geofields as $column) {
+			$raw[] = " ST_AsText(" . $column . ") AS " . $column;
+		}
+
+		$q = parent::newQuery()->addSelect('*', \DB::raw(implode(', ', $raw)));
+
+		return $q;
+	}
+
+	/**
+	 * @param $value
+	 *
+	 * @return string
+	 */
+	private function formatLocationAttribute($value)
+	{
+		$loc = explode(' ', preg_replace('/[^\d\s]+/', '', $value));
+
+		foreach ($loc as $k => $coord) {
+			$loc[$k] = $coord / 100000;
+		}
+
+		$loc = implode(',', $loc);
+
+		return $loc;
 	}
 
 }
