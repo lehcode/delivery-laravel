@@ -10,52 +10,78 @@ namespace App\Http\Controllers;
 use App\Http\Responses\OrderResponse;
 use App\Services\BaseServiceInterface;
 use App\Services\Order\OrderService;
-use App\Services\Order\OrderServiceInterface;
-use App\Services\Responder\ResponderServiceInterface;
+use App\Services\Responder\ResponderService;
 use Illuminate\Http\Request;
 
 /**
  * Class OrderController
- * @package App\Http\Controllers\Customer
+ * @package App\Http\Controllers
  */
 class OrderController
 {
 	/**
-	 * @var ResponderServiceInterface
+	 * @var ResponderService
 	 */
 	protected $responderService;
 
 	/**
-	 * @var TripServiceInterface
+	 * @var OrderService
 	 */
 	protected $orderService;
 
 	/**
 	 * OrderController constructor.
 	 *
-	 * @param ResponderServiceInterface $responderServiceInterface
-	 * @param OrderServiceInterface     $orderServiceInterface
+	 * @param ResponderService $responderService
+	 * @param OrderService     $orderService
 	 */
 	public function __construct(
-		ResponderServiceInterface $responderServiceInterface,
-		OrderServiceInterface $orderServiceInterface
+		ResponderService $responderService,
+		OrderService $orderService
 	) {
-		$this->responderService = $responderServiceInterface;
-		$this->orderService = $orderServiceInterface;
+	
+		$this->responderService = $responderService;
+		$this->orderService = $orderService;
 	}
 
+	/**
+	 * @param Request $request
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
 	public function createOrder(Request $request)
 	{
-		$data = $request->all();
+		$data = $request->except('XDEBUG_SESSION_START');
 		return $this->responderService->fractal($this->orderService->create($data), OrderResponse::class);
 	}
 
-	public function getOrders()
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function getCustomerOrders()
 	{
-		return $this->responderService->fractal($this->orderService->userOrders(), OrderResponse::class);
+		return $this->responderService->objectResponse($this->orderService->customerOrders());
 	}
-	
-	public function getOrder()
+
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getCarrierOrders()
+	{
+		return $this->responderService->objectResponse($this->orderService->carrierOrders());
+	}
+
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getActiveOrders()
+	{
+		return $this->responderService->objectResponse($this->orderService->userOrders());
+	}
+
+	public function getOrder($id)
 	{
 		//
 	}
