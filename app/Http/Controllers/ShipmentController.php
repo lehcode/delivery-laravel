@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 use App\Services\Responder\ResponderService;
 use App\Services\Shipment\ShipmentService;
+use Illuminate\Http\Request;
 
 /**
  * Class ShipmentController
@@ -28,18 +29,33 @@ class ShipmentController extends Controller
 	 * @param ShipmentService  $shipmentService
 	 * @param ResponderService $responderService
 	 */
-	public function __construct(ShipmentService $shipmentService,
-	                            ResponderService $responderService)
-	{
+	public function __construct(
+		ShipmentService $shipmentService,
+		ResponderService $responderService
+) {
+	
 		$this->shipmentService = $shipmentService;
 		$this->responderService = $responderService;
 	}
 
 	/**
-	 * @return mixed
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
 	 */
 	public function categories()
 	{
 		return $this->responderService->response($this->shipmentService->getCategories());
+	}
+
+	/**
+	 * @param Request $request
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function createShipment(Request $request)
+	{
+		$data = $request->except('XDEBUG_SESSION_START');
+		return $this->responderService->response($this->shipmentService->create($data));
 	}
 }

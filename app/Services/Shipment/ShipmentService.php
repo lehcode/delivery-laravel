@@ -27,7 +27,12 @@ class ShipmentService implements ShipmentServiceInterface
 	/**
 	 * @return \Illuminate\Database\Eloquent\Collection|static[]
 	 */
-	public function getCategories(){
+	public function getCategories()
+	{
 		return ShipmentCategory::all();
+	}
+	public function create()
+	{
+		
 	}
 }

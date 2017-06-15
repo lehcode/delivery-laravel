@@ -16,6 +16,9 @@ class ShipmentCategoriesSeeder extends Seeder
 		$this->command->info('Creating shipment categories');
 		$faker = Faker::create('en_GB');
 
+		ShipmentCategory::create(['name' => 'S', 'description' => 'Small size package']);
+		ShipmentCategory::create(['name' => 'M', 'description' => 'Medium size package']);
+		ShipmentCategory::create(['name' => 'L', 'description' => 'Large size package']);
 		ShipmentCategory::create(['name' => 'Documents', 'description' => $faker->sentence()]);
 		ShipmentCategory::create(['name' => 'Box', 'description' => $faker->sentence()]);
 		ShipmentCategory::create(['name' => 'Electronics', 'description' => $faker->sentence()]);

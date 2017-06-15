@@ -14,5 +14,5 @@ namespace App\Services\Shipment;
  */
 interface ShipmentServiceInterface
 {
-
+	public function create($data);
 }
