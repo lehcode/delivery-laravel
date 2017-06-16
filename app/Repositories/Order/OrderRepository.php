@@ -54,11 +54,12 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 
 				$trip = $item->trip()->with(['fromCity', 'destinationCity'])->first();
 				$tripClone = $trip->toArray();
-				$tripClone['from_city'] = $trip->fromCity()->with('country')->first();
+				$tripClone['from_city'] = $trip->fromCity()->with('country')->first()->country;
 				$tripClone['from_city']['country'] = $trip->fromCity()->with('country')->first()->country;
-				$tripClone['dest_city'] = $trip->destinationCity()->with('country')->first();
+				$tripClone['dest_city'] = $trip->destinationCity()->with('country')->first()->country;
 				$tripClone['dest_city']['country'] = $trip->destinationCity()->with('country')->first()->country;
-				unset($tripClone['from_city_id'], $tripClone['to_city_id']);
+				$tripClone['payment_type'] = $trip->paymentType()->first();
+				unset($tripClone['from_city_id'], $tripClone['to_city_id'], $tripClone['payment_type_id']);
 				$clone['trip'] = $tripClone;
 				
 				$shipment = $item->shipment()->with(['size', 'category'])->first();
