@@ -65,16 +65,6 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	}
 
 	/**
-	 * @param int $id
-	 *
-	 * @return $this
-	 */
-	public function find($id)
-	{
-		return parent::find($id);
-	}
-
-	/**
 	 * @param array $data
 	 *
 	 * @return mixed

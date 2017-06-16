@@ -12,6 +12,7 @@ use App\Services\BaseServiceInterface;
 use App\Services\Order\OrderService;
 use App\Services\Responder\ResponderService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 /**
  * Class OrderController
@@ -40,6 +41,7 @@ class OrderController
 		OrderService $orderService
 	) {
 	
+
 		$this->responderService = $responderService;
 		$this->orderService = $orderService;
 	}
@@ -81,8 +83,15 @@ class OrderController
 		return $this->responderService->objectResponse($this->orderService->userOrders());
 	}
 
-	public function getOrder($id)
+	/**
+	 * @param Request $request
+	 * @param int     $id
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function getOrder(Request $request, $id)
 	{
-		//
+		return $this->responderService->fractal($this->orderService->item($id), OrderResponse::class);
 	}
 }
