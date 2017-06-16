@@ -8,6 +8,7 @@
 namespace App\Services\Shipment;
 
 use App\Models\ShipmentCategory;
+use App\Models\ShipmentSize;
 use App\Models\Trip;
 
 /**
@@ -38,6 +39,14 @@ class ShipmentService implements ShipmentServiceInterface
 	public function create($data)
 	{
 		// TODO: Implement create() method.
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Collection|static[]
+	 */
+	public function getSizes()
+	{
+		return ShipmentSize::all();
 	}
 
 }

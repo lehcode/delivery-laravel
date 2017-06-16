@@ -37,7 +37,7 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	 */
 	public function customerOrders()
 	{
-		$result = Order::with(['recipient', 'customer', 'shipment', 'trip.fromCity'])
+		$result = Order::with(['recipient', 'customer', 'shipment', 'trip'])
 			->where('customer_id', Auth::getUser()->id)
 			->get(['id'])
 			->map(function ($item) {
@@ -48,6 +48,9 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 				$clone['created_at'] = Date::createFromFormat($item->dateFormat, $clone['created_at']);
 				$clone['updated_at'] = Date::createFromFormat($item->dateFormat, $clone['updated_at']);
 				$clone['departure_date'] = Date::createFromFormat($item->dateFormat, $clone['departure_date']);
+				$clone['customer'] = $item->customer()->with('currentCity')->first();
+				$clone['shipment'] = $item->shipment()->with(['size', 'category'])->first();
+				$clone['trip'] = $item->trip()->with(['fromCity', 'destinationCity'])->first();
 
 				return $clone;
 			});

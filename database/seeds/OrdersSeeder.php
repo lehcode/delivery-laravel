@@ -10,6 +10,8 @@ use Jenssegers\Date\Date;
 use App\Models\Recipient;
 use App\Models\Shipment;
 use App\Models\ShipmentCategory;
+use App\Models\ShipmentSize;
+use Faker\Factory as Faker;
 
 /**
  * Class OrdersSeeder
@@ -30,16 +32,22 @@ class OrdersSeeder extends Seeder
 	 */
 	public function run()
 	{
-
+		$this->command->info('Generating predefined Orders');
 		$trips = Trip::all();
+		$faker = Faker::create('en_GB');
 
-		User\Customer::all()->each(function ($customer) use ($trips) {
+		User\Customer::all()->each(function ($customer) use ($trips, $faker) {
 
 			for ($i = 0; $i < rand(3, 9); $i++) {
 				$trip = $trips->random()->with(['fromCity', 'destinationCity'])->first();
+
 				$recipient = factory(Recipient::class)->create();
-				$shipment = factory(Shipment::class)->create([
-					'category_id' => ShipmentCategory::all()->random()->id
+
+				$shipment = Shipment::create([
+					'price' => $faker->randomFloat(2, 50, 1500),
+					'size_id' => ShipmentSize::all()->random()->id,
+					'category_id' => ShipmentCategory::all()->random()->id,
+					'image_url' => $faker->imageUrl(),
 				]);
 
 				do {

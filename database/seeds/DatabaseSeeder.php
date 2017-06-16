@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(LanguagesSeeder::class);
 		$this->call(TripsSeeder::class);
 		$this->call(ShipmentCategoriesSeeder::class);
+		$this->call(ShipmentSizesSeeder::class);
 		$this->call(OrdersSeeder::class);
 	}
 }

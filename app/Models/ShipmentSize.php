@@ -7,24 +7,36 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Watson\Validating\ValidatingTrait;
 
 /**
- * Class ShipmentCategory
+ * Class ShipmentSize
  * @package App\Models
  */
-class ShipmentCategory extends Model
+class ShipmentSize extends Model
 {
 	use ValidatingTrait,
 		SoftDeletes;
+
+	/**
+	 * @var array
+	 */
+	protected $dates = [
+		'deleted_at',
+		'created_at',
+		'updated_at'
+	];
+
+	/**
+	 * @var array
+	 */
+	protected $fillable = [
+		'name',
+		'length',
+		'width',
+		'height',
+		'weight',
+		'multiplier',
+		'description',
+	];
 	
-	/**
-	 * @var array
-	 */
-	protected $dates = ['deleted_at', 'created_at', 'updated_at'];
-
-	/**
-	 * @var array
-	 */
-	protected $fillable = ['name', 'description', 'multiplier'];
-
 	/**
 	 * @var array
 	 */
@@ -35,6 +47,11 @@ class ShipmentCategory extends Model
 	 */
 	protected $rules = [
 		'name' => 'required|string',
+		'length' => 'required|integer',
+		'width' => 'required|integer',
+		'height' => 'required|integer',
+		'weight' => 'required|numeric',
+		'multiplier' => 'required|numeric',
 		'description' => 'string',
 	];
 
@@ -43,6 +60,6 @@ class ShipmentCategory extends Model
 	 */
 	public function shipment()
 	{
-		return $this->belongsTo(Shipment::class, 'category_id');
+		return $this->belongsTo(Shipment::class, 'size_id');
 	}
 }

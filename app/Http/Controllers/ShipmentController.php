@@ -48,6 +48,15 @@ class ShipmentController extends Controller
 	}
 
 	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function sizes()
+	{
+		return $this->responderService->response($this->shipmentService->getSizes());
+	}
+
+	/**
 	 * @param Request $request
 	 *
 	 * @return \Illuminate\Http\JsonResponse

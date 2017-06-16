@@ -32,32 +32,44 @@ class Shipment extends Model
 	/**
 	 * @var array
 	 */
-	protected $visible = ['id', 'width', 'height', 'length', 'weight'];
+	protected $visible = ['id', 'size_id', 'category_id', 'image_url', 'price'];
 
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['id', 'width', 'height', 'length', 'weight'];
+	protected $fillable = ['id', 'size_id', 'category_id', 'image_url', 'price'];
+
+	/**
+	 * @var array
+	 */
+	protected $rules = [
+		'size_id'=>'required|integer',
+		'category_id'=>'required|integer',
+		'price'=>'required|numeric',
+		'image_url'=>'string',
+	];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
 	public function category()
 	{
-		return $this->hasOne(ShipmentCategory::class);
-	}
-
-	public function order(){
-		return $this->hasOne(Order::class);
+		return $this->hasOne(ShipmentCategory::class, 'id', 'category_id');
 	}
 
 	/**
-	 * @var array
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
-	protected $rules = [
-		'width' => 'required|numeric',
-		'height' => 'required|numeric',
-		'length' => 'required|numeric',
-		'weight' => 'required|numeric',
-	];
+	public function size()
+	{
+		return $this->hasOne(ShipmentSize::class, 'id', 'size_id');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function order()
+	{
+		return $this->hasOne(Order::class);
+	}
 }

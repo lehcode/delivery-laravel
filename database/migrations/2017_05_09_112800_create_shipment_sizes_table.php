@@ -5,14 +5,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Class CreateShipmentCategoriesTable
+ * Class CreateShipmentSizesTable
  */
-class CreateShipmentCategoriesTable extends Migration
+class CreateShipmentSizesTable extends Migration
 {
 	/**
 	 * @var string
 	 */
-	protected $name = 'shipment_categories';
+	protected $name = 'shipment_sizes';
 
 	/**
 	 * Run the migrations.
@@ -24,10 +24,14 @@ class CreateShipmentCategoriesTable extends Migration
 		Schema::create($this->name, function (Blueprint $table) {
 
 			$table->increments('id');
-			
+
 			$table->string('name', 64);
-			$table->string('description');
+			$table->smallInteger('length')->unsigned();
+			$table->smallInteger('width')->unsigned();
+			$table->smallInteger('height')->unsigned();
+			$table->float('weight')->unsigned();
 			$table->float('multiplier', 3, 2)->default(1);
+			$table->string('description');
 
 			$table->timestamps();
 			$table->softDeletes();

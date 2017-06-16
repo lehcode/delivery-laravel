@@ -24,8 +24,13 @@ Route::group(['middleware' => 'api', 'api.host'], function () {
 
 			Route::group(['middleware' => 'jwt.auth'], function () {
 
-				Route::get('shipment-categories', ['uses' => 'ShipmentController@categories']);
+
 				Route::get('city/{city_id}', ['uses' => 'TripController@getCity']);
+
+				Route::group(['prefix'=>'shipment'], function () {
+					Route::get('sizes', ['uses' => 'ShipmentController@sizes']);
+					Route::get('categories', ['uses' => 'ShipmentController@categories']);
+				});
 
 				Route::group(['prefix' => 'user'], function () {
 					Route::any('me', ['uses' => 'AuthController@me']);

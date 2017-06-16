@@ -18,17 +18,14 @@ class CreateShipmentsTable extends Migration
 			$table->uuid('id');
 			$table->primary('id');
 
-			$table->string('name', 64);
-			$table->integer('height')->unsigned();
-			$table->integer('length')->unsigned();
-			$table->integer('width')->unsigned();
-			$table->float('weight')->unsigned();
+			$table->integer('size_id')->unsigned();
+			$table->foreign('size_id')->references('id')->on('shipment_sizes');
 
 			$table->integer('category_id')->unsigned();
 			$table->foreign('category_id')->references('id')->on('shipment_categories');
 
 			$table->string('image_url')->nullable();
-			$table->float('price', 3, 2)->nullable();
+			$table->float('price', 6, 2)->nullable();
 
 			$table->timestamps();
 			$table->softDeletes();
