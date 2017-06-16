@@ -113,7 +113,7 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 	 */
 	public function currentCity()
 	{
-		return $this->belongsTo(City::class, 'current_city');
+		return $this->hasOne(City::class, 'id', 'current_city');
 	}
 
 	/**
