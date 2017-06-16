@@ -111,11 +111,12 @@ class TripController extends Controller
 
 	/**
 	 * @param Request $request
-	 * @param int     $cityId
+	 * @param null    $userType
+	 * @param null    $cityId
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function getCity(Request $request, $cityId)
+	public function getCity(Request $request, $userType = null, $cityId = null)
 	{
 		return $this->responderService->objectResponse($this->tripService->getCity($cityId));
 	}
