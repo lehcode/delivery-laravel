@@ -41,6 +41,7 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 			->where('customer_id', Auth::getUser()->id)
 			->get(['id'])
 			->map(function ($item) {
+
 				$item->makeHidden(['recipient_id', 'customer_id', 'shipment_id', 'trip_id']);
 				$clone = $item->toArray();
 				
@@ -48,9 +49,24 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 				$clone['created_at'] = Date::createFromFormat($item->dateFormat, $clone['created_at']);
 				$clone['updated_at'] = Date::createFromFormat($item->dateFormat, $clone['updated_at']);
 				$clone['departure_date'] = Date::createFromFormat($item->dateFormat, $clone['departure_date']);
-				$clone['customer'] = $item->customer()->with('currentCity')->first();
-				$clone['shipment'] = $item->shipment()->with(['size', 'category'])->first();
-				$clone['trip'] = $item->trip()->with(['fromCity', 'destinationCity'])->first();
+				$clone['customer'] = $item->customer()->with('currentCity')->first()->toArray();
+				$clone['customer']['current_city']['country'] = $item->customer()->first()->currentCity()->first()->country;
+
+				$trip = $item->trip()->with(['fromCity', 'destinationCity'])->first();
+				$tripClone = $trip->toArray();
+				$tripClone['from_city'] = $trip->fromCity()->with('country')->first();
+				$tripClone['from_city']['country'] = $trip->fromCity()->with('country')->first()->country;
+				$tripClone['dest_city'] = $trip->destinationCity()->with('country')->first();
+				$tripClone['dest_city']['country'] = $trip->destinationCity()->with('country')->first()->country;
+				unset($tripClone['from_city_id'], $tripClone['to_city_id']);
+				$clone['trip'] = $tripClone;
+				
+				$shipment = $item->shipment()->with(['size', 'category'])->first();
+				$shipmentClone = $shipment->toArray();
+				$shipmentClone['size'] = $shipment->size()->first();
+				$shipmentClone['category'] = $shipment->category()->first();
+				unset($shipmentClone['size_id'], $shipmentClone['category_id']);
+				$clone['shipment'] = $shipmentClone;
 
 				return $clone;
 			});

@@ -100,7 +100,7 @@ class Trip extends Model implements AuditableInterface
 	 */
 	public function fromCity()
 	{
-		return $this->belongsTo(City::class, 'from_city_id');
+		return $this->hasOne(City::class, 'id', 'from_city_id');
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Trip extends Model implements AuditableInterface
 	 */
 	public function destinationCity()
 	{
-		return $this->belongsTo(City::class, 'to_city_id');
+		return $this->hasOne(City::class, 'id', 'to_city_id');
 	}
 
 }
