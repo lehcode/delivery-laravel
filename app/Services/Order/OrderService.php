@@ -69,13 +69,8 @@ class OrderService implements OrderServiceInterface
 			'id' => 'required|regex:/' . UserService::UUID_REGEX . '/',
 		])->validate();
 
-		$order = $this->orderRepository->find($id);
-		$clone = $order->toArray();
-
-		$clone['payment'] = $order->payment;
-		$clone['recipient'] = $order->recipient;
-
-		return $order;
+		return  $this->orderRepository->find($id);
+		
 	}
 
 	/**

@@ -43,7 +43,8 @@ class OrderResponse extends ApiResponse
 			'updated_at' => $order->updated_at,
 		];
 
-		$data['customer']['current_city']['country'] = $user->customer()->with('currentCity')->first();
+		$data['customer']['current_city']['country'] = $user->customer()->with('currentCity')->first()
+			->currentCity()->with('country')->first()->country->toArray();
 		$data['from_city']['country'] = $order->trip->fromCity()->with('country')->first()->country;
 		$data['dest_city']['country'] = $order->trip->destinationCity()->with('country')->first()->country;
 		$data['shipment']['size'] = $order->shipment->size()->first();
