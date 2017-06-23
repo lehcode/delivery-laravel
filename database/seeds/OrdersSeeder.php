@@ -23,7 +23,7 @@ class OrdersSeeder extends Seeder
 	 */
 	const DATE_FORMAT = 'Y-m-d H:i:s';
 
-	const STATUSES = ['created', 'accepted', 'picked', 'delivered', 'completed'];
+	const STATUSES = ['created', 'accepted', 'picked', 'delivered', 'completed', 'cancelled'];
 
 	/**
 	 * Run the database seeds.
@@ -52,7 +52,7 @@ class OrdersSeeder extends Seeder
 
 				do {
 					$status = self::STATUSES[array_rand(self::STATUSES)];
-				} while ($status === 'completed');
+				} while ($status === 'completed' || $status === 'cancelled');
 
 				$data = [
 					'status' => $status,
