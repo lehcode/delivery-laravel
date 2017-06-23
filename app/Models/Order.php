@@ -21,6 +21,13 @@ class Order extends Model implements AuditableInterface
 		ValidatingTrait,
 		AuditableTrait;
 
+	const STATUS_CREATED = "created";
+	const STATUS_ACCEPTED = "accepted";
+	const STATUS_PICKED = "picked";
+	const STATUS_DELIVERED = "delivered";
+	const STATUS_COMPLETED = "completed";
+	const STATUS_CANCELLED = "cancelled";
+
 	/**
 	 * @var bool
 	 */
@@ -40,7 +47,8 @@ class Order extends Model implements AuditableInterface
 		'payment_id',
 		'delivery_id',
 		'geo_start',
-		'geo_end'
+		'geo_end',
+		'status',
 	];
 
 	/**

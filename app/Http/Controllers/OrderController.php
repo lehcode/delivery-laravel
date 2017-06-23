@@ -42,6 +42,7 @@ class OrderController
 	) {
 	
 
+
 		$this->responderService = $responderService;
 		$this->orderService = $orderService;
 	}
@@ -93,5 +94,17 @@ class OrderController
 	public function getOrder(Request $request, $id)
 	{
 		return $this->responderService->fractal($this->orderService->item($id), OrderResponse::class);
+	}
+
+	/**
+	 * @param Request $request
+	 * @param int     $id
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function updateOrder(Request $request, $id)
+	{
+		return $this->responderService->fractal($this->orderService->update($request, $id), OrderResponse::class);
 	}
 }

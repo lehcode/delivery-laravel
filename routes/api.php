@@ -73,6 +73,7 @@ Route::group(['middleware' => 'api', 'api.host'], function () {
 					Route::get('active', ['uses' => 'OrderController@getActiveOrders']);
 					Route::get('{id}', ['uses' => 'OrderController@getOrder']);
 					Route::post('create', ['uses' => 'OrderController@createOrder']);
+					Route::patch('update/{id}', ['uses' => 'OrderController@updateOrder']);
 				});
 
 				Route::group(['prefix' => 'trip'], function () {

@@ -52,7 +52,7 @@ class OrdersSeeder extends Seeder
 
 				do {
 					$status = self::STATUSES[array_rand(self::STATUSES)];
-				} while ($status === 'completed' || $status === 'cancelled');
+				} while ($status === Order::STATUS_COMPLETED || $status === Order::STATUS_CANCELLED);
 
 				$data = [
 					'status' => $status,

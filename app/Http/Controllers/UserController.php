@@ -56,8 +56,8 @@ class UserController extends BaseController
 		ResponderServiceInterface $responderServiceInterface,
 		UserServiceInterface $userServiceInterface,
 		UserRepositoryInterface $userRepositoryInterface
-	)
-	{
+	) {
+	
 		$this->signupService = $signUpServiceInterface;
 		$this->responderService = $responderServiceInterface;
 		$this->userService = $userServiceInterface;
@@ -74,7 +74,7 @@ class UserController extends BaseController
 	public function edit(EditUserProfileRequest $request)
 	{
 
-		$data = $request->all();
+		$data = $request->except(['XDEBUG_SESSION_START']);
 
 		try {
 			$this->userService->edit(\Auth::user(), $data);

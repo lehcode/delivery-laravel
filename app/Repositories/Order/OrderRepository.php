@@ -44,7 +44,7 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 
 				$item->makeHidden(['recipient_id', 'customer_id', 'shipment_id', 'trip_id']);
 				$clone = $item->toArray();
-				
+
 				$clone['expected_delivery_date'] = Date::createFromFormat($item->dateFormat, $clone['expected_delivery_date']);
 				$clone['created_at'] = Date::createFromFormat($item->dateFormat, $clone['created_at']);
 				$clone['updated_at'] = Date::createFromFormat($item->dateFormat, $clone['updated_at']);
@@ -61,7 +61,7 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 				$tripClone['payment_type'] = $trip->paymentType()->first();
 				unset($tripClone['from_city_id'], $tripClone['to_city_id'], $tripClone['payment_type_id']);
 				$clone['trip'] = $tripClone;
-				
+
 				$shipment = $item->shipment()->with(['size', 'category'])->first();
 				$shipmentClone = $shipment->toArray();
 				$shipmentClone['size'] = $shipment->size()->first();
@@ -94,6 +94,7 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	{
 
 		$data['customer_id'] = Auth::user()->customer->id;
+		$data['status'] = Order::STATUS_CREATED;
 
 		$order = factory(Order::class)->create($data);
 
@@ -102,5 +103,22 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 		}
 
 		return $order;
+	}
+
+	/**
+	 * @param int $id
+	 */
+	public function cancel($id)
+	{
+		$updated = Order::findOrFail($id)
+			->fill(['status' => Order::STATUS_CANCELLED]);
+
+		try {
+			$updated->save();
+			return $updated;
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
 	}
 }

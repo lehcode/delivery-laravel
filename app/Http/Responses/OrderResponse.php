@@ -28,6 +28,7 @@ class OrderResponse extends ApiResponse
 
 		$data = [
 			'id' => $order->id,
+			'status' => $order->status,
 			'customer' => $user->customer()->with('currentCity')->first()->toArray(),
 			'recipient' => $order->recipient,
 			'departure_date' => $order->departure_date,

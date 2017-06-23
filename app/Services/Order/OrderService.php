@@ -12,6 +12,7 @@ use App\Repositories\Order\OrderRepository;
 use App\Services\Builder;
 use App\Services\Trip;
 use App\Services\UserService\UserService;
+use Illuminate\Http\Request;
 
 /**
  * Class OrderService
@@ -69,8 +70,8 @@ class OrderService implements OrderServiceInterface
 			'id' => 'required|regex:/' . UserService::UUID_REGEX . '/',
 		])->validate();
 
-		return  $this->orderRepository->find($id);
-		
+		return $this->orderRepository->find($id);
+
 	}
 
 	/**
@@ -89,6 +90,23 @@ class OrderService implements OrderServiceInterface
 	public function carrierOrders()
 	{
 		return $this->orderRepository->carrierOrders();
+	}
+
+	/**
+	 * @param Request $request
+	 * @param int     $id
+	 *
+	 * @return mixed
+	 */
+	public function update(Request $request, $id)
+	{
+		$data = $request->only(['status']);
+
+		if (isset($data['status'])) {
+			return $this->orderRepository->updateStatus($id);
+		}
+
+
 	}
 
 }
