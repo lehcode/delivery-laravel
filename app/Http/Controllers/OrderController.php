@@ -7,12 +7,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderRequest;
+use App\Http\Requests\RecipientRequest;
 use App\Http\Responses\OrderResponse;
+use App\Http\Responses\RecipientResponse;
 use App\Services\BaseServiceInterface;
 use App\Services\Order\OrderService;
 use App\Services\Responder\ResponderService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 /**
  * Class OrderController
@@ -39,24 +41,21 @@ class OrderController
 	public function __construct(
 		ResponderService $responderService,
 		OrderService $orderService
-	) {
-	
-
-
+	)
+	{
 		$this->responderService = $responderService;
 		$this->orderService = $orderService;
 	}
 
 	/**
-	 * @param Request $request
+	 * @param OrderRequest $request
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Exception
 	 */
-	public function createOrder(Request $request)
+	public function createOrder(OrderRequest $request)
 	{
-		$data = $request->except('XDEBUG_SESSION_START');
-		return $this->responderService->fractal($this->orderService->create($data), OrderResponse::class);
+		return $this->responderService->fractal($this->orderService->create($request), OrderResponse::class);
 	}
 
 	/**
@@ -97,14 +96,38 @@ class OrderController
 	}
 
 	/**
+	 * @param OrderRequest $request
+	 * @param              $id
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function updateOrder(OrderRequest $request, $id)
+	{
+		return $this->responderService->fractal($this->orderService->update($request, $id), OrderResponse::class);
+	}
+
+	/**
 	 * @param Request $request
 	 * @param int     $id
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Exception
 	 */
-	public function updateOrder(Request $request, $id)
+	public function findOrderByShipmentType(Request $request, $id)
 	{
-		return $this->responderService->fractal($this->orderService->update($request, $id), OrderResponse::class);
+		return $this->responderService->fractal($this->orderService->getByShipmentType((int)$id), OrderResponse::class);
 	}
+
+	/**
+	 * @param RecipientRequest $request
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function createRecipient(RecipientRequest $request)
+	{
+		return $this->responderService->fractal($this->orderService->createRecipient($request), RecipientResponse::class);
+	}
+
 }
