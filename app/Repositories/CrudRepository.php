@@ -36,7 +36,9 @@ class CrudRepository implements CrudRepositoryInterface
      */
     public function find($id) {
         $m = $this->model;
-        return $m::find($id);
+        $result = $m::findOrFail($id);
+        
+        return $result;
     }
 
     /**

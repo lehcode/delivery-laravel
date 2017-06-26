@@ -98,20 +98,27 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 
 		$order = factory(Order::class)->create($data);
 
-		if (!is_null($order->validationErrors)) {
-			throw new \Exception($order->validationErrors->getMessages());
+		if (!$order->isValid()){
+			$errors = $order->getErrors();
+			foreach ($errors as $error){
+				throw new \Exception($error, 404);
+			}
 		}
 
 		return $order;
 	}
 
 	/**
-	 * @param int $id
+	 * @param $id
+	 * @param $status
+	 *
+	 * @return mixed
+	 * @throws \Exception
 	 */
-	public function cancel($id)
+	public function updateStatus($id, $status)
 	{
 		$updated = Order::findOrFail($id)
-			->fill(['status' => Order::STATUS_CANCELLED]);
+			->fill(['status' => $status]);
 
 		try {
 			$updated->save();

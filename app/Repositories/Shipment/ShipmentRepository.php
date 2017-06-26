@@ -28,4 +28,21 @@ class ShipmentRepository extends CrudRepository implements ShipmentRepositoryInt
 	{
 		return $this->model->all();
 	}
+
+	/**
+	 * @param array $params
+	 *
+	 * @return $this
+	 * @throws \Exception
+	 */
+	public function create(array $params)
+	{
+		try {
+			$result = parent::create($params);
+			return $result;
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+	}
 }
