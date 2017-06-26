@@ -22,5 +22,6 @@ $factory->define(Order::class, function (Faker\Generator $faker) {
 		'expected_delivery_date' => $dlvrDate,
 		'geo_start' => null,
 		'geo_end' => null,
+		'price' => null,
 	];
 });

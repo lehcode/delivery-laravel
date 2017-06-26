@@ -23,5 +23,6 @@ $factory->define(Trip::class, function (Faker\Generator $faker) {
 		'from_city_id' => $cities->random(),
 		'to_city_id' => $cities->random(),
 		'departure_date' => $departureDate->addDays(rand(1, 30)),
+		'approx_time' => $faker->randomNumber(rand(2,4)),
 	];
 });
