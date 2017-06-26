@@ -74,6 +74,9 @@ Route::group(['middleware' => 'api', 'api.host'], function () {
 					Route::get('{id}', ['uses' => 'OrderController@getOrder']);
 					Route::post('create', ['uses' => 'OrderController@createOrder']);
 					Route::patch('update/{id}', ['uses' => 'OrderController@updateOrder']);
+					Route::get('find/shipment-type/{id}', ['uses' => 'OrderController@findOrderByShipmentType']);
+					Route::post('recipient/create', ['uses' => 'OrderController@createRecipient']);
+					Route::post('shipment/create', ['uses'=>'ShipmentController@createShipment']);
 				});
 
 				Route::group(['prefix' => 'trip'], function () {
@@ -87,9 +90,6 @@ Route::group(['middleware' => 'api', 'api.host'], function () {
 					Route::post('create', ['uses'=>'PaymentController@createPayment']);
 				});
 
-				Route:: group(['prefix'=>'shipment'], function () {
-					Route::post('create', ['uses'=>'ShipmentController@createShipment']);
-				});
 			});
 
 		});
