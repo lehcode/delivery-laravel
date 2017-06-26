@@ -87,6 +87,13 @@ class SetupAclTablesSeed extends Seeder
 					'phone' => '+375291111110',
 				]);
 
+				if (!$user->isValid()) {
+					$errors = $user->getErrors();
+					foreach ($errors as $req => $error) {
+						throw new \Exception($error, 1);
+					}
+				}
+
 				try {
 					$user->save();
 					$user->attachRole($role);
@@ -100,7 +107,7 @@ class SetupAclTablesSeed extends Seeder
 
 				$tick = false;
 
-				factory(User::class, $this->usersAmt[$key])->make()
+				$newUser = factory(User::class, $this->usersAmt[$key])->make()
 					->each(function ($user) use ($role, &$tick, $key, $cities, $faker) {
 
 						$this->phoneSfx++;
@@ -111,53 +118,28 @@ class SetupAclTablesSeed extends Seeder
 							$tick = true;
 						}
 
-						try {
-							$user->save();
-							$user->attachRole($role);
+						$user->save();
+						$user->attachRole($role);
 
-							$created = null;
+						$created = null;
 
-							switch ($key) {
-								case 'customer':
-									$created = factory(User\Customer::class)->create(
-										[
-											'id' => $user->id,
-											'name' => $user->name,
-											'card_name' => $user->name,
-										]
-									);
-									break;
+						switch ($key) {
+							case 'customer':
+								factory(User\Customer::class)->create(
+									[
+										'id' => $user->id,
+										'name' => $user->name,
+										'card_name' => $user->name,
+									]
+								);
+								break;
 
-								case 'carrier':
-									$created = User\Carrier::create(array_merge(
-										[
-											'id' => $user->id,
-											'name' => $user->name
-										],
-										[
-											'current_city' => $cities->random()->id,
-											'default_address' => $faker->streetAddress,
-											'notes' => $faker->text(128),
-										]
-									));
-									break;
-							}
-
-							if (!is_null($created)) {
-								if(!is_null($created->validationErrors) && !empty($created->validationErrors)){
-									foreach ($created->validationErrors['messages'] as $messages) {
-										foreach ($messages as $column => $errors) {
-											foreach ($errors as $error) {
-												throw new \Exception($column . ': ' . $error, 1);
-											}
-										}
-									}
-								}
-							}
-
-						} catch (\Exception $e) {
-							var_dump($user->toArray());
-							throw $e;
+							case 'carrier':
+								factory(User\Carrier::class)->create([
+									'id' => $user->id,
+									'name' => $user->name,
+								]);
+								break;
 						}
 					});
 			}

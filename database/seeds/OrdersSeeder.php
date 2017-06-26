@@ -12,6 +12,7 @@ use App\Models\Shipment;
 use App\Models\ShipmentCategory;
 use App\Models\ShipmentSize;
 use Faker\Factory as Faker;
+use Webpatser\Uuid\Uuid;
 
 /**
  * Class OrdersSeeder
@@ -39,16 +40,29 @@ class OrdersSeeder extends Seeder
 		User\Customer::all()->each(function ($customer) use ($trips, $faker) {
 
 			for ($i = 0; $i < rand(3, 9); $i++) {
+
 				$trip = $trips->random()->with(['fromCity', 'destinationCity'])->first();
 
 				$recipient = factory(Recipient::class)->create();
 
+				if (!$recipient->isValid()) {
+					foreach ($recipient->getErrors() as $req => $error) {
+						throw new \Exception($error, 1);
+					}
+				}
+
 				$shipment = Shipment::create([
-					'price' => $faker->randomFloat(2, 50, 1500),
 					'size_id' => ShipmentSize::all()->random()->id,
 					'category_id' => ShipmentCategory::all()->random()->id,
 					'image_url' => $faker->imageUrl(),
 				]);
+
+				if (!$shipment->isValid()) {
+					$errors = $shipment->getErrors();
+					foreach ($shipment->getErrors() as $req => $error) {
+						throw new \Exception($error, 1);
+					}
+				}
 
 				do {
 					$status = self::STATUSES[array_rand(self::STATUSES)];
@@ -63,19 +77,17 @@ class OrdersSeeder extends Seeder
 					'payment_id' => null,
 					'geo_start' => $this->makePoint($this->getGeoData($trip->fromCity()->first())),
 					'geo_end' => $this->makePoint($this->getGeoData($trip->destinationCity()->first())),
+					'price' => $faker->randomFloat(2, 49, 1999),
 				];
 
 				$order = factory(Order::class)->create($data);
 
-				if (!is_null($order->validationErrors) && !empty($order->validationErrors)) {
-					foreach ($order->validationErrors['messages'] as $messages) {
-						foreach ($messages as $column => $errors) {
-							foreach ($errors as $error) {
-								throw new \Exception($column . ': ' . $error, 1);
-							}
-						}
+				if (!$order->isValid()) {
+					foreach ($order->getErrors() as $req => $error) {
+						throw new \Exception($error, 1);
 					}
 				}
+
 			}
 		});
 	}
