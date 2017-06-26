@@ -5,18 +5,19 @@ namespace App\Models;
 use App\Extensions\UuidTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 use Watson\Validating\ValidatingTrait;
 
 /**
  * Class Shipment
  * @package App\Models
  */
-class Shipment extends Model
+class Shipment extends Model implements Auditable
 {
 	use UuidTrait,
 		ValidatingTrait,
-		Auditable,
+		AuditableTrait,
 		SoftDeletes;
 
 	/**
@@ -32,12 +33,12 @@ class Shipment extends Model
 	/**
 	 * @var array
 	 */
-	protected $visible = ['id', 'size_id', 'category_id', 'image_url', 'price'];
+	protected $visible = ['id', 'size_id', 'category_id', 'image_url'];
 
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['id', 'size_id', 'category_id', 'image_url', 'price'];
+	protected $fillable = ['size_id', 'category_id', 'image_url'];
 
 	/**
 	 * @var array
@@ -45,7 +46,6 @@ class Shipment extends Model
 	protected $rules = [
 		'size_id'=>'required|integer',
 		'category_id'=>'required|integer',
-		'price'=>'required|numeric',
 		'image_url'=>'string',
 	];
 

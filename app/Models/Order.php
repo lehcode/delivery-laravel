@@ -49,6 +49,7 @@ class Order extends Model implements AuditableInterface
 		'geo_start',
 		'geo_end',
 		'status',
+		'price',
 	];
 
 	/**
@@ -73,6 +74,7 @@ class Order extends Model implements AuditableInterface
 		'shipment_id' => 'required',
 		'trip_id' => 'required',
 		'payment_id' => 'nullable',
+		'price' => 'required',
 	];
 
 	/**
@@ -190,7 +192,7 @@ class Order extends Model implements AuditableInterface
 		$loc = explode(' ', preg_replace('/[^\d\s]+/', '', $value));
 
 		foreach ($loc as $k => $coord) {
-			$loc[$k] = $coord / 100000;
+			$loc[$k] = $coord / 1000000;
 		}
 
 		$loc = implode(',', $loc);

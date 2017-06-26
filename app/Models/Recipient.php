@@ -6,20 +6,21 @@ use App\Models\User\Customer;
 use Bosnadev\Database\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use Watson\Validating\ValidatingTrait;
 
-class Recipient extends Model
+class Recipient extends Model implements AuditableInterface
 {
 	use UuidTrait,
 		ValidatingTrait,
-		Auditable,
+		AuditableTrait,
 		SoftDeletes;
 
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['name', 'email'];
+	protected $fillable = ['id', 'name', 'email', 'notes'];
 
 	/**
 	 * @var bool
@@ -40,16 +41,8 @@ class Recipient extends Model
 	 * @var array
 	 */
 	protected $rules = [
-		'name' => 'required',
+		'name' => 'required|string|min:3',
 		'phone' => 'required|phone:AUTO,mobile',
-	];
-
-	/**
-	 * @var array
-	 */
-	protected $validationMessages = [
-		'name.required' => "Recipient name is required",
-		'phone.required' => "Recipient phone is required",
 	];
 
 	public function order()
