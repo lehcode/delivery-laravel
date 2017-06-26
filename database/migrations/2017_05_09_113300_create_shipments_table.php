@@ -25,7 +25,6 @@ class CreateShipmentsTable extends Migration
 			$table->foreign('category_id')->references('id')->on('shipment_categories');
 
 			$table->string('image_url')->nullable();
-			$table->float('price', 6, 2)->nullable();
 
 			$table->timestamps();
 			$table->softDeletes();

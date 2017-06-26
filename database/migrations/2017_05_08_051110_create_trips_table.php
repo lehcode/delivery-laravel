@@ -24,6 +24,7 @@ class CreateTripsTable extends Migration
 			$table->uuid('id');
 			$table->primary('id');
 			$table->dateTime('departure_date');
+			$table->unsignedSmallInteger('approx_time');
 
 			$table->integer('payment_type_id')->unsigned()->index();
 			$table->foreign('payment_type_id')->references('id')->on('payment_types')
