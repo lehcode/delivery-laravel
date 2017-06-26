@@ -9,6 +9,7 @@ namespace App\Services\Order;
 
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 
 /**
  * Interface OrderServiceInterface
@@ -17,11 +18,11 @@ use Illuminate\Database\Eloquent\Collection;
 interface OrderServiceInterface
 {
 	/**
-	 * @param array $data
+	 * @param Request $data
 	 *
-	 * @return Order
+	 * @return mixed
 	 */
-	public function create(array $data);
+	public function create(Request $data);
 
 	/**
 	 * @param Order $order

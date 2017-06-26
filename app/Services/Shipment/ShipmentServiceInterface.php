@@ -14,5 +14,10 @@ namespace App\Services\Shipment;
  */
 interface ShipmentServiceInterface
 {
-	public function create($data);
+	/**
+	 * @param array $data
+	 *
+	 * @return mixed
+	 */
+	public function create(array $data);
 }
