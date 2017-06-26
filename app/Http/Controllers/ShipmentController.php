@@ -8,9 +8,10 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\ShipmentRequest;
+use App\Http\Responses\ShipmentResponse;
 use App\Services\Responder\ResponderService;
 use App\Services\Shipment\ShipmentService;
-use Illuminate\Http\Request;
 
 /**
  * Class ShipmentController
@@ -57,14 +58,14 @@ class ShipmentController extends Controller
 	}
 
 	/**
-	 * @param Request $request
+	 * @param ShipmentRequest $request
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Exception
 	 */
-	public function createShipment(Request $request)
+	public function createShipment(ShipmentRequest $request)
 	{
 		$data = $request->except('XDEBUG_SESSION_START');
-		return $this->responderService->response($this->shipmentService->create($data));
+		return $this->responderService->fractal($this->shipmentService->create($data), ShipmentResponse::class);
 	}
 }
