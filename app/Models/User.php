@@ -37,6 +37,13 @@ class User extends Authenticatable implements AuditableInterface
 	const PROFILE_IMAGE = 'photo';
 
 	/**
+	 * Indicates if the IDs are auto-incrementing.
+	 *
+	 * @var bool
+	 */
+	public $incrementing = false;
+
+	/**
 	 * The attributes that are mass assignable.
 	 *
 	 * @var array
@@ -58,13 +65,6 @@ class User extends Authenticatable implements AuditableInterface
 	 * @var array
 	 */
 	protected $hidden = ['password', 'remember_token'];
-
-	/**
-	 * Indicates if the IDs are auto-incrementing.
-	 *
-	 * @var bool
-	 */
-	public $incrementing = false;
 
 	/**
 	 * The attributes that should be mutated to dates.
@@ -126,7 +126,7 @@ class User extends Authenticatable implements AuditableInterface
 		'name' => 'required',
 		'email' => 'required|email|unique:users,email',
 		'password' => 'required|min:5',
-		User::PROFILE_IMAGE => 'string|unique:users,photo',
+		User::PROFILE_IMAGE => 'string|nullable|unique:users,photo',
 	];
 
 	/**
@@ -185,6 +185,11 @@ class User extends Authenticatable implements AuditableInterface
 	}
 	
 	public function getPhotoAttribute($value){
+
+		if (is_null($value)){
+			return null;
+		}
+
 		return 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $value;
 	}
 

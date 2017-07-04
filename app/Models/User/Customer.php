@@ -131,13 +131,4 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 			->fit(Manipulations::FIT_CROP, 400, 400);
 	}
 
-	/**
-	 * @param string $value
-	 *
-	 * @return string
-	 */
-	public function getPhotoAttribute($value){
-		return 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $value;
-	}
-
 }
