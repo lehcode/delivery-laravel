@@ -43,10 +43,15 @@ class Shipment extends Model implements Auditable
 	/**
 	 * @var array
 	 */
+	protected $casts = ['image_url' => 'json'];
+
+	/**
+	 * @var array
+	 */
 	protected $rules = [
-		'size_id'=>'required|integer',
-		'category_id'=>'required|integer',
-		'image_url'=>'string',
+		'size_id' => 'required|integer',
+		'category_id' => 'required|integer',
+		'image_url' => 'required',
 	];
 
 	/**
@@ -71,5 +76,20 @@ class Shipment extends Model implements Auditable
 	public function order()
 	{
 		return $this->hasOne(Order::class);
+	}
+
+	/**
+	 * @param $value
+	 *
+	 * @return string
+	 */
+	public function getImageUrlAttribute($value)
+	{
+		$value = json_decode($value);
+		foreach ($value as $k => $file) {
+			$value[$k] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $file;
+		}
+
+		return $value;
 	}
 }

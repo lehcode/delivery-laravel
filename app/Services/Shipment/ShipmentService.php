@@ -52,18 +52,33 @@ class ShipmentService implements ShipmentServiceInterface
 	}
 
 	/**
-	 * @param array $data
+	 * @param ShipmentRequest $request
 	 *
-	 * @return Shipment
+	 * @return $this
 	 * @throws \Exception
+	 * @throws \Illuminate\Validation\ValidationException
 	 */
-	public function create(array $data)
+	public function create(ShipmentRequest $request)
 	{
 
-		\Validator::make($data, ShipmentRequest::RULES)->validate();
-		
-		$result = $this->shipmentRepository->create($data);
+		$data = $request->except('XDEBUG_SESSION_START');
+		\Validator::make($data, $request->rules())->validate();
 
+		foreach ($request->input('photosArray') as $idx => $file) {
+			try {
+				$path = \Storage::disk('s3')->putFile('shipments', $file);
+				\Storage::disk('s3')->setVisibility($path, 'public');
+			} catch (\Exception $e) {
+				throw $e;
+			}
+
+			$data['image_url'][] = $path;
+		}
+		
+		unset($data['photosArray']);
+
+		$result = $this->shipmentRepository->create($data);
+		
 		return $result;
 	}
 

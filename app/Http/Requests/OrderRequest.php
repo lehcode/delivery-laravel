@@ -18,7 +18,7 @@ class OrderRequest extends ApiRequest
 	 */
 	public function rules()
 	{
-		return [
+		$rules = [
 			'recipient_id' => 'required',
 			'shipment_id' => 'required',
 			'trip_id' => '',

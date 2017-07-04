@@ -40,27 +40,39 @@ class OrdersSeeder extends Seeder
 		User\Customer::all()->each(function ($customer) use ($trips, $faker) {
 
 			for ($i = 0; $i < rand(3, 9); $i++) {
-
 				$trip = $trips->random()->with(['fromCity', 'destinationCity'])->first();
 
 				$recipient = factory(Recipient::class)->create();
 
 				if (!$recipient->isValid()) {
-					foreach ($recipient->getErrors() as $req => $error) {
-						throw new \Exception($error, 1);
+					$errors = $recipient->getErrors()->messages();
+					foreach ($errors as $req => $error) {
+						foreach ($error as $text){
+							throw new \Exception($text, 1);
+						}
 					}
 				}
-
-				$shipment = Shipment::create([
+				
+				$imageUrl = $faker->randomElement([
+					'shipments/Ld709bhNWngbeydEczJBk4QtDlBNhaSNha61V5sK.jpeg',
+					'shipments/ZO644UyvgHN9mhQqHzLXdFNBC1bBi9RYG92dtPm8.jpeg',
+					'shipments/b4tsL8Lu8XwoS33uoXdIl2RXkVZ8kYHTL89m3tLL.jpeg',
+				]);
+				
+				$shipmentData = [
 					'size_id' => ShipmentSize::all()->random()->id,
 					'category_id' => ShipmentCategory::all()->random()->id,
-					'image_url' => $faker->imageUrl(),
-				]);
+					'image_url' => [$imageUrl],
+				];
+
+				$shipment = Shipment::create($shipmentData);
 
 				if (!$shipment->isValid()) {
-					$errors = $shipment->getErrors();
-					foreach ($shipment->getErrors() as $req => $error) {
-						throw new \Exception($error, 1);
+					$errors = $shipment->getErrors()->messages();
+					foreach ($errors as $req => $error) {
+						foreach ($error as $text){
+							throw new \Exception($text, 1);
+						}
 					}
 				}
 
@@ -83,8 +95,11 @@ class OrdersSeeder extends Seeder
 				$order = factory(Order::class)->create($data);
 
 				if (!$order->isValid()) {
-					foreach ($order->getErrors() as $req => $error) {
-						throw new \Exception($error, 1);
+					$errors = $order->getErrors()->messages();
+					foreach ($errors as $req => $error) {
+						foreach ($error as $text){
+							throw new \Exception($text, 1);
+						}
 					}
 				}
 

@@ -38,8 +38,7 @@ class ShipmentRepository extends CrudRepository implements ShipmentRepositoryInt
 	public function create(array $params)
 	{
 		try {
-			$result = parent::create($params);
-			return $result;
+			return parent::create($params);
 		} catch (\Exception $e) {
 			throw $e;
 		}

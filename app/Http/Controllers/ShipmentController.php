@@ -65,7 +65,6 @@ class ShipmentController extends Controller
 	 */
 	public function createShipment(ShipmentRequest $request)
 	{
-		$data = $request->except('XDEBUG_SESSION_START');
-		return $this->responderService->fractal($this->shipmentService->create($data), ShipmentResponse::class);
+		return $this->responderService->fractal($this->shipmentService->create($request), ShipmentResponse::class);
 	}
 }

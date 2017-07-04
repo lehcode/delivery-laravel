@@ -8,6 +8,8 @@
 
 namespace App\Services\Shipment;
 
+use App\Http\Requests\ShipmentRequest;
+
 /**
  * Interface ShipmentServiceInterface
  * @package App\Services\Shipment
@@ -15,9 +17,9 @@ namespace App\Services\Shipment;
 interface ShipmentServiceInterface
 {
 	/**
-	 * @param array $data
+	 * @param ShipmentRequest $request
 	 *
 	 * @return mixed
 	 */
-	public function create(array $data);
+	public function create(ShipmentRequest $request);
 }

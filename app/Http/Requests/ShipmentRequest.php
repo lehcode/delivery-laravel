@@ -22,6 +22,13 @@ class ShipmentRequest extends ApiRequest
 	 */
 	public function rules()
 	{
-		return self::RULES;
+		$rules = self::RULES;
+
+		$photos = $this->input('photosArray');
+		foreach ($photos as $idx => $img) {
+			$rules['photosArray.' . $idx] = 'required|image|mimes:jpeg,bmp,png|max:2000';
+		}
+
+		return $rules;
 	}
 }
