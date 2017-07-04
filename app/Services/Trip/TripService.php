@@ -146,6 +146,19 @@ class TripService implements TripServiceInterface
 	}
 
 	/**
+	 * @param $cityName
+	 *
+	 * @return Collection
+	 */
+	public function getTripsFromCity($cityName)
+	{
+		$city = City::where('name', '=', $cityName)->first();
+		$trips = Trip::where('from_city_id', '=', $city->id)->get();
+
+		return $trips;
+	}
+
+	/**
 	 * @param array $dates
 	 *
 	 * @return mixed
@@ -211,7 +224,7 @@ class TripService implements TripServiceInterface
 			->where('id', '=', (int)$cityId)
 			->where('active', '=', true)
 			->first();
-		
+
 		$clone = $result->toArray();
 		$clone['country'] = $result->country->toArray();
 

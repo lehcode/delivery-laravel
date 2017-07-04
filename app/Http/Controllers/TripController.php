@@ -58,6 +58,16 @@ class TripController extends Controller
 	}
 
 	/**
+	 * @param $city
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function fromCity($city)
+	{
+		return $this->responderService->fractal($this->tripService->getTripsFromCity($city), TripResponse::class);
+	}
+
+	/**
 	 * @param integer $id
 	 *
 	 * @return \Illuminate\Http\JsonResponse

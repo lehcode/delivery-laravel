@@ -32,15 +32,30 @@ class TripResponse extends ApiResponse
 		}
 
 		$carrier = $user->carrier()->with('currentCity')->first();
-		$carrier->makeHidden('current_city');
+		$tripCarrier = $carrier->toArray();
+		$city = $carrier->currentCity()->with('country')->first();
+		$tripCarrier['current_city'] = $city->toArray();
+		$tripCarrier['current_city']['country'] = $city->country;
+
 		$paymentType = $trip->paymentType()->first();
+
+		$city = $trip->fromCity()->with('country')->first();
+		$city->makeHidden('country_id');
+		$fromCity = $city->toArray();
+		$fromCity['country'] = $city->country;
+
+		$city = $trip->destinationCity()->with('country')->first();
+		$city->makeHidden('country_id');
+		$destCity = $city->toArray();
+		$destCity['country'] = $city->country;
+
 
 		$data = [
 			'id' => $trip->id,
 			'payment_type' => $paymentType,
-			'from_city' => $trip->fromCity()->first(),
-			'to_city' => $trip->destinationCity()->first(),
-			'carrier' => $carrier,
+			'from_city' => $fromCity,
+			'to_city' => $destCity,
+			'carrier' => $tripCarrier,
 			'departure_date' => $trip->departure_date,
 			'created_at' => $trip->created_at,
 			'updated_at' => $trip->updated_at,
