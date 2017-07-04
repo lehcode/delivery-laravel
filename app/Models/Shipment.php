@@ -8,17 +8,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
 use Watson\Validating\ValidatingTrait;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
 /**
  * Class Shipment
  * @package App\Models
  */
-class Shipment extends Model implements Auditable
+class Shipment extends Model implements Auditable, HasMediaConversions
 {
 	use UuidTrait,
 		ValidatingTrait,
 		AuditableTrait,
-		SoftDeletes;
+		SoftDeletes,
+		HasMediaTrait;
 
 	/**
 	 * @var bool
@@ -49,9 +52,9 @@ class Shipment extends Model implements Auditable
 	 * @var array
 	 */
 	protected $rules = [
-		'size_id' => 'required|integer',
-		'category_id' => 'required|integer',
-		'image_url' => 'required',
+		'size_id' => 'required|integer|min:1',
+		'category_id' => 'required|integer|min:1',
+		'image_url' => 'required|array',
 	];
 
 	/**
@@ -91,5 +94,14 @@ class Shipment extends Model implements Auditable
 		}
 
 		return $value;
+	}
+
+	/**
+	 * @throws \Spatie\Image\Exceptions\InvalidManipulation
+	 */
+	public function registerMediaConversions()
+	{
+		$this->addMediaConversion('fitted')
+			->fit(Manipulations::FIT_CROP, 400, 400);
 	}
 }

@@ -19,15 +19,6 @@ use JWTAuth;
 /**
  * Class UserDetailedResponse
  * @package App\Http\Responses
- *
- * @SWG\Response(
- *     response="userDetailedResponse",
- *     description="User profile",
- *     @SWG\Schema(
- *      @SWG\Property(property="status", ref="#/definitions/textStatusProperty"),
- *      @SWG\Property(property="data", type="object", description="User data")
- *      )
- * )
  */
 class UserDetailedResponse extends TransformerAbstract
 {
@@ -73,13 +64,12 @@ class UserDetailedResponse extends TransformerAbstract
 				break;
 
 			case User::ROLE_CUSTOMER:
+				$current_city = $user->customer()->first()->currentCity()->with('country')->first();
 				$data = [
-					'current_city' => $user->customer()->first()->currentCity()->first(),
-					'is_enabled' => $user->is_enabled,
+					'current_city' => $current_city,
+					'is_enabled' => false,
 					'name' => $user->name,
-//					'picture' => !is_null($user->profile->getFirstMedia(User::PROFILE_IMAGE))
-//						? $user->profile->getFirstMedia(User::PROFILE_IMAGE)->getFullUrl('fitted')
-//						: null
+					User::PROFILE_IMAGE => $user->photo
 				];
 
 				break;
@@ -88,13 +78,11 @@ class UserDetailedResponse extends TransformerAbstract
 				$profile = $user->profile;
 				$data = [
 					'current_city' => $user->carrier()->first()->currentCity()->first(),
-					'is_enabled' => $user->is_enabled,
-					'is_online' => $profile->is_online == User\Carrier::STATUS_ONLINE,
+					'is_enabled' => false,
+					'is_online' => false,
 					'name' => $user->name,
 					'notes' => $profile->notes,
-//					'picture' => !is_null($profile->getFirstMedia(User::PROFILE_IMAGE))
-//						? $profile->getFirstMedia(User::PROFILE_IMAGE)->getFullUrl('fitted')
-//						: null,
+					User::PROFILE_IMAGE => $user->photo,
 				];
 
 				if ($this->includeDetails == true) {

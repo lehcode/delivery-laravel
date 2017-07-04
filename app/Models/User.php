@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use Hash;
+use Spatie\Image\Manipulations;
 use Watson\Validating\ValidatingTrait;
 use Validator;
 
@@ -33,14 +34,23 @@ class User extends Authenticatable implements AuditableInterface
 	const ROLE_CUSTOMER = 'customer';
 	const ROLE_CARRIER = 'carrier';
 
-	const PROFILE_IMAGE = 'picture';
+	const PROFILE_IMAGE = 'photo';
 
 	/**
 	 * The attributes that are mass assignable.
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'email', 'phone', 'password', 'is_enabled', 'roles', 'last_login'];
+	protected $fillable = [
+		'name',
+		'email',
+		'phone',
+		'password',
+		'is_enabled',
+		'roles',
+		'last_login',
+		self::PROFILE_IMAGE,
+	];
 
 	/**
 	 * The attributes that should be hidden for arrays.
@@ -76,7 +86,18 @@ class User extends Authenticatable implements AuditableInterface
 	/**
 	 * @var array
 	 */
-	protected $visible = ['id', 'email', 'name', 'phone', 'photo', 'is_enabled', 'created_at', 'updated_at', 'roles', 'last_login'];
+	protected $visible = [
+		'id',
+		'email',
+		'name',
+		'phone',
+		self::PROFILE_IMAGE,
+		'is_enabled',
+		'created_at',
+		'updated_at',
+		'roles',
+		'last_login',
+	];
 
 	/**
 	 * @var array
@@ -104,8 +125,8 @@ class User extends Authenticatable implements AuditableInterface
 	protected $rules = [
 		'name' => 'required',
 		'email' => 'required|email|unique:users,email',
-		//'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
-		'password' => 'required|min:5'
+		'password' => 'required|min:5',
+		User::PROFILE_IMAGE => 'string|unique:users,photo',
 	];
 
 	/**
@@ -117,7 +138,6 @@ class User extends Authenticatable implements AuditableInterface
 		'email.unique' => "Email must be unique",
 		'email.email' => "Email has wrong format",
 		'password.required' => "User password is required",
-		//'phone.required' => "User phone is required",
 		'phone.phone' => "User phone is wrong",
 	];
 
@@ -148,14 +168,24 @@ class User extends Authenticatable implements AuditableInterface
 		return $this;
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
 	public function customer()
 	{
 		return $this->hasOne(Customer::class, 'id');
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
 	public function carrier()
 	{
 		return $this->hasOne(Carrier::class, 'id');
+	}
+	
+	public function getPhotoAttribute($value){
+		return 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $value;
 	}
 
 }

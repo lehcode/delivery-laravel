@@ -96,17 +96,7 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 		'card_expiry' => 'date',
 		'card_cvc' => 'cvc',
 		'card_type' => 'in:Visa,MasterCard',
-		User::PROFILE_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
 	];
-
-	/**
-	 * @throws \Spatie\Image\Exceptions\InvalidManipulation
-	 */
-	public function registerMediaConversions()
-	{
-		$this->addMediaConversion('fitted')
-			->fit(Manipulations::FIT_CROP, 400, 400);
-	}
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -130,6 +120,24 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 	public function orders()
 	{
 		return $this->hasMany(Order::class, 'customer_id');
+	}
+
+	/**
+	 * @throws \Spatie\Image\Exceptions\InvalidManipulation
+	 */
+	public function registerMediaConversions()
+	{
+		$this->addMediaConversion('fitted')
+			->fit(Manipulations::FIT_CROP, 400, 400);
+	}
+
+	/**
+	 * @param string $value
+	 *
+	 * @return string
+	 */
+	public function getPhotoAttribute($value){
+		return 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $value;
 	}
 
 }

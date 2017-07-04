@@ -31,8 +31,8 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 		ProfileAttributeTrait,
 		LaratrustUserTrait;
 
-	const STATUS_ONLINE = 1;
-	const STATUS_OFFLINE = 0;
+	const STATUS_ONLINE = 'online';
+	const STATUS_OFFLINE = 'offline';
 
 	/**
 	 *
@@ -47,7 +47,15 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['id', 'name', 'is_activated', 'is_online', 'current_city', 'default_address'];
+	protected $fillable = [
+		'id',
+		'name',
+		'is_activated',
+		'is_online',
+		'current_city',
+		'default_address',
+		self::ID_IMAGE,
+	];
 
 	/**
 	 * @var array
@@ -71,8 +79,7 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 		'name' => 'required|string|min:3',
 		'default_address' => 'required|string',
 		'current_city' => 'nullable|integer',
-		self::ID_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
-		User::PROFILE_IMAGE => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
+		self::ID_IMAGE => 'required|string|unique:carriers,id_scan',
 	];
 
 	/**

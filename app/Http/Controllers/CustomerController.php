@@ -74,41 +74,14 @@ class CustomerController extends Controller
 	}
 
 	/**
-	 * @param SignUpCustomerRequest $request
+	 * @param SignupCustomerRequest $request
 	 *
 	 * @return \Illuminate\Http\JsonResponse
-	 * @throws ValidationException
-	 *
-	 * @SWG\Post(
-	 *     path="/customer/v1/user/create",
-	 *     summary="Create new user account",
-	 *     tags={"Register & Login"},
-	 *     operationId="POST_customer-v1-user-create",
-	 *
-	 *     @SWG\Schema(
-	 *      @SWG\Parameter(ref="#/parameters/userName"),
-	 *      @SWG\Parameter(ref="#/parameters/userEmail"),
-	 *      @SWG\Parameter(ref="#/parameters/userPhone"),
-	 *      @SWG\Parameter(ref="#/parameters/userPassword"),
-	 *      @SWG\Parameter(ref="#/parameters/userPasswordConfirmation"),
-	 *      @SWG\Parameter(ref="#/parameters/userProfileImage")
-	 *     ),
-	 *     @SWG\Response(
-	 *      response="200",
-	 *      description="success",
-	 *      @SWG\Schema(ref="#/definitions/userDetailedResponse"),
-	 *     ),
-	 *     @SWG\Response(
-	 *      response="default",
-	 *      description="General error",
-	 *      @SWG\Schema(ref="#/definitions/errorResponse"),
-	 *   )
-	 * )
+	 * @throws \Exception
 	 */
 	public function create(SignupCustomerRequest $request)
 	{
-		$params = $request->except(['XDEBUG_SESSION_START']);
-		return $this->responderService->fractal($this->signupService->customer($params), UserDetailedResponse::class, 0, [false, true]);
+		return $this->responderService->fractal($this->signupService->customer($request), UserDetailedResponse::class);
 
 	}
 
