@@ -21,10 +21,17 @@ class ApiDebug
 	 * @param Closure $next
 	 *
 	 * @return mixed
+	 * @throws \Exception
 	 */
 	public function handle(Request $request, Closure $next) {
 
-		$request->replace($request->except('XDEBUG_SESSION_START'));
+		$input = $request->except('XDEBUG_SESSION_START');
+		$request->query->remove('XDEBUG_SESSION_START');
+		$request->replace($input);
+
+		if ($request->has('XDEBUG_SESSION_START')) {
+			throw new \Exception("Request has XDEBUG_SESSION_START variable.", 500);
+		}
 
 		return $next($request);
 	}
