@@ -7,13 +7,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\MultipleExceptions;
 use App\Http\Requests\EditUserProfileRequest;
-use App\Http\Requests\SignUpCustomerRequest;
 use App\Http\Responses\UserDetailedResponse;
-use App\Repositories\User\UserRepositoryInterface;
-use App\Services\Responder\ResponderServiceInterface;
-use App\Services\SignUp\SignUpServiceInterface;
-use App\Services\UserService\UserServiceInterface;
+use App\Repositories\User\UserRepository;
+use App\Services\Responder\ResponderService;
+use App\Services\SignUp\SignUpService;
+use App\Services\UserService\UserService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -24,44 +24,44 @@ class UserController extends BaseController
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
 	/**
-	 * @var SignUpServiceInterface
+	 * @var SignUpService
 	 */
 	protected $signupService;
 
 	/**
-	 * @var ResponderServiceInterface
+	 * @var ResponderService
 	 */
 	protected $responderService;
 
 	/**
-	 * @var UserServiceInterface
+	 * @var UserService
 	 */
 	protected $userService;
 
 	/**
-	 * @var UserRepositoryInterface
+	 * @var UserRepository
 	 */
 	protected $userRepository;
 
 	/**
 	 * UserController constructor.
 	 *
-	 * @param SignUpServiceInterface    $signUpServiceInterface
-	 * @param ResponderServiceInterface $responderServiceInterface
-	 * @param UserServiceInterface      $userServiceInterface
-	 * @param UserRepositoryInterface   $userRepositoryInterface
+	 * @param SignUpService    $signUpService
+	 * @param ResponderService $responderService
+	 * @param UserService      $userService
+	 * @param UserRepository   $userRepository
 	 */
 	public function __construct(
-		SignUpServiceInterface $signUpServiceInterface,
-		ResponderServiceInterface $responderServiceInterface,
-		UserServiceInterface $userServiceInterface,
-		UserRepositoryInterface $userRepositoryInterface
+		SignUpService $signUpService,
+		ResponderService $responderService,
+		UserService $userService,
+		UserRepository $userRepository
 	) {
 	
-		$this->signupService = $signUpServiceInterface;
-		$this->responderService = $responderServiceInterface;
-		$this->userService = $userServiceInterface;
-		$this->userRepository = $userRepositoryInterface;
+		$this->signupService = $signUpService;
+		$this->responderService = $responderService;
+		$this->userService = $userService;
+		$this->userRepository = $userRepository;
 	}
 
 	/**
@@ -92,6 +92,31 @@ class UserController extends BaseController
 			throw $e;
 		} catch (\Exception $e) {
 			return $this->responderService->errorResponse($e);
+		}
+	}
+
+	/**
+	 * @param $userId
+	 * @param $key
+	 *
+	 * @return \Illuminate\Contracts\View\View
+	 */
+	public function verify($userId, $key) {
+		try {
+			/** @var User $user */
+			if(!$user = $this->userRepository->find($userId)) {
+				throw new MultipleExceptions(trans('app.common.errors.user_not_found'));
+			}
+
+			if($this->userService->verifyKey($user, $key)) {
+				$this->userService->activateUserByKey($user, $key);
+			} else {
+				throw new MultipleExceptions(trans('app.common.errors.cannot_activate'));
+			}
+
+			return \View::make('activate');
+		} catch(MultipleExceptions $e) {
+			return \View::make('activate')->withErrors($e->getMessages());
 		}
 	}
 }

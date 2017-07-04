@@ -15,4 +15,4 @@ Route::get('/reset-password/done', ['as' => 'password_reset.success', 'uses' => 
 Route::get('/reset-password/{key}', ['as' => 'password_reset.form', 'uses' => 'RestorePasswordController@restorePage']);
 Route::post('/reset-password/{key}', ['as' => 'password_reset.action', 'uses' => 'RestorePasswordController@restoreAction']);
 
-Route::get('/activate/{user}/{key}', ['as' => 'activate.link', 'uses' => 'ActivationController@verify']);
+Route::get('/activate/{user}/{key}', ['as' => 'activate.link', 'uses' => 'UserController@verify']);
