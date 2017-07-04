@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ApiDebug;
 use App\Http\Middleware\Locale;
 use App\Http\Middleware\Morph;
 use App\Http\Middleware\MorphDataUrls;
@@ -51,6 +52,7 @@ class Kernel extends HttpKernel
 			Locale::class,
 			SetApiHost::class,
 			VerifyUuid::class,
+			ApiDebug::class,
 		],
 	];
 
@@ -77,5 +79,6 @@ class Kernel extends HttpKernel
 		'maintenance' => \App\Http\Middleware\CheckMaintenance::class,
 		'api.host' => SetApiHost::class,
 		'api.uuid' => VerifyUuid::class,
+		'api.debug' => ApiDebug::class,
 	];
 }
