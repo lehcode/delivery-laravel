@@ -8,6 +8,8 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\MultipleExceptions;
+use App\Models\Order;
+use App\Models\Shipment;
 use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -42,6 +44,18 @@ class VerifyUuid
 		if ($uuid = $request->get('trip_id')){
 			if (!Trip::find($uuid)){
 				throw new MultipleExceptions("Trip not found", 400);
+			}
+		}
+
+		if ($uuid = $request->get('order_id')){
+			if (!Order::find($uuid)){
+				throw new MultipleExceptions("Order not found", 400);
+			}
+		}
+
+		if ($uuid = $request->get('shipment_id')){
+			if (!Shipment::find($uuid)){
+				throw new MultipleExceptions("Shipment not found", 400);
 			}
 		}
 
