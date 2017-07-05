@@ -10,6 +10,7 @@ namespace App\Services\Trip;
 use App\Exceptions\MultipleExceptions;
 use App\Http\Responses\TripResponse;
 use App\Models\City;
+use App\Models\Country;
 use App\Models\Trip;
 use App\Models\User;
 use App\Repositories\Trip\TripRepository;
@@ -236,6 +237,51 @@ class TripService implements TripServiceInterface
 		$clone['country'] = $result->country->toArray();
 
 		return $clone;
+	}
+
+	/**
+	 * @return Collection|static[]
+	 */
+	public function getAllCities()
+	{
+
+		$result = Country::with('cities')->get();
+
+		return $result;
+
+	}
+
+	/**
+	 * @param string $search
+	 * @param string $countryCode
+	 *
+	 * @return \Illuminate\Database\Query\Builder
+	 * @throws \Illuminate\Validation\ValidationException
+	 */
+	public function findCity($search, $countryCode)
+	{
+
+		\Validator::make(['search' => $search, 'country_code' => $countryCode], [
+			'search' => 'required|string|min:2|max:64',
+			'country_code' => 'required|string|size:2|exists:countries,alpha2_code',
+		])->validate();
+
+		$country = Country::where('alpha2_code', $countryCode)->get()->first();
+
+		$result = \DB::table('cities')
+			->where('name', 'like', '%' . $search . '%')
+			->where('country_id', '=', $country->id)
+			->where('active', '=', true)
+			->orderBy('name')
+			->get()
+			->each(function ($item) {
+				$item->country_id = null;
+				$item->active = null;
+				return $item;
+			})
+		;
+
+		return $result;
 	}
 
 }

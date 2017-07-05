@@ -36,7 +36,6 @@ class TripController extends Controller
 		ResponderService $responderService
 	)
 	{
-
 		$this->tripService = $tripService;
 		$this->responderService = $responderService;
 	}
@@ -129,6 +128,26 @@ class TripController extends Controller
 	public function getCity(Request $request, $userType = null, $cityId = null)
 	{
 		return $this->responderService->objectResponse($this->tripService->getCity($cityId));
+	}
+
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getCities()
+	{
+		return $this->responderService->objectResponse($this->tripService->getAllCities());
+	}
+
+	/**
+	 * @param string     $search
+	 * @param string $countryCode
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function findCityByName($userType, $search, $countryCode)
+	{
+		return $this->responderService->objectResponse($this->tripService->findCity($search, $countryCode));
 	}
 
 
