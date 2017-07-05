@@ -23,8 +23,9 @@ class AuthenticationTokenResponse extends ApiResponse
 	{
 		$user = $data[0];
 		$token = $data[1];
+		$detailed = $data[2];
 
-		$userResponse = $this->includeTransformedItem($user, new UserDetailedResponse(true));
+		$userResponse = $this->includeTransformedItem($user, new UserDetailedResponse($detailed));
 
 		return array_merge([
 			'token' => $token,

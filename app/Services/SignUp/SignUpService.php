@@ -56,14 +56,12 @@ class SignUpService implements SignUpServiceInterface
 	 */
 	public function customer(SignupCustomerRequest $request)
 	{
-
-		$params = $request->except(['XDEBUG_SESSION_START']);
+		$params = $request->all();
 		$entityUser = array_only($params, app()->make(User::class)->getFillable());
 		$entityCustomerProfile = array_only($params, app()->make(User\Customer::class)->getFillable());
 
 		$entityUser['type'] = User::ROLE_CUSTOMER;
 		$entityUser['is_enabled'] = true;
-		$entityUser['photo'] = $request->input('image');
 
 		$country = Country::where('alpha2_code', '=', $params['location']['country'])->first();
 		$entityCustomerProfile['current_city'] = City::where('name', '=', $params['location']['city'])
@@ -73,21 +71,24 @@ class SignUpService implements SignUpServiceInterface
 			'name' => 'required|string|min:5|max:254',
 			'email' => 'required|email|unique:users,email',
 			'password' => 'required|min:5|max:24|confirmed',
-			'image' => 'required|file|image',
+			'image' => 'file|image',
 			'location.city' => 'required|string|min:2|max:64',
 			'location.country' => 'required|string|regex:/^[A-Z]{2}$/',
 		])->validate();
 
-		return DB::transaction(function () use ($entityUser, $entityCustomerProfile, $params) {
-
-			if (isset($entityUser['photo']) && $entityUser['photo'] instanceof UploadedFile) {
-				$entityUser['photo'] = \Storage::disk('s3')->putFile('profile-images', $entityUser['photo']);
-				\Storage::disk('s3')->setVisibility($entityUser['photo'], 'public');
-			}
+		return DB::transaction(function () use ($entityUser, $entityCustomerProfile, $params, $request) {
 
 			$user = User::create($entityUser);
+
+			if ($request->has('image') && $request->input('image') instanceof UploadedFile) {
+				unset($params['image']);
+				$user->clearMediaCollection(User::PROFILE_IMAGE)
+					->addMediaFromRequest('image')
+					->toMediaCollection(User::PROFILE_IMAGE, 's3');
+			}
+
 			$role = User\Role::where(['name' => 'customer'])->first();
-			$user->attachRole($role)->save();
+			$user->attachRole($role)->saveOrFail();
 
 			$customer = User\Customer::create(array_merge(['id' => $user->id], $entityCustomerProfile));
 

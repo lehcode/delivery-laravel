@@ -55,7 +55,9 @@ class UserDetailedResponse extends TransformerAbstract
 		/* @var RatingServiceInterface $ratingService */
 		//$ratingService = app()->make(RatingServiceInterface::class);
 
-		$data = [];
+		$data = [
+			'is_enabled' => $user->is_enabled,
+		];
 		$roles = $user->roles();
 		$role = $roles->first();
 
@@ -64,29 +66,36 @@ class UserDetailedResponse extends TransformerAbstract
 				break;
 
 			case User::ROLE_CUSTOMER:
-				$current_city = $user->customer()->first()->currentCity()->with('country')->first();
+				$location = $user->customer->currentCity()->with('country')->first();
+				$city = $location->toArray();
+				$city['country'] = $location->country->toArray();
+
 				$data = [
-					'current_city' => $current_city,
-					'is_enabled' => false,
+					'current_city' => $city,
 					'name' => $user->name,
-					User::PROFILE_IMAGE => $user->photo
+					User::PROFILE_IMAGE => $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb'),
 				];
+
+				if ($this->includeDetails == true) {
+					$data = array_merge($data, ["notes" => $user->customer->notes]);
+				}
 
 				break;
 
 			case User::ROLE_CARRIER:
-				$profile = $user->profile;
+				$location = $user->customer->currentCity()->with('country')->first();
+				$city = $location->toArray();
+				$city['country'] = $location->country->toArray();
+
 				$data = [
-					'current_city' => $user->carrier()->first()->currentCity()->first(),
-					'is_enabled' => false,
-					'is_online' => false,
+					'current_city' => $city,
+					'is_online' => $user->carrier->is_online,
 					'name' => $user->name,
-					'notes' => $profile->notes,
-					User::PROFILE_IMAGE => $user->photo,
+					User::PROFILE_IMAGE => $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb'),
 				];
 
 				if ($this->includeDetails == true) {
-					$data = array_merge($data, ["notes" => $profile->notes]);
+					$data = array_merge($data, ["notes" => $user->carrier->notes]);
 				}
 				break;
 		}

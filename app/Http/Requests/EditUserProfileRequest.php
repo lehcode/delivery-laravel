@@ -19,13 +19,21 @@ class EditUserProfileRequest extends ApiRequest
 	 */
 	public function rules()
 	{
-		return [
-			'name' => 'min:3',
+		$rules = [
+			'name' => 'string|min:3',
 			'email' => 'email',
-			'password' => 'required|min:5',
-			'password_confirmation' => 'required|min:5|required_with:password',
+			'password' => 'min:5|confirmed',
 			'phone' => 'phone:AUTO,mobile',
-			'picture' => 'file|image|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'
+			'image' => 'file|image|dimensions:min_width=100,min_height=100,max_width=2048,max_height=2048',
+			'id_scan' => 'file|image|dimensions:min_width=1024,min_height=1024,max_width=4096,max_height=4096',
+			'location.city' => 'string|min:2|max:64|required_with:location.country',
+			'location.country' => 'string|size:2|exists:countries,alpha2_code|required_with:location.city',
+			'card_name' => 'string|min:4|max:64',
+			'card_number' => 'ccn',
+			'card_expiry' => 'date',
+			'card_cvc' => 'cvc',
 		];
+		
+		return $rules;
 	}
 }
