@@ -16,10 +16,12 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use Hash;
 use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use Watson\Validating\ValidatingTrait;
 use Validator;
 
-class User extends Authenticatable implements AuditableInterface
+class User extends Authenticatable implements AuditableInterface, HasMediaConversions
 {
 	use LaratrustUserTrait,
 		Notifiable,
@@ -27,7 +29,8 @@ class User extends Authenticatable implements AuditableInterface
 		SoftDeletes,
 		ValidatingTrait,
 		AuditableTrait,
-		ProfileAttributeTrait;
+		ProfileAttributeTrait,
+		HasMediaTrait;
 
 	const ROLE_ROOT = 'root';
 	const ROLE_ADMIN = 'admin';
@@ -183,14 +186,17 @@ class User extends Authenticatable implements AuditableInterface
 	{
 		return $this->hasOne(Carrier::class, 'id');
 	}
-	
-	public function getPhotoAttribute($value){
 
-		if (is_null($value)){
-			return null;
-		}
+	/**
+	 * @throws \Spatie\Image\Exceptions\InvalidManipulation
+	 */
+	public function registerMediaConversions()
+	{
+		$this->addMediaConversion('fitted')
+			->fit(Manipulations::FIT_CROP, 400, 400);
 
-		return 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $value;
+		$this->addMediaConversion('thumb')
+			->fit(Manipulations::FIT_CROP, 164, 164);
 	}
 
 }
