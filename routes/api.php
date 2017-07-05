@@ -11,7 +11,6 @@
 */
 
 
-
 Route::group(['middleware' => ['maintenance', 'api']], function () {
 
 	/*
@@ -25,8 +24,10 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 
 
 			Route::get('city/{city_id}', ['uses' => 'TripController@getCity']);
+			Route::get('city/find/{search}/{country_code}', ['uses' => 'TripController@findCityByName']);
+			Route::get('cities', ['uses' => 'TripController@getCities']);
 
-			Route::group(['prefix'=>'shipment'], function () {
+			Route::group(['prefix' => 'shipment'], function () {
 				Route::get('sizes', ['uses' => 'ShipmentController@sizes']);
 				Route::get('categories', ['uses' => 'ShipmentController@categories']);
 			});
@@ -63,10 +64,11 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 				Route::get('setings', ['uses' => 'SettingsController@getSettings']);
 				Route::post('setings', ['uses' => 'SettingsController@updateSettings']);
 
-				Route::get('payment-info', ['uses'=>'PaymentController@getUserPaymentInfo']);
-				Route::post('payment-info', ['uses'=>'PaymentController@storeUserPaymentInfo']);
+				Route::get('payment-info', ['uses' => 'CustomerController@getPaymentInfo']);
+				Route::post('payment-info', ['uses' => 'CustomerController@storePaymentInfo']);
+				Route::patch('payment-info/update', ['uses' => 'CustomerController@updatePaymentInfo']);
 
-				Route::patch('update', ['uses' => 'CustomerController@update']);
+				Route::post('update', ['uses' => 'CustomerController@update']);
 			});
 
 			Route::group(['prefix' => 'order'], function () {
@@ -77,7 +79,7 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 				Route::patch('update/{id}', ['uses' => 'OrderController@updateOrder']);
 				Route::get('find/shipment-type/{id}', ['uses' => 'OrderController@findOrderByShipmentType']);
 				Route::post('recipient/create', ['uses' => 'OrderController@createRecipient']);
-				Route::post('shipment/create', ['uses'=>'ShipmentController@createShipment']);
+				Route::post('shipment/create', ['uses' => 'ShipmentController@createShipment']);
 			});
 
 			Route::group(['prefix' => 'trip'], function () {
@@ -88,8 +90,8 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 				Route::get('find/date/{date}', ['uses' => 'TripController@getByDate']);
 			});
 
-			Route:: group(['prefix'=>'payment'], function () {
-				Route::post('create', ['uses'=>'PaymentController@createPayment']);
+			Route:: group(['prefix' => 'payment'], function () {
+				Route::post('create', ['uses' => 'PaymentController@createPayment']);
 			});
 
 		});
@@ -117,8 +119,8 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 			Route::group(['prefix' => 'trip'], function () {
 				Route::get('my', ['uses' => 'CarrierController@getUserTrips']);
 				Route::get('active-trips', ['uses' => 'CarrierController@getActiveTrips']);
-				Route::get('{trip_id}', ['middleware'=>'api.uuid', 'uses' => 'TripController@get']);
-				Route::post('create', ['middleware'=>'api.uuid', 'uses' => 'TripController@create']);
+				Route::get('{trip_id}', ['middleware' => 'api.uuid', 'uses' => 'TripController@get']);
+				Route::post('create', ['middleware' => 'api.uuid', 'uses' => 'TripController@create']);
 			});
 
 			Route::group(['prefix' => 'order'], function () {
@@ -126,7 +128,7 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 				Route::get('{id}', ['uses' => 'OrderController@get']);
 			});
 
-			Route::group(['prefix'=>'payment'], function () {
+			Route::group(['prefix' => 'payment'], function () {
 				Route::get('types', ['uses' => 'PaymentController@types']);
 			});
 
