@@ -73,7 +73,7 @@ class UserDetailedResponse extends TransformerAbstract
 				$data = [
 					'current_city' => $city,
 					'name' => $user->name,
-					User::PROFILE_IMAGE => $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb'),
+					User::PROFILE_IMAGE => !is_null($user->photo) ? $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb') : '',
 				];
 
 				if ($this->includeDetails == true) {
@@ -91,7 +91,7 @@ class UserDetailedResponse extends TransformerAbstract
 					'current_city' => $city,
 					'is_online' => $user->carrier->is_online,
 					'name' => $user->name,
-					User::PROFILE_IMAGE => $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb'),
+					User::PROFILE_IMAGE => !is_null($user->photo) ? $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb') : '',
 				];
 
 				if ($this->includeDetails == true) {
