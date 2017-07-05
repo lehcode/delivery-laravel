@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
  */
 class ApiDebug
 {
+	const XDEBUG_PARAM = 'XDEBUG_SESSION_START';
+	
 	/**
 	 * @param Request $request
 	 * @param Closure $next
@@ -25,12 +27,12 @@ class ApiDebug
 	 */
 	public function handle(Request $request, Closure $next) {
 
-		$input = $request->except('XDEBUG_SESSION_START');
-		$request->query->remove('XDEBUG_SESSION_START');
+		$input = $request->except(self::XDEBUG_PARAM);
+		$request->query->remove(self::XDEBUG_PARAM);
 		$request->replace($input);
 
-		if ($request->has('XDEBUG_SESSION_START')) {
-			throw new \Exception("Request has XDEBUG_SESSION_START variable.", 500);
+		if ($request->has(self::XDEBUG_PARAM)) {
+			throw new \Exception("Request has ".self::XDEBUG_PARAM." variable.", 500);
 		}
 
 		return $next($request);
