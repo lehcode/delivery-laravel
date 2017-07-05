@@ -7,14 +7,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EditUserProfileRequest;
+use App\Http\Requests\PaymentInfoRequest;
+use App\Http\Requests\PaymentInfoUpdateRequest;
 use App\Http\Requests\SignupCustomerRequest;
+use App\Http\Responses\PaymentInfoResponse;
 use App\Http\Responses\TripDetailsResponse;
 use App\Http\Responses\UserDetailedResponse;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\Customer\CustomerService;
+use App\Services\Payment\PaymentService;
 use App\Services\Responder\ResponderService;
 use App\Services\SignUp\SignUpService;
 use App\Services\Trip\TripService;
-use App\Services\UserService\UserService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -38,9 +43,9 @@ class CustomerController extends Controller
 	protected $responderService;
 
 	/**
-	 * @var UserServiceInterface
+	 * @var CustomerService
 	 */
-	protected $userService;
+	protected $customerService;
 
 	/**
 	 * @var UserRepositoryInterface
@@ -53,24 +58,32 @@ class CustomerController extends Controller
 	protected $tripService;
 
 	/**
+	 * @var PaymentService
+	 */
+	protected $paymentService;
+
+	/**
 	 * CustomerController constructor.
 	 *
 	 * @param SignUpService    $signUpService
 	 * @param ResponderService $responderService
-	 * @param UserService      $userService
+	 * @param CustomerService  $customerService
 	 * @param TripService      $tripService
+	 * @param PaymentService   $paymentService
 	 */
 	public function __construct(
 		SignUpService $signUpService,
 		ResponderService $responderService,
-		UserService $userService,
-		TripService $tripService
+		CustomerService $customerService,
+		TripService $tripService,
+		PaymentService $paymentService
 	)
 	{
 		$this->signupService = $signUpService;
 		$this->responderService = $responderService;
-		$this->userService = $userService;
+		$this->customerService = $customerService;
 		$this->tripService = $tripService;
+		$this->paymentService = $paymentService;
 	}
 
 	/**
@@ -83,6 +96,18 @@ class CustomerController extends Controller
 	{
 		return $this->responderService->fractal($this->signupService->customer($request), UserDetailedResponse::class);
 
+	}
+
+	/**
+	 * @param EditUserProfileRequest $request
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \App\Exceptions\MultipleExceptions
+	 * @throws \Exception
+	 */
+	public function update(EditUserProfileRequest $request)
+	{
+		return $this->responderService->fractal($this->customerService->update($request), UserDetailedResponse::class, null, [false]);
 	}
 
 	/**
@@ -160,5 +185,46 @@ class CustomerController extends Controller
 	public function getTrips()
 	{
 		return $this->responderService->fractal($this->tripService->all(), TripDetailsResponse::class);
+	}
+
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function getPaymentInfo()
+	{
+		return $this->responderService->fractal(\Auth::user()->customer, PaymentInfoResponse::class);
+	}
+
+	/**
+	 * @param PaymentInfoRequest $request
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws AccessDeniedException
+	 * @throws \Exception
+	 */
+	public function storePaymentInfo(PaymentInfoRequest $request)
+	{
+		if (!\Auth::user()->hasRole('customer')) {
+			throw new AccessDeniedException();
+		}
+
+		return $this->responderService->fractal($this->customerService->savePaymentInfo($request), PaymentInfoResponse::class);
+	}
+
+	/**
+	 * @param PaymentInfoUpdateRequest $request
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws AccessDeniedException
+	 * @throws \Exception
+	 */
+	public function updatePaymentInfo(PaymentInfoUpdateRequest $request)
+	{
+		if (!\Auth::user()->hasRole('customer')) {
+			throw new AccessDeniedException();
+		}
+
+		return $this->responderService->fractal($this->customerService->savePaymentInfo($request), PaymentInfoResponse::class);
 	}
 }

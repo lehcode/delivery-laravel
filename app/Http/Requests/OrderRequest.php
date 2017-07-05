@@ -27,5 +27,7 @@ class OrderRequest extends ApiRequest
 			'geo_end' => 'required|array',
 			'price' => 'required|numeric',
 		];
+
+		return $rules;
 	}
 }

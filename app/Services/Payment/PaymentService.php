@@ -88,14 +88,6 @@ class PaymentService implements PaymentServiceInterface
 		return false;
 	}
 
-	public function savePaymentInfo($data)
-	{
-		$user = Auth::user();
-		if (!$user->hasRole('customer')) {
-			throw new AccessDeniedException();
-		}
-
-		return $this->paymentRepository->updateUserData($data, $user);
-	}
+	
 
 }
