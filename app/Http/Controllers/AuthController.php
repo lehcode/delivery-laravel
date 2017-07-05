@@ -65,7 +65,7 @@ class AuthController
 	 */
 	public function authenticate(Request $request, $type)
 	{
-		$credentials = array_filter($request->only('email', 'phone', 'password'));
+		$credentials = array_filter($request->only('email', 'password'));
 
 		try {
 			if (!$token = JWTAuth::attempt($credentials)) {
@@ -97,7 +97,7 @@ class AuthController
 			}
 		}
 
-		return $this->responderService->fractal([Auth::user(), $token], AuthenticationTokenResponse::class);
+		return $this->responderService->fractal([Auth::user(), $token, false], AuthenticationTokenResponse::class);
 	}
 
 	/**
