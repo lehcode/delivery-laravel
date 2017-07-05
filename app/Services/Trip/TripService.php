@@ -189,6 +189,11 @@ class TripService implements TripServiceInterface
 		return $trips;
 	}
 
+	/**
+	 * @param string $date
+	 *
+	 * @return Collection
+	 */
 	public function getListByDate($date)
 	{
 		$df = $date->format("Y-m-d");
@@ -217,6 +222,8 @@ class TripService implements TripServiceInterface
 
 	/**
 	 * @param int $cityId
+	 *
+	 * @return array
 	 */
 	public function getCity($cityId)
 	{
