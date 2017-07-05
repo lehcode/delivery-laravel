@@ -27,6 +27,7 @@ class ApiRequest extends FormRequest
 
 	/**
 	 * @param array $errors
+	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
 	public function response(array $errors)
@@ -47,14 +48,17 @@ class ApiRequest extends FormRequest
 
 		$instance = $this->getValidatorInstance();
 
-		if (! $this->passesAuthorization()) {
+		if (!$this->passesAuthorization()) {
 			$this->failedAuthorization();
-		} elseif (! $instance->passes()) {
+		} elseif (!$instance->passes()) {
 			$this->failedValidation($instance);
 		}
 
 		if (method_exists($this, 'validated')) {
 			$this->container->call([$this, 'validated']);
+		} else {
+			return true;
 		}
 	}
+
 }
