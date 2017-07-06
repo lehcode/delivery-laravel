@@ -42,7 +42,7 @@ class OrderResponse extends ApiResponse
 			'price' => $order->price,
 			'payment_type' => $order->trip->paymentType,
 			'created_at' => $order->created_at,
-			'updated_at' => $order->updated_at,
+			//'updated_at' => $order->updated_at,
 		];
 
 		$data['customer']['current_city']['country'] = $user->customer()->with('currentCity')->first()

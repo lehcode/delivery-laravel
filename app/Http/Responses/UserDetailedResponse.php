@@ -106,8 +106,8 @@ class UserDetailedResponse extends TransformerAbstract
 			'email' => $user->email,
 			'phone' => $user->phone,
 			'is_enabled' => $user->is_enabled,
-			'created_at' => $user->created_at,
-			'updated_at' => $user->updated_at,
+			'created_at' => $user->created_at->format('r'),
+			//'updated_at' => $user->updated_at,
 			'roles' => $user->roles,
 		]);
 
