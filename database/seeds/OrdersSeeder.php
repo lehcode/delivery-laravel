@@ -37,74 +37,68 @@ class OrdersSeeder extends Seeder
 		$trips = Trip::all();
 		$faker = Faker::create('en_GB');
 
-		User\Customer::all()->each(function ($customer) use ($trips, $faker) {
+		User\Customer::with('currentCity')->get()
+			->each(function ($customer) use ($trips, $faker) {
 
-			for ($i = 0; $i < rand(3, 9); $i++) {
-				$trip = $trips->random()->with(['fromCity', 'destinationCity'])->first();
+				for ($i = 0; $i < rand(3, 9); $i++) {
+					$trip = $trips->random()->with(['fromCity', 'destinationCity'])->first();
 
-				$recipient = factory(Recipient::class)->create();
+					$recipient = factory(Recipient::class)->create();
 
-				if (!$recipient->isValid()) {
-					$errors = $recipient->getErrors()->messages();
-					foreach ($errors as $req => $error) {
-						foreach ($error as $text){
-							throw new \Exception($text, 1);
+					if (!$recipient->isValid()) {
+						$errors = $recipient->getErrors()->messages();
+						foreach ($errors as $req => $error) {
+							foreach ($error as $text) {
+								throw new \Exception($text, 1);
+							}
 						}
 					}
-				}
-				
-				$imageUrl = $faker->randomElement([
-					'shipments/Ld709bhNWngbeydEczJBk4QtDlBNhaSNha61V5sK.jpeg',
-					'shipments/ZO644UyvgHN9mhQqHzLXdFNBC1bBi9RYG92dtPm8.jpeg',
-					'shipments/b4tsL8Lu8XwoS33uoXdIl2RXkVZ8kYHTL89m3tLL.jpeg',
-				]);
-				
-				$shipmentData = [
-					'size_id' => ShipmentSize::all()->random()->id,
-					'category_id' => ShipmentCategory::all()->random()->id,
-					'image_url' => [$imageUrl],
-				];
 
-				$shipment = Shipment::create($shipmentData);
+					$shipmentData = [
+						'size_id' => ShipmentSize::all()->random()->id,
+						'category_id' => ShipmentCategory::all()->random()->id,
+					];
 
-				if (!$shipment->isValid()) {
-					$errors = $shipment->getErrors()->messages();
-					foreach ($errors as $req => $error) {
-						foreach ($error as $text){
-							throw new \Exception($text, 1);
+					$shipment = Shipment::create($shipmentData);
+
+					if (!$shipment->isValid()) {
+						$errors = $shipment->getErrors()->messages();
+						foreach ($errors as $req => $error) {
+							foreach ($error as $text) {
+								throw new \Exception($text, 1);
+							}
 						}
 					}
-				}
 
-				do {
-					$status = self::STATUSES[array_rand(self::STATUSES)];
-				} while ($status === Order::STATUS_COMPLETED || $status === Order::STATUS_CANCELLED);
+					do {
+						$status = self::STATUSES[array_rand(self::STATUSES)];
+					} while ($status === Order::STATUS_COMPLETED || $status === Order::STATUS_CANCELLED);
 
-				$data = [
-					'status' => $status,
-					'customer_id' => $customer->id,
-					'trip_id' => $trip->id,
-					'recipient_id' => $recipient->id,
-					'shipment_id' => $shipment->id,
-					'payment_id' => null,
-					'geo_start' => $this->makePoint($this->getGeoData($trip->fromCity()->first())),
-					'geo_end' => $this->makePoint($this->getGeoData($trip->destinationCity()->first())),
-					'price' => $faker->randomFloat(2, 49, 1999),
-				];
+					$data = [
+						'status' => $status,
+						'customer_id' => $customer->id,
+						'trip_id' => rand(1, 5) == 5 ? $trip->id : null,
+						'recipient_id' => $recipient->id->string,
+						'shipment_id' => $shipment->id,
+						'payment_id' => null,
+						'geo_start' => $this->makePoint($this->getGeoData($trip->fromCity()->first())),
+						'geo_end' => $this->makePoint($this->getGeoData($trip->destinationCity()->first())),
+						'price' => $faker->randomFloat(2, 49, 1999),
+					];
 
-				$order = factory(Order::class)->create($data);
+					$order = factory(Order::class)->create($data);
 
-				if (!$order->isValid()) {
-					$errors = $order->getErrors()->messages();
-					foreach ($errors as $req => $error) {
-						foreach ($error as $text){
-							throw new \Exception($text, 1);
+					if (!$order->isValid()) {
+						$errors = $order->getErrors()->messages();
+						foreach ($errors as $req => $error) {
+							foreach ($error as $text) {
+								throw new \Exception($text, 1);
+							}
 						}
 					}
-				}
 
-			}
-		});
+				}
+			});
 	}
 
 	/**
@@ -144,9 +138,11 @@ class OrdersSeeder extends Seeder
 		}
 
 		$m = 100000;
+		//$result[] = (int)rand($geo[4][1] * $m, $geo[5][1] * $m);
+		//$result[] = (int)rand($geo[4][0] * $m, $geo[7][0] * $m);
 
-		$result[] = (int)rand($geo[4][1] * $m, $geo[5][1] * $m);
-		$result[] = (int)rand($geo[4][0] * $m, $geo[7][0] * $m);
+		$result[] = (float)rand($geo[4][1] * $m, $geo[5][1] * $m)/$m;
+		$result[] = (float)rand($geo[4][0] * $m, $geo[7][0] * $m)/$m;
 
 		return $result;
 

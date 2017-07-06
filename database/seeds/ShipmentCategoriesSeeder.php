@@ -17,10 +17,10 @@ class ShipmentCategoriesSeeder extends Seeder
 		$faker = Faker::create('en_GB');
 
 		$data = [
-			['name' => 'Documents', 'description' => $faker->sentence(), 'multiplier' => $faker->randomFloat(2, 1, 6)],
-			['name' => 'Box', 'description' => $faker->sentence(), 'multiplier' => $faker->randomFloat(2, 1, 6)],
-			['name' => 'Electronics', 'description' => $faker->sentence(), 'multiplier' => $faker->randomFloat(2, 1, 6)],
-			['name' => 'Other', 'description' => 'None of the existing categories', 'multiplier' => $faker->randomFloat(2, 2, 9)]
+			['name' => 'Documents', 'description' => $faker->sentence()],
+			['name' => 'Box', 'description' => $faker->sentence()],
+			['name' => 'Electronics', 'description' => $faker->sentence()],
+			['name' => 'Other', 'description' => 'None of the existing categories']
 		];
 
 		foreach ($data as $item) {

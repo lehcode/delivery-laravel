@@ -107,7 +107,7 @@ class SetupAclTablesSeed extends Seeder
 
 				$tick = false;
 
-				$newUser = factory(User::class, $this->usersAmt[$key])->make()
+				factory(User::class, $this->usersAmt[$key])->make()
 					->each(function ($user) use ($role, &$tick, $key, $cities, $faker) {
 
 						$this->phoneSfx++;

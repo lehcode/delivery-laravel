@@ -27,7 +27,6 @@ class CreateShipmentCategoriesTable extends Migration
 			
 			$table->string('name', 64);
 			$table->string('description');
-			$table->float('multiplier', 3, 2)->default(1);
 
 			$table->timestamps();
 			$table->softDeletes();

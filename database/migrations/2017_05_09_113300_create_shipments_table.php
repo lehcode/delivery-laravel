@@ -24,7 +24,7 @@ class CreateShipmentsTable extends Migration
 			$table->integer('category_id')->unsigned();
 			$table->foreign('category_id')->references('id')->on('shipment_categories');
 
-			$table->json('image_url');
+			//$table->json('image_url');
 
 			$table->timestamps();
 			$table->softDeletes();
