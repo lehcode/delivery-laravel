@@ -10,6 +10,7 @@ namespace App\Services\Order;
 use App\Http\Requests\RecipientRequest;
 use App\Models\Order;
 use App\Models\Recipient;
+use App\Models\User;
 use App\Repositories\Order\OrderRepository;
 use App\Services\Builder;
 use App\Services\Trip;
@@ -77,7 +78,7 @@ class OrderService implements OrderServiceInterface
 	public function item($id)
 	{
 		\Validator::make(['id' => $id], [
-			'id' => 'required|regex:/' . UserService::UUID_REGEX . '/',
+			'id' => 'required|regex:/' . User::UUID_REGEX . '/',
 		])->validate();
 
 		return $this->orderRepository->find($id);
@@ -119,6 +120,12 @@ class OrderService implements OrderServiceInterface
 
 	}
 
+	/**
+	 * @param $id
+	 *
+	 * @return mixed
+	 * @throws \Exception
+	 */
 	public function getByShipmentType($id)
 	{
 		try {
