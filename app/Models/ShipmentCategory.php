@@ -23,12 +23,7 @@ class ShipmentCategory extends Model
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['name', 'description', 'multiplier'];
-
-	/**
-	 * @var array
-	 */
-	protected $hidden = ['multiplier'];
+	protected $hidden = ['created_at', 'updated_at'];
 
 	/**
 	 * @var array

@@ -35,7 +35,7 @@ class Recipient extends Model implements AuditableInterface
 	/**
 	 * @var array
 	 */
-	protected $visible = ['id', 'name', 'phone', 'notes', 'created_at', 'updated_at'];
+	protected $visible = ['id', 'name', 'phone', 'notes', 'created_at'];
 
 	/**
 	 * @var array

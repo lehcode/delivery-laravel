@@ -33,14 +33,13 @@ class ShipmentSize extends Model
 		'width',
 		'height',
 		'weight',
-		'multiplier',
 		'description',
 	];
-	
+
 	/**
 	 * @var array
 	 */
-	protected $hidden = ['multiplier'];
+	protected $hidden = ['created_at', 'updated_at'];
 
 	/**
 	 * @var array
@@ -51,7 +50,6 @@ class ShipmentSize extends Model
 		'width' => 'required|integer',
 		'height' => 'required|integer',
 		'weight' => 'required|numeric',
-		'multiplier' => 'required|numeric',
 		'description' => 'string',
 	];
 

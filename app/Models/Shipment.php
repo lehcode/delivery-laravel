@@ -23,6 +23,8 @@ class Shipment extends Model implements Auditable, HasMediaConversions
 		SoftDeletes,
 		HasMediaTrait;
 
+	const MEDIA_COLLECTION = 'shipments';
+	
 	/**
 	 * @var bool
 	 */
@@ -36,17 +38,12 @@ class Shipment extends Model implements Auditable, HasMediaConversions
 	/**
 	 * @var array
 	 */
-	protected $visible = ['id', 'size_id', 'category_id', 'image_url'];
+	protected $hidden = ['updated_at', 'deleted_at'];
 
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['size_id', 'category_id', 'image_url'];
-
-	/**
-	 * @var array
-	 */
-	protected $casts = ['image_url' => 'json'];
+	protected $fillable = ['size_id', 'category_id'];
 
 	/**
 	 * @var array
@@ -54,7 +51,6 @@ class Shipment extends Model implements Auditable, HasMediaConversions
 	protected $rules = [
 		'size_id' => 'required|integer|min:1',
 		'category_id' => 'required|integer|min:1',
-		'image_url' => 'required|array',
 	];
 
 	/**
@@ -82,26 +78,14 @@ class Shipment extends Model implements Auditable, HasMediaConversions
 	}
 
 	/**
-	 * @param $value
-	 *
-	 * @return string
-	 */
-	public function getImageUrlAttribute($value)
-	{
-		$value = json_decode($value);
-		foreach ($value as $k => $file) {
-			$value[$k] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $file;
-		}
-
-		return $value;
-	}
-
-	/**
 	 * @throws \Spatie\Image\Exceptions\InvalidManipulation
 	 */
 	public function registerMediaConversions()
 	{
 		$this->addMediaConversion('fitted')
 			->fit(Manipulations::FIT_CROP, 400, 400);
+
+		$this->addMediaConversion('thumb')
+			->fit(Manipulations::FIT_CROP, 196, 196);
 	}
 }

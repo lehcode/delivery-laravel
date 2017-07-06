@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use Watson\Validating\ValidatingTrait;
+use App\Extensions\RfcDateTrait;
 
 /**
  * Class Trip
@@ -20,8 +21,9 @@ class Trip extends Model implements AuditableInterface
 	use UuidTrait,
 		SoftDeletes,
 		ValidatingTrait,
-		AuditableTrait;
-	
+		AuditableTrait,
+		RfcDateTrait;
+
 	/**
 	 * @var bool
 	 */
@@ -49,16 +51,10 @@ class Trip extends Model implements AuditableInterface
 		'departure_date',
 	];
 
-	protected $visible = [
-		'id',
-		'payment_type_id',
-		'carrier_id',
-		'from_city_id',
-		'to_city_id',
-		'departure_date',
-		'created_at',
-		'updated_at',
-	];
+	/**
+	 * @var array
+	 */
+	protected $hidden = ['updated_at', 'deleted_at'];
 
 	/**
 	 * @var array
@@ -109,6 +105,15 @@ class Trip extends Model implements AuditableInterface
 	public function destinationCity()
 	{
 		return $this->hasOne(City::class, 'id', 'to_city_id');
+	}
+
+	/**
+	 * @param string $value
+	 *
+	 * @return string
+	 */
+	public function getDepartureDateAttribute($value){
+		return $this->rfcDate($value);
 	}
 
 }

@@ -31,7 +31,7 @@ class TripResponse extends ApiResponse
 			throw new \Exception("Carrier not found", 404);
 		}
 
-		$carrier = $user->carrier()->with('currentCity')->first();
+		$carrier = $this->includeTransformedItem($user->carrier()->with('currentCity')->first(), new UserDetailedResponse());
 		$tripCarrier = $carrier->toArray();
 		$city = $carrier->currentCity()->with('country')->first();
 		$tripCarrier['current_city'] = $city->toArray();
@@ -54,8 +54,8 @@ class TripResponse extends ApiResponse
 			'id' => $trip->id,
 			'payment_type' => $paymentType,
 			'from_city' => $fromCity,
-			'to_city' => $destCity,
-			'carrier' => $tripCarrier,
+			'destination_city' => $trip->destinationCity()->with('country')->first(),
+			'carrier' => $carrier,
 			'departure_date' => $trip->departure_date,
 			'created_at' => $trip->created_at,
 			'updated_at' => $trip->updated_at,

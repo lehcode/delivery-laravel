@@ -2,7 +2,9 @@
 
 namespace App\Models\User;
 
+use Jenssegers\Date\Date;
 use Laratrust\LaratrustRole;
+use App\Extensions\RfcDateTrait;
 
 /**
  * Class Role
@@ -10,8 +12,13 @@ use Laratrust\LaratrustRole;
  */
 class Role extends LaratrustRole
 {
+	
+	use RfcDateTrait;
+	
 	/**
 	 * @var array
 	 */
-	protected $hidden = ['pivot', 'updated_at', 'id'];
+	protected $hidden = ['pivot', 'created_at', 'updated_at', 'id'];
+
+	
 }

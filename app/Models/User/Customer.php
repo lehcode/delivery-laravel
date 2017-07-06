@@ -98,6 +98,8 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 		'card_type' => 'in:Visa,MasterCard',
 	];
 
+	protected $hidden = ['updated_at'];
+
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
