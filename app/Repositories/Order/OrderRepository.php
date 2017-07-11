@@ -7,11 +7,11 @@
 
 namespace App\Repositories\Order;
 
+use App\Exceptions\MultipleExceptions;
 use App\Models\Order;
 use App\Repositories\CrudRepository;
 use Illuminate\Support\Facades\Auth;
 use Jenssegers\Date\Date;
-use Propaganistas\LaravelIntl\Facades\Carbon;
 
 /**
  * Class TripRepository
@@ -29,8 +29,7 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	 */
 	public function all()
 	{
-		$result = Order::all();
-		return $result;
+		return Order::all();
 	}
 
 	/**
@@ -38,43 +37,7 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	 */
 	public function customerOrders()
 	{
-		$result = Order::with(['recipient', 'customer', 'shipment', 'trip'])
-			->where('customer_id', Auth::getUser()->id)
-			->get()
-			->map(function ($item) {
-
-				$item->makeHidden(['recipient_id', 'customer_id', 'shipment_id', 'trip_id']);
-				$order = $item->toArray();
-
-				$order['expected_delivery_date'] = $item->expected_delivery_date;
-				$order['created_at'] = $item->created_at;
-				$order['departure_date'] = $item->departure_date;
-				$order['customer'] = $item->customer()->with('currentCity')->first()->toArray();
-				$order['customer']['current_city']['country'] = $item->customer()->first()->currentCity()->first()->country;
-
-				if (isset($item->trip)){
-					$trip = $item->trip()->with(['fromCity', 'destinationCity'])->first();
-					$tripClone = $trip->toArray();
-					$tripClone['from_city'] = $trip->fromCity()->with('country')->first()->toArray();
-					$tripClone['from_city']['country'] = $trip->fromCity()->with('country')->first()->country;
-					$tripClone['dest_city'] = $trip->destinationCity()->with('country')->first()->toArray();
-					$tripClone['destination_city']['country'] = $trip->destinationCity()->with('country')->first()->country;
-					$tripClone['payment_type'] = $trip->paymentType()->first();
-					unset($tripClone['from_city_id'], $tripClone['to_city_id'], $tripClone['payment_type_id'], $tripClone['dest_city']);
-					$order['trip'] = $tripClone;
-				}
-
-				$shipment = $item->shipment()->with(['size', 'category'])->first();
-				$shipmentClone = $shipment->toArray();
-				$shipmentClone['size'] = $shipment->size()->first();
-				$shipmentClone['category'] = $shipment->category()->first();
-				unset($shipmentClone['size_id'], $shipmentClone['category_id']);
-				$order['shipment'] = $shipmentClone;
-
-				return $order;
-			});
-
-		return $result;
+		return Order::where('customer_id', Auth::getUser()->id)->get();
 	}
 
 	/**
@@ -82,8 +45,7 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	 */
 	public function carrierOrders()
 	{
-		$result = Order::all('customer_id', Auth::getUser()->id);
-		return $result;
+		return Order::all('carrier_id', Auth::getUser()->id);
 	}
 
 	/**
@@ -98,7 +60,18 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 		$data['customer_id'] = Auth::user()->customer->id;
 		$data['status'] = Order::STATUS_CREATED;
 
-		$order = factory(Order::class)->create($data);
+		try{
+			$order = factory(Order::class)->create($data);
+		} catch (\Exception $e){
+			switch ($e->getCode()){
+				case 23000:
+					throw new MultipleExceptions("Duplicate shipment found.", 422);
+					break;
+				default:
+					throw new MultipleExceptions("Cannot create Order.", $e->getCode(), $e);
+			}
+		}
+
 
 		if (!$order->isValid()){
 			$errors = $order->getErrors();
