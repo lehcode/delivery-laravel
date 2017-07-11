@@ -29,32 +29,25 @@ class OrderResponse extends ApiResponse
 		$data = [
 			'id' => $order->id,
 			'status' => $order->status,
-			'customer' => $user->customer()->with('currentCity')->first()->toArray(),
-			'recipient' => $order->recipient,
+			'customer' => $this->includeTransformedItem($user, new UserDetailedResponse(false)),
+			'recipient' => $this->includeTransformedItem($order->recipient, new RecipientResponse(false)),
 			'departure_date' => $order->departure_date,
 			'expected_delivery_date' => $order->expected_delivery_date,
-			'shipment' => $order->shipment->toArray(),
-			'carrier' => $order->trip->carrier->with('currentCity')->first()->toArray(),
-			'from_city' => $order->trip->fromCity()->with('country')->first()->toArray(),
-			'dest_city' => $order->trip->destinationCity()->with('country')->first()->toArray(),
+			'shipment' => $this->includeTransformedItem($order->shipment, new ShipmentResponse(false)),
 			'geo_start' => $order->geo_start,
 			'geo_end' => $order->geo_end,
 			'price' => $order->price,
-			'payment_type' => $order->trip->paymentType,
 			'created_at' => $order->created_at,
-			//'updated_at' => $order->updated_at,
 		];
 
-		$data['customer']['current_city']['country'] = $user->customer()->with('currentCity')->first()
-			->currentCity()->with('country')->first()->country->toArray();
-		$data['from_city']['country'] = $order->trip->fromCity()->with('country')->first()->country;
-		$data['dest_city']['country'] = $order->trip->destinationCity()->with('country')->first()->country;
-		$data['shipment']['size'] = $order->shipment->size()->first();
-		$data['shipment']['category'] = $order->shipment->category()->first();
-		$data['carrier']['current_city']['country'] = $order->trip->carrier->with('currentCity')->first()
-			->currentCity()->with('country')->first()->country->toArray();
+		if (isset($order->trip)) {
+			$data['trip'] = $this->includeTransformedItem($order->trip, new TripResponse());
+		}
 
-		unset($data['shipment']['size_id'], $data['shipment']['category_id']);
+		$data['shipment'] = $this->includeTransformedItem($order->shipment, new ShipmentResponse());
+
+		//unset($data['shipment']['size_id']);
+		//unset($data['shipment']['category_id']);
 
 		return $data;
 	}

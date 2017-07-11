@@ -7,11 +7,20 @@
 
 namespace App\Http\Responses;
 
-
 use App\Models\Recipient;
 
+
+/**
+ * Class RecipientResponse
+ * @package App\Http\Responses
+ */
 class RecipientResponse extends ApiResponse
 {
+	/**
+	 * @param Recipient $recipient
+	 *
+	 * @return array
+	 */
 	public function transform(Recipient $recipient)
 	{
 		$data = [

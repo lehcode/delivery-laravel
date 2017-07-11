@@ -9,6 +9,7 @@ namespace App\Http\Responses;
 
 use App\Models\Trip;
 use App\Models\User;
+use Jenssegers\Date\Date;
 
 /**
  * Class TripResponse
@@ -27,38 +28,19 @@ class TripResponse extends ApiResponse
 
 		$user = User::where(['id' => $trip->carrier_id])->first();
 
-		if (!$user){
+		if (!$user) {
 			throw new \Exception("Carrier not found", 404);
 		}
 
-		$carrier = $this->includeTransformedItem($user->carrier()->with('currentCity')->first(), new UserDetailedResponse());
-		$tripCarrier = $carrier->toArray();
-		$city = $carrier->currentCity()->with('country')->first();
-		$tripCarrier['current_city'] = $city->toArray();
-		$tripCarrier['current_city']['country'] = $city->country;
-
-		$paymentType = $trip->paymentType()->first();
-
-		$city = $trip->fromCity()->with('country')->first();
-		$city->makeHidden('country_id');
-		$fromCity = $city->toArray();
-		$fromCity['country'] = $city->country;
-
-		$city = $trip->destinationCity()->with('country')->first();
-		$city->makeHidden('country_id');
-		$destCity = $city->toArray();
-		$destCity['country'] = $city->country;
-
-
 		$data = [
 			'id' => $trip->id,
-			'payment_type' => $paymentType,
-			'from_city' => $fromCity,
-			'destination_city' => $trip->destinationCity()->with('country')->first(),
-			'carrier' => $carrier,
+			'payment_type' => $trip->paymentType()->first(),
+			'from_city' => $this->includeTransformedItem($trip->fromCity()->with('country')->first(), new CityResponse()),
+			'destination_city' => $this->includeTransformedItem($trip->destinationCity()->with('country')->first(), new CityResponse()),
+			'carrier' => $this->includeTransformedItem($user, new UserDetailedResponse()),
 			'departure_date' => $trip->departure_date,
+			'approx_time' => Date::createFromTimestamp($trip->approx_time * 60)->format('H:i'),
 			'created_at' => $trip->created_at,
-			'updated_at' => $trip->updated_at,
 		];
 
 		return $data;

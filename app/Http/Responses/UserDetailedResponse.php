@@ -20,7 +20,7 @@ use JWTAuth;
  * Class UserDetailedResponse
  * @package App\Http\Responses
  */
-class UserDetailedResponse extends TransformerAbstract
+class UserDetailedResponse extends ApiResponse
 {
 	/**
 	 * @var bool
@@ -55,9 +55,6 @@ class UserDetailedResponse extends TransformerAbstract
 		/* @var RatingServiceInterface $ratingService */
 		//$ratingService = app()->make(RatingServiceInterface::class);
 
-		$data = [
-			'is_enabled' => $user->is_enabled,
-		];
 		$roles = $user->roles();
 		$role = $roles->first();
 
@@ -71,9 +68,11 @@ class UserDetailedResponse extends TransformerAbstract
 				$city['country'] = $location->country->toArray();
 
 				$data = [
+					'is_enabled' => $user->is_enabled,
 					'current_city' => $city,
 					'name' => $user->name,
 					User::PROFILE_IMAGE => !is_null($user->photo) ? $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb') : '',
+					'payment_info' => $this->includeTransformedItem($user->customer, new PaymentInfoResponse()),
 				];
 
 				if ($this->includeDetails == true) {
@@ -83,11 +82,12 @@ class UserDetailedResponse extends TransformerAbstract
 				break;
 
 			case User::ROLE_CARRIER:
-				$location = $user->customer->currentCity()->with('country')->first();
+				$location = $user->carrier->currentCity()->with('country')->first();
 				$city = $location->toArray();
 				$city['country'] = $location->country->toArray();
 
 				$data = [
+					'is_enabled' => $user->is_enabled,
 					'current_city' => $city,
 					'is_online' => $user->carrier->is_online,
 					'name' => $user->name,

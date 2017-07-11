@@ -22,11 +22,17 @@ class ShipmentResponse extends ApiResponse
 	 */
 	public function transform(Shipment $shipment)
 	{
+
+		$images = $shipment->getMedia(Shipment::MEDIA_COLLECTION)->map(function($item){
+			return $item->getUrl();
+		});
+
+
 		$data = [
 			'id' => $shipment->id,
 			'category' => $shipment->category()->first(),
 			'size' => $shipment->size()->first(),
-			'image_url' => is_null($shipment->image_url) ? '' : $shipment->image_url,
+			'image_url' => $images,
 		];
 
 		return $data;
