@@ -34,8 +34,7 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 
 			Route::group(['prefix' => 'user'], function () {
 				Route::any('me', ['uses' => 'AuthController@me']);
-				Route::post('restore-password', ['uses' => 'RestorePasswordController@sendLink']);
-				Route::patch('update', ['uses' => 'CustomerController@update']);
+				Route::post('reset-password', ['uses' => 'AuthController@sendLink']);
 			});
 
 			Route::group(['prefix' => 'info'], function () {
@@ -119,8 +118,8 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 			Route::group(['prefix' => 'trip'], function () {
 				Route::get('my', ['uses' => 'CarrierController@getUserTrips']);
 				Route::get('active-trips', ['uses' => 'CarrierController@getActiveTrips']);
-				Route::get('{trip_id}', ['middleware' => 'api.uuid', 'uses' => 'TripController@get']);
-				Route::post('create', ['middleware' => 'api.uuid', 'uses' => 'TripController@create']);
+				Route::get('{trip_id}', ['uses' => 'TripController@get']);
+				Route::post('create', ['uses' => 'TripController@create']);
 			});
 
 			Route::group(['prefix' => 'order'], function () {
