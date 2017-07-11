@@ -26,7 +26,6 @@ class ShipmentSizesSeeder extends Seeder
 				'width' => $faker->numberBetween(10, 20),
 				'height' => $faker->numberBetween(10, 20),
 				'weight' => $faker->randomFloat(3, 1, 64),
-				'multiplier' => $faker->randomFloat(2, 1, 6)
 			],
 			[
 				'name' => 'M',
@@ -35,7 +34,6 @@ class ShipmentSizesSeeder extends Seeder
 				'width' => $faker->numberBetween(20, 50),
 				'height' => $faker->numberBetween(20, 50),
 				'weight' => $faker->randomFloat(3, 64, 256),
-				'multiplier' => $faker->randomFloat(2, 1, 6)
 			],
 			[
 				'name' => 'L',
@@ -44,19 +42,17 @@ class ShipmentSizesSeeder extends Seeder
 				'width' => $faker->numberBetween(50, 100),
 				'height' => $faker->numberBetween(50, 100),
 				'weight' => $faker->randomFloat(3, 256, 1500),
-				'multiplier' => $faker->randomFloat(2, 1, 6)
 			]
 		];
 
 		foreach ($data as $item) {
 			$created = ShipmentSize::create($item);
 
-			if ($created->validationErrors instanceof \Illuminate\Support\MessageBag) {
-				if (is_array($created->validationErrors->messsages) && count($created->validationErrors->messsages)) {
-					foreach ($created->validationErrors->messsages as $field => $msg) {
-						foreach ($msg as $error) {
-							throw new \Exception($field . ': ' . $error, 500);
-						}
+			if (!$created->isValid()) {
+				$errors = $created->getErrors()->messages();
+				foreach ($errors as $req => $error) {
+					foreach ($error as $text) {
+						throw new \Exception($text, 1);
 					}
 				}
 			}

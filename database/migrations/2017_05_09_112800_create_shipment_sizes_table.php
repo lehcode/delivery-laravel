@@ -30,7 +30,6 @@ class CreateShipmentSizesTable extends Migration
 			$table->smallInteger('width')->unsigned();
 			$table->smallInteger('height')->unsigned();
 			$table->float('weight')->unsigned();
-			$table->float('multiplier', 3, 2)->default(1);
 			$table->string('description');
 
 			$table->timestamps();
