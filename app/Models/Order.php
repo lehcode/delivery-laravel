@@ -91,13 +91,6 @@ class Order extends Model implements AuditableInterface
 	protected $hidden = ['updated_at'];
 
 	/**
-	 * The storage format of the model's date columns.
-	 *
-	 * @var string
-	 */
-	//public $dateFormat = 'Y-m-d H:i:s';
-
-	/**
 	 * @var array
 	 */
 	protected $auditExclude = ['id', 'created_at', 'updated_at'];
@@ -106,9 +99,7 @@ class Order extends Model implements AuditableInterface
 	 * @var array
 	 */
 	protected $auditableEvents = ['deleted', 'updated', 'restored'];
-
-	//protected $casts = ['expected_delivery_date' => 'datetime'];
-
+	
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
@@ -149,6 +140,21 @@ class Order extends Model implements AuditableInterface
 		$this->attributes['geo_start'] = \DB::raw("ST_GeomFromText('POINT(" . implode(' ', $value) . ")')");
 	}
 
+	public function getGeoStartAttribute($value)
+	{
+		return $this->formatLocationAttribute($value);
+	}
+
+	/**
+	 * @param $value
+	 *
+	 * @return string
+	 */
+	public function getGeoEndAttribute($value)
+	{
+		return $this->formatLocationAttribute($value);
+	}
+
 	/**
 	 * @param array $value
 	 */
@@ -177,17 +183,32 @@ class Order extends Model implements AuditableInterface
 	 *
 	 * @return string
 	 */
-	public function getDepartureDateAttribute($value){
+	public function getDepartureDateAttribute($value)
+	{
 		return $this->rfcDate($value);
 	}
 
 	/**
-	 * @param $value
+	 * @param string $value
 	 *
 	 * @return string
 	 */
-	public function getExpectedDeliveryDateAttribute($value){
+	public function getExpectedDeliveryDateAttribute($value)
+	{
 		return $this->rfcDate($value);
 	}
 
+	/**
+	 * @param string $value
+	 *
+	 * @return array
+	 */
+	private function formatLocationAttribute($value)
+	{
+		$ex = explode(' ', preg_replace('/[^\d\s\.]+/', '', $value));
+		$ex[0] = (float)$ex[0];
+		$ex[1] = (float)$ex[1];
+
+		return $ex;
+	}
 }

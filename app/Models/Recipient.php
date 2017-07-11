@@ -9,13 +9,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use Watson\Validating\ValidatingTrait;
+use App\Extensions\RfcDateTrait;
 
 class Recipient extends Model implements AuditableInterface
 {
 	use UuidTrait,
 		ValidatingTrait,
 		AuditableTrait,
-		SoftDeletes;
+		SoftDeletes,
+		RfcDateTrait;
 
 	/**
 	 * @var array
