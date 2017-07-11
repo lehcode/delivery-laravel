@@ -22,9 +22,10 @@ class ResponderService implements ResponderServiceInterface
 {
 	/**
 	 * @param array $data
-	 * @param int $status
+	 * @param int   $status
 	 * @param array $headers
-	 * @param int $options
+	 * @param int   $options
+	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws Exception
 	 */
@@ -65,7 +66,8 @@ class ResponderService implements ResponderServiceInterface
 
 	/**
 	 * @param Exception $e
-	 * @param int $errorNumber
+	 * @param int       $errorNumber
+	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
 	public function errorResponse(Exception $e, $errorNumber = null)
@@ -80,9 +82,10 @@ class ResponderService implements ResponderServiceInterface
 	}
 
 	/**
-	 * @param null $data
-	 * @param null $length
+	 * @param null   $data
+	 * @param null   $length
 	 * @param string $key
+	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws Exception
 	 */
@@ -111,9 +114,10 @@ class ResponderService implements ResponderServiceInterface
 	}
 
 	/**
-	 * @param $array
+	 * @param                 $array
 	 * @param string|Callable $callback
-	 * @param bool $remove_empty_arrays
+	 * @param bool            $remove_empty_arrays
+	 *
 	 * @return mixed
 	 */
 	protected function array_filter_recursive($array, $callback = '', $remove_empty_arrays = false)
@@ -148,7 +152,7 @@ class ResponderService implements ResponderServiceInterface
 	 */
 	public function fractal($items, $transformerClass = null, $page = 0, array $transformerAttributes = null)
 	{
-		if (is_null($transformerAttributes)){
+		if (is_null($transformerAttributes)) {
 			$transformerAttributes = [];
 		}
 
@@ -186,7 +190,7 @@ class ResponderService implements ResponderServiceInterface
 		} elseif ($items instanceof Model) {
 			$collection = (new Collection())->add($items);
 			$response = $fractal->collection($collection, $transformer);
-			$paginator = new LengthAwarePaginator($collection, $collection->count(), config('laravel-fractal.per_page'), $page);
+			//$paginator = new LengthAwarePaginator($collection, $collection->count(), config('laravel-fractal.per_page'), $page);
 		} elseif (is_scalar($items)) {
 			/** @var \Spatie\Fractal\Fractal $response */
 			$response = $fractal->item($items, $transformer);
@@ -205,21 +209,18 @@ class ResponderService implements ResponderServiceInterface
 			$response->paginateWith($paginatorAdapter);
 		}
 
-		$serialized = $response->jsonSerialize();
+		$resp = array_except($response->jsonSerialize(), ['meta']);
 
-		return $this->response(array_merge(['status' => 'success'], [
-			'data' => array_except($serialized, ['meta']),
-			'meta' => isset($arr['meta']) ? $arr['meta'] : (isset($totalCount) ? [
-				'pagination' => [
-					'total' => $totalCount
-				]
-			] : null)
-		]));
+		return $this->response(array_merge(
+			['status' => 'success',],
+			$resp,
+			['meta' => isset($arr['meta']) ? $arr['meta'] : (isset($totalCount) ? ['pagination' => ['total' => $totalCount]] : null)]));
 	}
 
 	/**
 	 * @param \Illuminate\Database\Eloquent\Builder|\Eloquent $query
-	 * @param Request $request
+	 * @param Request                                         $request
+	 *
 	 * @return \Illuminate\Database\Eloquent\Builder|\Eloquent $query
 	 */
 	public function filterQuery(Builder $query, Request $request)

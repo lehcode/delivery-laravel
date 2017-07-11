@@ -168,55 +168,28 @@ class TripService implements TripServiceInterface
 	{
 		$trips = Trip::where('departure_date', '>=', $dates['start'])
 			->where('departure_date', '<=', $dates['end'])
-			->get()
-			->map(function ($item) {
-
-				$arr = $item->toArray();
-				unset(
-					$arr['carrier_id'],
-					$arr['payment_type_id'],
-					$arr['from_city_id'],
-					$arr['to_city_id']
-				);
-
-				$arr['carrier'] = $item->carrier;
-				$arr['payment_type'] = $item->paymentType;
-				$arr['from_city'] = $item->fromCity;
-				$arr['dest_city'] = $item->destinationCity;
-
-				return $arr;
-			});
+			->join('users', 'users.id', '=', 'trips.carrier_id')
+			->where('users.is_enabled', '=', true)
+			->distinct()
+			->orderBy('departure_date')
+			->get();
 
 		return $trips;
 	}
 
 	/**
-	 * @param string $date
+	 * @param Date $date
 	 *
 	 * @return Collection
 	 */
-	public function getListByDate($date)
+	public function getListByDate(Date $date)
 	{
-		$df = $date->format("Y-m-d");
-		$trips = Trip::where('departure_date', 'LIKE', $df . '%')
-			->get()
-			->map(function ($item) {
-
-				$arr = $item->toArray();
-				unset(
-					$arr['carrier_id'],
-					$arr['payment_type_id'],
-					$arr['from_city_id'],
-					$arr['to_city_id']
-				);
-
-				$arr['carrier'] = $item->carrier;
-				$arr['payment_type'] = $item->paymentType;
-				$arr['from_city'] = $item->fromCity;
-				$arr['dest_city'] = $item->destinationCity;
-
-				return $arr;
-			});
+		$trips = Trip::where('departure_date', '>=', $date->format("Y-m-d"))
+			->join('users', 'users.id', '=', 'trips.carrier_id')
+			->where('users.is_enabled', '=', true)
+			->distinct()
+			->orderBy('departure_date')
+			->get();
 
 		return $trips;
 	}

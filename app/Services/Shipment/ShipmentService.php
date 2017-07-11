@@ -67,9 +67,17 @@ class ShipmentService implements ShipmentServiceInterface
 
 		$shipment = $this->shipmentRepository->create($data);
 
-		$shipment->clearMediaCollection(Shipment::MEDIA_COLLECTION)
-			->addMediaFromRequest('photosArray')
-			->toMediaCollection(Shipment::MEDIA_COLLECTION, 's3');
+		$images = $request->input('photosArray');
+		if (count($images)){
+			$shipment->clearMediaCollection(Shipment::MEDIA_COLLECTION);
+			foreach ($images as $img){
+				$shipment->addMedia($img)
+					->usingFileName($img->hashName())
+					->toMediaCollection(Shipment::MEDIA_COLLECTION, 's3');
+			}
+		}
+
+
 
 		return $shipment;
 	}
