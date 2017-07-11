@@ -22,7 +22,6 @@ class EditUserProfileRequest extends ApiRequest
 		$rules = [
 			'name' => 'string|min:3',
 			'email' => 'email',
-			'password' => 'min:5|confirmed',
 			'phone' => 'phone:AUTO,mobile',
 			'image' => 'file|image|dimensions:min_width=100,min_height=100,max_width=2048,max_height=2048',
 			'id_scan' => 'file|image|dimensions:min_width=1024,min_height=1024,max_width=4096,max_height=4096',
