@@ -64,7 +64,7 @@ class OrderController
 	 */
 	public function getCustomerOrders()
 	{
-		return $this->responderService->objectResponse($this->orderService->customerOrders());
+		return $this->responderService->fractal($this->orderService->customerOrders(), OrderResponse::class);
 	}
 
 	/**
@@ -84,13 +84,12 @@ class OrderController
 	}
 
 	/**
-	 * @param Request $request
 	 * @param int     $id
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Exception
 	 */
-	public function getOrder(Request $request, $id)
+	public function getOrder($id)
 	{
 		return $this->responderService->fractal($this->orderService->item($id), OrderResponse::class);
 	}
