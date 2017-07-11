@@ -103,29 +103,28 @@ class TripController extends Controller
 			'start' => Date::createFromFormat('Y-m-d', $startDate),
 			'end' => Date::createFromFormat('Y-m-d', $endDate),
 		];
-		return $this->responderService->objectResponse($this->tripService->getListByStartAndEnd($dates));
+		return $this->responderService->fractal($this->tripService->getListByStartAndEnd($dates), TripResponse::class);
 	}
 
 	/**
-	 * @param Request $request
-	 * @param string  $date
+	 * @param $date
 	 *
 	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
 	 */
-	public function getByDate(Request $request, $date)
+	public function getByDate($date)
 	{
 		$d = Date::createFromFormat('Y-m-d', $date);
-		return $this->responderService->objectResponse($this->tripService->getListByDate($d));
+		return $this->responderService->fractal($this->tripService->getListByDate($d), TripResponse::class);
 	}
 
 	/**
-	 * @param Request $request
-	 * @param null    $userType
-	 * @param null    $cityId
+	 * @param null $userType
+	 * @param null $cityId
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function getCity(Request $request, $userType = null, $cityId = null)
+	public function getCity($userType = null, $cityId = null)
 	{
 		return $this->responderService->objectResponse($this->tripService->getCity($cityId));
 	}
