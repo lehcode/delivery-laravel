@@ -49,12 +49,11 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	 */
 	protected $fillable = [
 		'id',
-		'name',
 		'is_activated',
 		'is_online',
 		'current_city',
 		'default_address',
-		self::ID_IMAGE,
+		//self::ID_IMAGE,
 	];
 
 	/**
@@ -76,10 +75,9 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface
 	 * @var array
 	 */
 	protected $rules = [
-		'name' => 'required|string|min:3',
 		'default_address' => 'required|string',
 		'current_city' => 'nullable|integer',
-		self::ID_IMAGE => 'required|string|unique:carriers,id_scan',
+		//self::ID_IMAGE => 'required|string|unique:carriers,id_scan',
 	];
 
 	/**

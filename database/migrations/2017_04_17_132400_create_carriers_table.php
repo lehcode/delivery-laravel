@@ -22,7 +22,8 @@ class CreateCarriersTable extends Migration
 			$table->foreign('id')->references('id')->on('users')
 				->onDelete('restrict')->onUpdate('restrict');
 
-			$table->string('name');
+			//$table->string('username')->unique();
+			$table->string('name')->nullable();
 			$table->string('default_address')->nullable();
 
 			$table->unsignedInteger('current_city')->nullable()->index();

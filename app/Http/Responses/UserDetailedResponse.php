@@ -63,17 +63,19 @@ class UserDetailedResponse extends ApiResponse
 				break;
 
 			case User::ROLE_CUSTOMER:
-				$location = $user->customer->currentCity()->with('country')->first();
-				$city = $location->toArray();
-				$city['country'] = $location->country->toArray();
 
 				$data = [
 					'is_enabled' => $user->is_enabled,
-					'current_city' => $city,
-					'name' => $user->name,
 					User::PROFILE_IMAGE => !is_null($user->photo) ? $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb') : '',
-					'payment_info' => $this->includeTransformedItem($user->customer, new PaymentInfoResponse()),
+					'payment_info' => isset($user->customer->card_number) ? $this->includeTransformedItem($user->customer, new PaymentInfoResponse()) : '',
 				];
+
+				if (isset($user->customer->current_city)){
+					$location = $user->customer->currentCity()->with('country')->first();
+					$city = $location->toArray();
+					$data['current_city'] = $city;
+					$city['current_city']['country'] = $location->country->toArray();
+				}
 
 				if ($this->includeDetails == true) {
 					$data = array_merge($data, ["notes" => $user->customer->notes]);
@@ -82,17 +84,19 @@ class UserDetailedResponse extends ApiResponse
 				break;
 
 			case User::ROLE_CARRIER:
-				$location = $user->carrier->currentCity()->with('country')->first();
-				$city = $location->toArray();
-				$city['country'] = $location->country->toArray();
 
 				$data = [
 					'is_enabled' => $user->is_enabled,
-					'current_city' => $city,
 					'is_online' => $user->carrier->is_online,
-					'name' => $user->name,
 					User::PROFILE_IMAGE => !is_null($user->photo) ? $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb') : '',
 				];
+
+				if (isset($user->carrier->current_city)){
+					$location = $user->carrier->currentCity()->with('country')->first();
+					$city = $location->toArray();
+					$data['current_city'] = $city;
+					$city['current_city']['country'] = $location->country->toArray();
+				}
 
 				if ($this->includeDetails == true) {
 					$data = array_merge($data, ["notes" => $user->carrier->notes]);
@@ -102,12 +106,12 @@ class UserDetailedResponse extends ApiResponse
 
 		$data = array_merge($data, [
 			'id' => $user->id,
+			'username' => $user->username,
 			'name' => $user->name,
 			'email' => $user->email,
 			'phone' => $user->phone,
 			'is_enabled' => $user->is_enabled,
 			'created_at' => $user->created_at->format('r'),
-			//'updated_at' => $user->updated_at,
 			'roles' => $user->roles,
 		]);
 

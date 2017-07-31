@@ -54,14 +54,11 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 	 * @var array
 	 */
 	protected $fillable = [
-		'name',
+		'username',
 		'email',
 		'phone',
 		'password',
 		'is_enabled',
-		'roles',
-		'last_login',
-		self::PROFILE_IMAGE,
 	];
 
 	/**
@@ -81,7 +78,7 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 	/**
 	 * @var array
 	 */
-	protected $casts = ['is_enabled' => 'boolean', 'last_login'=>'datetime'];
+	protected $casts = ['is_enabled' => 'boolean', 'last_login' => 'datetime'];
 
 	/**
 	 * @var array
@@ -95,8 +92,8 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 		'id',
 		'email',
 		'name',
+		'username',
 		'phone',
-		self::PROFILE_IMAGE,
 		'is_enabled',
 		'created_at',
 		'updated_at',
@@ -128,19 +125,21 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 	 * @var array
 	 */
 	protected $rules = [
-		'name' => 'required',
-		'email' => 'required|email|unique:users,email',
+		'username' => 'required|string|min:3',
+		'name' => 'string|min:3|nullable',
 		'password' => 'required|min:5',
-		User::PROFILE_IMAGE => 'string|nullable|unique:users,photo',
 	];
 
 	/**
 	 * @var array
 	 */
 	protected $validationMessages = [
+		'username.required' => "Username is required",
+		'username.min' => "Username is too short",
 		'name.required' => "User full name is required",
+		'name.min' => "Username is too short",
 		'email.required' => "User email is required",
-		'email.unique' => "Email must be unique",
+		'email.unique' => "This e-mail adress already taken",
 		'email.email' => "Email has wrong format",
 		'password.required' => "User password is required",
 		'phone.phone' => "User phone is wrong",

@@ -18,12 +18,12 @@ class SignupCustomerRequest extends ApiRequest
 	public function rules()
 	{
 		return [
-			'name' => 'required|min:3',
-			'email' => 'required|email',
+			'username' => 'required|string|min:3',
+			'phone' => 'required|phone:AUTO,mobile',
 			'password' => 'required|min:5|confirmed',
-			'image' => 'required|file|image',
-			'location.city' => 'required|string',
-			'location.country' => 'required|string',
+			'image' => 'file|image',
+			'location.city' => 'string',
+			'location.country' => 'string|size:2',
 		];
 	}
 }

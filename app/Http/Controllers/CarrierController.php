@@ -7,12 +7,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SignupCarrierRequest;
 use App\Http\Requests\SignUpCustomerRequest;
 use App\Http\Responses\TripDetailsResponse;
 use App\Http\Responses\TripResponse;
 use App\Http\Responses\UserDetailedResponse;
-use App\Services\Responder\ResponderServiceInterface;
-use App\Services\SignUp\SignUpServiceInterface;
+use App\Services\Responder\ResponderService;
+use App\Services\SignUp\SignUpService;
 use App\Services\Trip\TripService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -29,12 +30,12 @@ class CarrierController extends BaseController
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
 	/**
-	 * @var SignUpServiceInterface
+	 * @var SignUpService
 	 */
 	protected $signupService;
 
 	/**
-	 * @var ResponderServiceInterface
+	 * @var ResponderService
 	 */
 	protected $responderService;
 
@@ -46,30 +47,29 @@ class CarrierController extends BaseController
 	/**
 	 * CarrierController constructor.
 	 *
-	 * @param SignUpServiceInterface    $signUpServiceInterface
-	 * @param ResponderServiceInterface $responderServiceInterface
+	 * @param SignUpService    $signUpService
+	 * @param ResponderService $responderService
 	 * @param TripService      $tripService
 	 */
 	public function __construct(
-		SignUpServiceInterface $signUpServiceInterface,
-		ResponderServiceInterface $responderServiceInterface,
+		SignUpService $signUpService,
+		ResponderService $responderService,
 		TripService $tripService
 	) {
-		$this->signupService = $signUpServiceInterface;
-		$this->responderService = $responderServiceInterface;
+		$this->signupService = $signUpService;
+		$this->responderService = $responderService;
 		$this->tripService = $tripService;
 	}
 
 	/**
-	 * @param Request $request
+	 * @param SignupCarrierRequest $request
 	 *
-	 * @return mixed
-	 * @throws ValidationException
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
 	 */
-	public function create(Request $request)
+	public function create(SignupCarrierRequest $request)
 	{
-		$params = $request->except(['XDEBUG_SESSION_START']);
-		return $this->responderService->fractal($this->signupService->carrier($params), UserDetailedResponse::class, 0, [false, true]);
+		return $this->responderService->fractal($this->signupService->carrier($request), UserDetailedResponse::class, 0, [false, true]);
 
 	}
 

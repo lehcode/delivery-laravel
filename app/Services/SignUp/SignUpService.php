@@ -8,6 +8,7 @@
 namespace App\Services\SignUp;
 
 use App\Exceptions\MultipleExceptions;
+use App\Http\Requests\SignupCarrierRequest;
 use App\Http\Requests\SignupCustomerRequest;
 use App\Models\City;
 use App\Models\Country;
@@ -63,17 +64,19 @@ class SignUpService implements SignUpServiceInterface
 		$entityUser['type'] = User::ROLE_CUSTOMER;
 		$entityUser['is_enabled'] = true;
 
-		$country = Country::where('alpha2_code', '=', $params['location']['country'])->first();
-		$entityCustomerProfile['current_city'] = City::where('name', '=', $params['location']['city'])
-			->where('country_id', '=', $country->id)->first()->id;
+		if ($request->has('location')){
+			$country = Country::where('alpha2_code', '=', $params['location']['country'])->first();
+			$entityCustomerProfile['current_city'] = City::where('name', '=', $params['location']['city'])
+				->where('country_id', '=', $country->id)->first()->id;
+		}
 
 		Validator::make($params, [
-			'name' => 'required|string|min:5|max:254',
-			'email' => 'required|email|unique:users,email',
-			'password' => 'required|min:5|max:24|confirmed',
+			'username' => 'required|string|min:3|unique:users,username',
+			'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
+			'password' => 'required|min:6|max:24|confirmed',
 			'image' => 'file|image',
-			'location.city' => 'required|string|min:2|max:64',
-			'location.country' => 'required|string|regex:/^[A-Z]{2}$/',
+			'location.city' => 'string|min:2|max:64',
+			'location.country' => 'string|regex:/^[A-Z]{2}$/',
 		])->validate();
 
 		return DB::transaction(function () use ($entityUser, $entityCustomerProfile, $params, $request) {
@@ -101,7 +104,12 @@ class SignUpService implements SignUpServiceInterface
 				}
 			}
 
-			$this->userService->sendActivationLink($user);
+			if ($request->has('email')){
+				$this->userService->sendActivationLink($user);
+			} else {
+				$user->is_enabled = true;
+				$user->saveOrFail();
+			}
 
 			return $user;
 		});
@@ -121,20 +129,21 @@ class SignUpService implements SignUpServiceInterface
 
 		Validator::make($params, [
 			'email' => 'required|email|unique:users,email',
-			'password' => 'required|min:5|confirmed',
+			'password' => 'required|min:6|max:24|confirmed',
 		])->validate();
 
 		return User::create($params);
 	}
 
 	/**
-	 * @param array $params
+	 * @param SignupCarrierRequest $request
 	 *
 	 * @return mixed
 	 * @throws \Illuminate\Validation\ValidationException
 	 */
-	public function carrier(array $params)
+	public function carrier(SignupCarrierRequest $request)
 	{
+		$params = $request->all();
 		$entityUser = array_only($params, app()->make(User::class)->getFillable());
 		$entityUser['type'] = User::ROLE_CARRIER;
 		$entityUser['is_enabled'] = true;
@@ -143,11 +152,12 @@ class SignUpService implements SignUpServiceInterface
 		$entityProfile['is_online'] = false;
 
 		Validator::make($params, [
-			'email' => 'required|email|unique:users,email',
+			'username' => 'required|min:3|unique:users,username',
+			'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
 			'password' => 'required|min:5|confirmed',
 		])->validate();
 
-		return DB::transaction(function () use ($entityProfile, $params, $entityUser) {
+		return DB::transaction(function () use ($entityProfile, $params, $entityUser, $request) {
 
 			$user = User::create($entityUser);
 			$role = User\Role::where(['name' => 'carrier'])->first();
@@ -174,7 +184,9 @@ class SignUpService implements SignUpServiceInterface
 				}
 			}
 
-			$this->userService->sendActivationLink($user);
+			if ($request->has('email')){
+				$this->userService->sendActivationLink($user);
+			}
 
 			return $user;
 		});

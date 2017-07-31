@@ -29,7 +29,7 @@ class SetupAclTablesSeed extends Seeder
 	/**
 	 * Run the database seeds.
 	 *
-	 * @return  void
+	 * @throws Exception
 	 */
 	public function run()
 	{
@@ -113,6 +113,8 @@ class SetupAclTablesSeed extends Seeder
 						$this->phoneSfx++;
 
 						if (!$tick) {
+							$user->username = $role->name;
+							$user->name = rand(0, 5) === 5 ? $user->name : null;
 							$user->email = $role->name . '@barq.com';
 							$user->phone = '+37529111111' . $this->phoneSfx;
 							$tick = true;
@@ -125,20 +127,12 @@ class SetupAclTablesSeed extends Seeder
 
 						switch ($key) {
 							case 'customer':
-								factory(User\Customer::class)->create(
-									[
-										'id' => $user->id,
-										'name' => $user->name,
-										'card_name' => $user->name,
-									]
+								factory(User\Customer::class)->create([ 'id' => $user->id, 'card_name' => $user->name ]
 								);
 								break;
 
 							case 'carrier':
-								factory(User\Carrier::class)->create([
-									'id' => $user->id,
-									'name' => $user->name,
-								]);
+								factory(User\Carrier::class)->create([ 'id' => $user->id ]);
 								break;
 						}
 					});

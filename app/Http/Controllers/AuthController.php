@@ -65,7 +65,7 @@ class AuthController
 	 */
 	public function authenticate(Request $request, $type)
 	{
-		$credentials = array_filter($request->only('email', 'password'));
+		$credentials = array_filter($request->only('username', 'password'));
 
 		try {
 			if (!$token = JWTAuth::attempt($credentials)) {

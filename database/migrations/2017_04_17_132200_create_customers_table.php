@@ -22,11 +22,12 @@ class CreateCustomersTable extends Migration
 			$table->foreign('id')->references('id')->on('users')
 				->onDelete('restrict')->onUpdate('restrict');
 
-			$table->unsignedInteger('current_city')->index();
+			$table->unsignedInteger('current_city')->index()->nullable();
 			$table->foreign('current_city')->references('id')->on('cities')
 				->onDelete('restrict')->onUpdate('restrict');
 
-			$table->string('name');
+			//$table->string('username')->unique();
+			$table->string('name')->nullable();
 			$table->text('notes')->nullable();
 
 			$table->string('card_name')->nullable();

@@ -20,8 +20,8 @@ $factory->define(User::class, function (Faker\Generator $faker) {
 
 	$userData = [
 		'id' => Uuid::generate(4),
-		'email' => $faker->safeEmail,
-		'name' => $faker->firstName . ' ' . $faker->lastName,
+		'email' => $faker->freeEmail,
+		'username' => $faker->userName,
 		'password' => 'Qrab17',
 		'phone' => '+37529' . mt_rand(1111111, 9999999),
 		'last_login' => Date::now()->subHours(rand(1, 48)),

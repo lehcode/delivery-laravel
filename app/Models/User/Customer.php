@@ -44,7 +44,6 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 	 */
 	protected $fillable = [
 		'id',
-		'name',
 		'is_activated',
 		'current_city',
 		'card_name',
@@ -57,7 +56,7 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 	/**
 	 * @var array
 	 */
-	protected $casts = ['is_activated' => 'boolean'];
+	protected $casts = ['is_activated' => 'boolean', 'card_expiry' => 'date'];
 	/**
 	 * @var array
 	 */
@@ -67,7 +66,6 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 	 * @var array
 	 */
 	protected $auditInclude = [
-		'name',
 		'is_activated',
 		'current_city',
 		'card_name',
@@ -88,7 +86,6 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 	 * @var array
 	 */
 	protected $rules = [
-		'name' => 'required|string|min:3',
 		'notes' => 'string',
 		'current_city' => 'integer|exists:cities,id',
 		'card_name' => 'string',
