@@ -134,4 +134,19 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 		});
 
 	});
+
+	/**
+	 * Admin routes
+	 */
+	Route::group(['prefix' => 'admin/v1'], function () {
+
+		Route::group(['prefix' => 'user'], function () {
+			Route::post('create', ['uses' => 'CarrierController@create']);
+		});
+
+		Route::group(['middleware' => 'jwt.auth'], function () {
+
+		});
+
+	});
 });
