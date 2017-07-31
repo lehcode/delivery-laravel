@@ -116,34 +116,31 @@ class TripService implements TripServiceInterface
 	}
 
 	/**
-	 * @return array
+	 * @return \Illuminate\Support\Collection
+	 * @throws MultipleExceptions
 	 */
 	public function getTripsFromCurrentCity()
 	{
 
-		$authUser = Auth::user();
-		$role = $authUser->roles()->first()->name;
 
-		switch ($role) {
-			case User::ROLE_CUSTOMER:
-				$user = $authUser->customer();
-				$city = $user->first()
-					->currentCity()->where('active', true)->first();
-				break;
-			case User::ROLE_CARRIER:
-				$user = $authUser->carrier();
-				$city = $user->first()
-					->currentCity()->where('active', true)->first();
-				break;
+		if (Auth::user()->hasRole('customer')) {
+
+			$city = Auth::user()->customer()->first()
+				->currentCity()
+				->where('active', true)->first();
+
+			$result = $this->tripRepository->findByParams(['from_city_id' => $city->id])
+				->map(function ($item) {
+					$response = new TripResponse();
+					return $response->transform($item);
+				});
+
+			return $result;
 		}
 
-		$result = $this->tripRepository->findByParams(['from_city_id' => $city->id])
-			->map(function ($item) {
-				$response = new TripResponse();
-				return $response->transform($item);
-			});
+		throw new MultipleExceptions("Access denied", 403);
 
-		return $result;
+
 	}
 
 	/**
@@ -251,8 +248,7 @@ class TripService implements TripServiceInterface
 				$item->country_id = null;
 				$item->active = null;
 				return $item;
-			})
-		;
+			});
 
 		return $result;
 	}
