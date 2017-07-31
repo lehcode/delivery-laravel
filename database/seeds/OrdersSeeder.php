@@ -77,7 +77,7 @@ class OrdersSeeder extends Seeder
 					$data = [
 						'status' => $status,
 						'customer_id' => $customer->id,
-						'trip_id' => rand(1, 5) == 5 ? $trip->id : null,
+						//'trip_id' => rand(1, 5) == 5 ? $trip->id : null,
 						'recipient_id' => $recipient->id->string,
 						'shipment_id' => $shipment->id,
 						'payment_id' => null,
@@ -85,6 +85,10 @@ class OrdersSeeder extends Seeder
 						'geo_end' => $this->makePoint($this->getGeoData($trip->destinationCity()->first())),
 						'price' => $faker->randomFloat(2, 49, 1999),
 					];
+
+					if ($status !== Order::STATUS_CREATED && $status !== Order::STATUS_CANCELLED) {
+						$data['trip_id'] = $trip->id;
+					}
 
 					$order = factory(Order::class)->create($data);
 
@@ -141,8 +145,8 @@ class OrdersSeeder extends Seeder
 		//$result[] = (int)rand($geo[4][1] * $m, $geo[5][1] * $m);
 		//$result[] = (int)rand($geo[4][0] * $m, $geo[7][0] * $m);
 
-		$result[] = (float)rand($geo[4][1] * $m, $geo[5][1] * $m)/$m;
-		$result[] = (float)rand($geo[4][0] * $m, $geo[7][0] * $m)/$m;
+		$result[] = (float)rand($geo[4][1] * $m, $geo[5][1] * $m) / $m;
+		$result[] = (float)rand($geo[4][0] * $m, $geo[7][0] * $m) / $m;
 
 		return $result;
 
