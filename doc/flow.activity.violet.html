@@ -122,8 +122,8 @@ Customer sees Trip destination City
 Customer sees Trip departure datetime
 Customer sees Trip expected delivery datetime
 Customer sees Trip Cost
-Customer sees Trip Driver name
-Customer sees Trip Driver ratings</text>
+Customer sees Trip Carrier name
+Customer sees Trip Carrier ratings</text>
       </name>
     </ActivityNode>
     <DecisionNode id="40">
@@ -192,7 +192,7 @@ Customer specifies Order Payment Type</text>
       <borderColor reference="8"/>
       <textColor reference="8"/>
       <name id="67" justification="1" size="4" underlined="false">
-        <text>Driver can see all Orders from all 
+        <text>Carrier can see all Orders from all 
 Customers in the same City</text>
       </name>
     </ActivityNode>
@@ -227,7 +227,7 @@ Customers in the same City</text>
       </borderColor>
       <textColor reference="78"/>
       <name id="79" justification="1" size="4" underlined="false">
-        <text>Driver logs into BarQ</text>
+        <text>Carrier logs into BarQ</text>
       </name>
     </ActivityNode>
     <ActivityNode id="80">
@@ -239,10 +239,10 @@ Customers in the same City</text>
       <borderColor reference="8"/>
       <textColor reference="8"/>
       <name id="84" justification="1" size="4" underlined="false">
-        <text>Driver views single order
-Driver can see Order Departure date
-Driver can see Order Destination
-Driver can see Order Shipment Category</text>
+        <text>Carrier views single order
+Carrier can see Order Departure date
+Carrier can see Order Destination
+Carrier can see Order Shipment Category</text>
       </name>
     </ActivityNode>
     <DecisionNode id="85">
@@ -254,7 +254,7 @@ Driver can see Order Shipment Category</text>
       <borderColor reference="8"/>
       <textColor reference="8"/>
       <condition id="89" justification="1" size="4" underlined="false">
-        <text>Driver approves an order</text>
+        <text>Carrier approves an order</text>
       </condition>
     </DecisionNode>
     <ActivityNode id="90">
@@ -266,7 +266,7 @@ Driver can see Order Shipment Category</text>
       <borderColor reference="8"/>
       <textColor reference="8"/>
       <name id="94" justification="1" size="4" underlined="false">
-        <text>Driver specifies expected delivery datetime</text>
+        <text>Carrier specifies expected delivery datetime</text>
       </name>
     </ActivityNode>
     <ActivityNode id="95">
@@ -299,7 +299,7 @@ Driver can see Order Shipment Category</text>
       <borderColor reference="8"/>
       <textColor reference="8"/>
       <name id="108" justification="1" size="4" underlined="false">
-        <text>Order is available to all Drivers in the same city</text>
+        <text>Order is available to all Carriers in the same city</text>
       </name>
     </ActivityNode>
     <ActivityNode id="109">
@@ -311,10 +311,10 @@ Driver can see Order Shipment Category</text>
       <borderColor reference="8"/>
       <textColor reference="8"/>
       <name id="113" justification="1" size="4" underlined="false">
-        <text>Driver sets Trip start City
-Driver sets Trip end City
-Driver sets departure datetime
-Driver sets Trip time length</text>
+        <text>Carrier sets Trip start City
+Carrier sets Trip end City
+Carrier sets departure datetime
+Carrier sets Trip time length</text>
       </name>
     </ActivityNode>
     <ActivityNode id="114">
@@ -336,7 +336,7 @@ Driver sets Trip time length</text>
       </borderColor>
       <textColor reference="119"/>
       <name id="120" justification="1" size="4" underlined="false">
-        <text>Driver switches status to Online</text>
+        <text>Carrier switches status to Online</text>
       </name>
     </ActivityNode>
     <DecisionNode id="121">
@@ -348,7 +348,7 @@ Driver sets Trip time length</text>
       <borderColor reference="8"/>
       <textColor reference="8"/>
       <condition id="125" justification="1" size="4" underlined="false">
-        <text>Driver creates trip</text>
+        <text>Carrier creates trip</text>
       </condition>
     </DecisionNode>
     <SynchronizationBarNode id="126">
