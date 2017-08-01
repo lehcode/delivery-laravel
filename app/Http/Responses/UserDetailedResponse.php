@@ -115,7 +115,7 @@ class UserDetailedResponse extends ApiResponse
 			'roles' => $user->roles,
 		]);
 
-		if ($this->authenticateUser == true) {
+		if ($this->authenticateUser === true) {
 			$token = JWTAuth::fromUser($user);
 			$data = array_merge($data, ['token' => $token]);
 		}

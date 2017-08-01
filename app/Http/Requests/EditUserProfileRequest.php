@@ -20,9 +20,9 @@ class EditUserProfileRequest extends ApiRequest
 	public function rules()
 	{
 		$rules = [
-			'name' => 'string|min:3',
+			'name' => 'string|min:3|regex:/^[^\d]+$/',
 			'email' => 'email',
-			'phone' => 'phone:AUTO,mobile',
+			'phone' => 'phone:AUTO,mobile|unique:users,phone',
 			'image' => 'file|image|dimensions:min_width=100,min_height=100,max_width=2048,max_height=2048',
 			'id_scan' => 'file|image|dimensions:min_width=1024,min_height=1024,max_width=4096,max_height=4096',
 			'location.city' => 'string|min:2|max:64|required_with:location.country',

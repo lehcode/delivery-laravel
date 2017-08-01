@@ -20,9 +20,9 @@ class SignupCarrierRequest extends ApiRequest
 	public function rules()
 	{
 		return [
-			'username' => 'required|string|min:3',
-			'phone' => 'required|phone:AUTO,mobile',
-			'password' => 'required|min:6|confirmed',
+			'username' => 'required|string|min:3|unique:users,username',
+			'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
+			'password' => 'required|min:6|alpha_num|confirmed',
 			'image' => 'file|image',
 		];
 	}

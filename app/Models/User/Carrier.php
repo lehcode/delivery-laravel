@@ -18,18 +18,21 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Watson\Validating\ValidatingInterface;
+use Watson\Validating\ValidatingTrait;
 
 /**
  * Class Carrier
  * @package App\Models\User
  */
-class Carrier extends Model implements HasMediaConversions, AuditableInterface
+class Carrier extends Model implements HasMediaConversions, AuditableInterface, ValidatingInterface
 {
 	use AuditableTrait,
 		SoftDeletes,
 		HasMediaTrait,
 		ProfileAttributeTrait,
-		LaratrustUserTrait;
+		LaratrustUserTrait,
+		ValidatingTrait;
 
 	const STATUS_ONLINE = 'online';
 	const STATUS_OFFLINE = 'offline';

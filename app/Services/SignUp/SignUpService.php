@@ -71,9 +71,9 @@ class SignUpService implements SignUpServiceInterface
 		}
 
 		Validator::make($params, [
-			'username' => 'required|string|min:3|unique:users,username',
+			'username' => 'required|alpha_num|min:3|unique:users,username',
 			'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
-			'password' => 'required|min:6|max:24|confirmed',
+			'password' => 'required|min:5|alpha_num|confirmed',
 			'image' => 'file|image',
 			'location.city' => 'string|min:2|max:64',
 			'location.country' => 'string|regex:/^[A-Z]{2}$/',
@@ -152,9 +152,9 @@ class SignUpService implements SignUpServiceInterface
 		$entityProfile['is_online'] = false;
 
 		Validator::make($params, [
-			'username' => 'required|min:3|unique:users,username',
+			'username' => 'required|alpha_num|min:3|unique:users,username',
 			'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
-			'password' => 'required|min:5|confirmed',
+			'password' => 'required|min:5|alpha_num|confirmed',
 		])->validate();
 
 		return DB::transaction(function () use ($entityProfile, $params, $entityUser, $request) {

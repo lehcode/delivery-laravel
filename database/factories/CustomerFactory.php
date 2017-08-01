@@ -21,9 +21,9 @@ $factory->define(Customer::class, function (Faker\Generator $faker) {
 		'current_city' => $cities->random()->id,
 		'card_number' => $faker->creditCardNumber($cardType),
 		'card_type' => $cardType,
-		'card_name' => '',
+		'card_name' => $faker->firstName . ' ' . $faker->lastName,
 		'card_expiry' => $faker->creditCardExpirationDate,
-		'card_cvc' => $faker->randomNumber(3),
+		'card_cvc' => $faker->randomNumber(3, true),
 	];
 
 });

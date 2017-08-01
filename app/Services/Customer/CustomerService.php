@@ -47,6 +47,7 @@ class CustomerService
 		return \DB::transaction(function () use ($request) {
 
 			$user = \Auth::user();
+			$user->load('customer');
 			$data = $request->all();
 
 			if ($request->has('remove_image')) {
@@ -54,7 +55,7 @@ class CustomerService
 			}
 
 			if ($request->has('name')) {
-				$user->customer->name = $data['name'];
+				$user->name = $data['name'];
 			}
 
 			if ($request->has('image') && $request->input('image') instanceof UploadedFile) {

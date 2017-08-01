@@ -123,18 +123,27 @@ class SetupAclTablesSeed extends Seeder
 						$user->save();
 						$user->attachRole($role);
 
-						$created = null;
-
 						switch ($key) {
 							case 'customer':
-								factory(User\Customer::class)->create([ 'id' => $user->id, 'card_name' => $user->name ]
-								);
+								$entity = factory(User\Customer::class)->create(['id' => $user->id]);
 								break;
 
 							case 'carrier':
-								factory(User\Carrier::class)->create([ 'id' => $user->id ]);
+								$entity = factory(User\Carrier::class)->create(['id' => $user->id]);
 								break;
 						}
+
+						if (isset($entity)) {
+							if (!$entity->isValid()) {
+								$errors = $entity->getErrors()->messages();
+								foreach ($errors as $req => $error) {
+									foreach ($error as $text) {
+										throw new \Exception($text, 1);
+									}
+								}
+							}
+						}
+
 					});
 			}
 		}

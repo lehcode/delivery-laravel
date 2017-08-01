@@ -94,7 +94,7 @@ class CustomerController extends Controller
 	 */
 	public function create(SignupCustomerRequest $request)
 	{
-		return $this->responderService->fractal($this->signupService->customer($request), UserDetailedResponse::class);
+		return $this->responderService->fractal($this->signupService->customer($request), UserDetailedResponse::class, null, [false, true]);
 
 	}
 
