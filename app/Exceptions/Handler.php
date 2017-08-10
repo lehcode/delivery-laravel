@@ -106,9 +106,10 @@ class Handler extends ExceptionHandler
                 return $corsService->errorResponse($e, 422);
 
             case $e instanceof MultipleExceptions:
-                return $corsService->errorResponse($e, 422);
+                return $corsService->errorResponse($e, 500);
 
             case $e instanceof AuthenticationException:
+            case $e instanceof RequestValidationException:
                 /** @var TokenInvalidException $e */
                 return $corsService->errorResponse($e, 400);
             
