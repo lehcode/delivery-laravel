@@ -1,0 +1,4 @@
+[submodule "admin"]
+    path = admin
+    url = git@bitbucket.org:barqapp/barq-frontend.git
+    ignore = all
