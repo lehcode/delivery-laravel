@@ -10,6 +10,7 @@ use App\Repositories\User\UserRepositoryInterface;
 use Propaganistas\LaravelIntl\Facades\Country;
 use Watson\Validating\ValidationException;
 use App\Models\City;
+use Webpatser\Uuid\Uuid;
 
 class SetupAclTablesSeed extends Seeder
 {
@@ -18,11 +19,9 @@ class SetupAclTablesSeed extends Seeder
 
 	public $usersAmt = [
 		'admin' => 1,
-		'customer' => 9,
-		'carrier' => 9,
+		'customer' => 25,
+		'carrier' => 25,
 	];
-
-	public $phoneSfx = 0;
 
 	public $cardTypes = ['Visa', 'MasterCard'];
 
@@ -85,6 +84,10 @@ class SetupAclTablesSeed extends Seeder
 				$user = factory(User::class)->make([
 					'email' => $key . '@barq.com',
 					'phone' => '+375291111110',
+					'username' => $key,
+					'is_enabled' => true,
+					'password' => $this->pwd,
+					'last_login' => Date::now()->subHours(rand(1, 48))
 				]);
 
 				if (!$user->isValid()) {
@@ -100,36 +103,78 @@ class SetupAclTablesSeed extends Seeder
 				} catch (ValidationException $e) {
 					var_dump($user->toArray());
 					print_r($e->getErrors());
-					die();
+					die($e->getMessage() . "\n");
 				}
 
 			} else {
 
-				$tick = false;
+				$pre = true;
 
-				factory(User::class, $this->usersAmt[$key])->make()
-					->each(function ($user) use ($role, &$tick, $key, $cities, $faker) {
+				factory(User::class, $this->usersAmt[$key])->make([
+					'id' => Uuid::generate(4),
+					'email' => $faker->freeEmail,
+					'username' => $faker->userName,
+					'password' => $this->pwd,
+					'phone' => '+37529' . mt_rand(1111111, 9999999),
+					'last_login' => Date::now()->subHours(rand(1, 48)),
+					'is_enabled' => true,
+				])
+					->each(function ($user) use ($role, &$pre, $key, $cities, $faker) {
 
-						$this->phoneSfx++;
+						$user->name = rand(1, 5) === 5 ? $faker->firstName . ' ' . $faker->lastName : null;
+						$user->last_login = Date::now()->subHours(rand(1, 48));
+						$user->password = $this->pwd;
 
-						if (!$tick) {
+						if ($pre === true) {
 							$user->username = $role->name;
-							$user->name = rand(0, 5) === 5 ? $user->name : null;
 							$user->email = $role->name . '@barq.com';
-							$user->phone = '+37529111111' . $this->phoneSfx;
-							$tick = true;
+							$user->phone = '+37529' . '11111' . rand(11, 99);
+							$user->is_enabled = true;
+							$user->last_login = Date::now()->subHours(rand(1, 48));
+							$pre = false;
+						} else {
+							$user->username = $faker->userName;
+							$user->email = $faker->freeEmail;
+							$user->is_enabled = rand(1, 8) === 8 ? false : true;
+							$user->phone = rand(1, 9) === 9 ? null : '+37529' . rand(1111200, 9999999);
+							$user->last_login = Date::now()->subHours(rand(1, 48));
 						}
 
-						$user->save();
-						$user->attachRole($role);
+						try {
+							$user->save();
+							$user->attachRole($role);
+						} catch (\Exception $e) {
+							var_dump($user->toArray());
+							print_r($e->getErrors());
+							die($e->getMessage() . "\n");
+						}
+
+						$cardType = $faker->randomElement(['Visa', 'MasterCard']);
 
 						switch ($key) {
 							case 'customer':
-								$entity = factory(User\Customer::class)->create(['id' => $user->id]);
+								$entity = factory(User\Customer::class)->create([
+									'id' => $user->id,
+									'notes' => $faker->text(128),
+									'current_city' => $cities->random()->id,
+									'card_number' => $faker->creditCardNumber($cardType),
+									'card_type' => $cardType,
+									'card_name' => $faker->firstName . ' ' . $faker->lastName,
+									'card_expiry' => $faker->creditCardExpirationDate,
+									'card_cvc' => rand(101, 999),
+								]);
 								break;
 
 							case 'carrier':
-								$entity = factory(User\Carrier::class)->create(['id' => $user->id]);
+								$entity = factory(User\Carrier::class)->create([
+									'id' => $user->id,
+									'is_online' => $user->is_enabled === true ? rand(1, 5) === 5 ? false : true : false,
+									'birthday' => $faker->date(),
+									'id_number' => strtoupper($faker->bothify("## ???##???")),
+									'current_city' => $cities->random()->id,
+									'default_address' => $faker->streetAddress,
+									'notes' => $faker->text(128),
+								]);
 								break;
 						}
 
@@ -138,7 +183,7 @@ class SetupAclTablesSeed extends Seeder
 								$errors = $entity->getErrors()->messages();
 								foreach ($errors as $req => $error) {
 									foreach ($error as $text) {
-										throw new \Exception($text, 1);
+										throw new \App\Exceptions\ModelValidationException($text, 1);
 									}
 								}
 							}
@@ -152,16 +197,19 @@ class SetupAclTablesSeed extends Seeder
 		if (count($userPermission)) {
 			foreach ($userPermission as $key => $modules) {
 				foreach ($modules as $module => $value) {
+
 					$permissions = explode(',', $value);
+
 					// Create default user for each permission set
 					$user = app()->make(UserRepositoryInterface::class)->create([
-						'name' => $faker->name,
+						'name' => $faker->firstName . ' ' . $faker->lastName,
 						'email' => $key . '@barq.com',
 						'phone' => $faker->phoneNumber,
 						'password' => $this->pwd,
-						'is_enabled' => true,
+						'is_enabled' => rand(1, 3) === 3 ? false : true,
 						'last_login' => Date::now(),
 					]);
+
 					foreach ($permissions as $p => $perm) {
 						$permissionValue = $mapPermission->get($perm);
 

@@ -12,18 +12,15 @@ use App\Models\City;
  */
 $factory->define(Customer::class, function (Faker\Generator $faker) {
 
-	$cardType = $faker->randomElement(['Visa', 'MasterCard']);
-	$cities = City::all();
-
 	return [
 		'id' => null,
-		'notes' => $faker->text(128),
-		'current_city' => $cities->random()->id,
-		'card_number' => $faker->creditCardNumber($cardType),
-		'card_type' => $cardType,
-		'card_name' => $faker->firstName . ' ' . $faker->lastName,
-		'card_expiry' => $faker->creditCardExpirationDate,
-		'card_cvc' => $faker->randomNumber(3, true),
+		'notes' => null,
+		'current_city' => null,
+		'card_number' => null,
+		'card_type' => null,
+		'card_name' => null,
+		'card_expiry' => null,
+		'card_cvc' => null,
 	];
 
 });

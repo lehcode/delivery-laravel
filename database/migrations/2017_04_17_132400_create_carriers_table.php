@@ -22,8 +22,7 @@ class CreateCarriersTable extends Migration
 			$table->foreign('id')->references('id')->on('users')
 				->onDelete('restrict')->onUpdate('restrict');
 
-			//$table->string('username')->unique();
-			$table->string('name')->nullable();
+			$table->string('name', 128)->nullable();
 			$table->string('default_address')->nullable();
 
 			$table->unsignedInteger('current_city')->nullable()->index();
@@ -33,6 +32,10 @@ class CreateCarriersTable extends Migration
 			$table->double('rating', 2, 2)->unsigned()->nullable()->default(0);
 			$table->text('notes')->nullable();
 			$table->boolean('is_online')->default(false);
+
+			$table->date('birthday')->nullable();
+			$table->string('nationality', 32)->nullable();
+			$table->string('id_number', 32);
 
 			$table->timestamps();
 			$table->softDeletes();

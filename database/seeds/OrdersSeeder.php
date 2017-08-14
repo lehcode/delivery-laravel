@@ -24,7 +24,16 @@ class OrdersSeeder extends Seeder
 	 */
 	const DATE_FORMAT = 'Y-m-d H:i:s';
 
-	const STATUSES = ['created', 'accepted', 'picked', 'delivered', 'completed', 'cancelled'];
+	const STATUSES = [
+		'created',
+		'accepted',
+		'at-the-door',
+		'picked',
+		'delivering',
+		'delivered',
+		'completed',
+		'cancelled'
+	];
 
 	/**
 	 * Run the database seeds.
@@ -40,7 +49,7 @@ class OrdersSeeder extends Seeder
 		User\Customer::with('currentCity')->get()
 			->each(function ($customer) use ($trips, $faker) {
 
-				for ($i = 0; $i < rand(3, 9); $i++) {
+				for ($i = 0; $i < rand(3, 50); $i++) {
 					$trip = $trips->random()->with(['fromCity', 'destinationCity'])->first();
 
 					$recipient = factory(Recipient::class)->create();
@@ -77,7 +86,6 @@ class OrdersSeeder extends Seeder
 					$data = [
 						'status' => $status,
 						'customer_id' => $customer->id,
-						//'trip_id' => rand(1, 5) == 5 ? $trip->id : null,
 						'recipient_id' => $recipient->id->string,
 						'shipment_id' => $shipment->id,
 						'payment_id' => null,

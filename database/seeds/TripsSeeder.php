@@ -32,7 +32,7 @@ class TripsSeeder extends Seeder
 
 			$user = $c->carrier()->first();
 
-			for ($i = 0; $i < rand(3, 9); $i++) {
+			for ($i = 0; $i < rand(9, 50); $i++) {
 				try {
 					$user->trips()->save(factory(Trip::class)->make([
 						'carrier_id' => $c->id,
