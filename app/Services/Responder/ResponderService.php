@@ -9,7 +9,7 @@ namespace App\Services\Responder;
 
 use App\Exceptions\MultipleExceptions;
 use Exception;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
