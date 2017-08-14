@@ -68,6 +68,9 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 				Route::patch('payment-info/update', ['uses' => 'CustomerController@updatePaymentInfo']);
 
 				Route::post('update', ['uses' => 'CustomerController@update']);
+
+				Route::post('notify', ['uses' => "NotificationController@send"]);
+				Route::get('reset-password', ['uses' => 'UserController@resetPassword']);
 			});
 
 			Route::group(['prefix' => 'order'], function () {
@@ -140,12 +143,26 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 	 */
 	Route::group(['prefix' => 'admin/v1'], function () {
 
-		Route::group(['prefix' => 'user'], function () {
-			Route::post('create', ['uses' => 'CarrierController@create']);
-		});
+		Route::group(['middleware' => ['jwt.auth', 'cors']], function () {
 
-		Route::group(['middleware' => 'jwt.auth'], function () {
+			Route::group(['prefix' => 'user'], function () {
+				Route::post('create', ['uses' => 'AdminController@create']);
+				Route::get('navigation', ['uses' => 'AdminController@navigation']);
+			});
 
+			Route::group(['prefix' => "carriers"], function () {
+				Route::get('', ["uses" => "CarrierController@all"]);
+				Route::get('{id}', ["uses" => "CarrierController@get"]);
+				Route::put('update/{id}', ['uses' => 'CarrierController@edit']);
+				Route::post('create', ['uses' => 'CarrierController@create']);
+				Route::post('enable/{value}', ['uses' => 'CarrierController@setAccountStatus']);
+				Route::post('status/{value}', ['uses' => 'CarrierController@setUserStatus']);
+			});
+
+			Route::group(['prefix' => 'admins'], function () {
+				Route::get("", ["uses" => "AdminController@all"]);
+				Route::get("{id}", ["uses" => "AdminController@get"]);
+			});
 		});
 
 	});
