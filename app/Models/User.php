@@ -126,8 +126,10 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 	 */
 	protected $rules = [
 		'username' => 'required|string|min:3',
-		'name' => 'string|min:3|nullable',
-		'password' => 'required|min:5',
+		'name' => 'string|nullable|min:3',
+		'email' => 'email|nullable',
+		'password' => 'required',
+		'phone' => 'nullable|phone:AUTO,mobile|unique:users,phone',
 	];
 
 	/**
@@ -142,7 +144,9 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 		'email.unique' => "This e-mail adress already taken",
 		'email.email' => "Email has wrong format",
 		'password.required' => "User password is required",
+		'phone.required' => "User phone is required",
 		'phone.phone' => "User phone is wrong",
+		'phone.unique' => "This phone number cannot be taken",
 	];
 
 	/**
@@ -164,7 +168,7 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 	 *
 	 * @return $this
 	 */
-	public function attachRole(Role $role)
+	public function attachRole($role)
 	{
 		$this->roles()->attach($this->getIdFor($role));
 		$this->flushCache();
@@ -197,7 +201,7 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 			->fit(Manipulations::FIT_CROP, 400, 400);
 
 		$this->addMediaConversion('thumb')
-			->fit(Manipulations::FIT_CROP, 164, 164);
+			->fit(Manipulations::FIT_CROP, 120, 160);
 	}
 
 }

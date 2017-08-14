@@ -89,10 +89,15 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 		'notes' => 'string',
 		'current_city' => 'integer|exists:cities,id',
 		'card_name' => 'string',
-		'card_number' => 'ccn',
-		'card_expiry' => 'date',
-		'card_cvc' => 'cvc',
+		'card_number' => 'ccn|required_with:card_expiry,card_cvc',
+		'card_expiry' => 'date|required_with:card_number,card_cvc',
+		'card_cvc' => 'integer|min:101|max:999|required_with:card_number,card_expiry',
 		'card_type' => 'in:Visa,MasterCard',
+	];
+
+	protected $messages = [
+		'card_cvc.cvc' => "Wrong card CVC code",
+		'card_expiry.date' => "Wrong card expiry date",
 	];
 
 	protected $hidden = ['updated_at'];
@@ -128,6 +133,9 @@ class Customer extends Model implements HasMediaConversions, AuditableInterface,
 	{
 		$this->addMediaConversion('fitted')
 			->fit(Manipulations::FIT_CROP, 400, 400);
+
+		$this->addMediaConversion('thumb')
+			->fit(Manipulations::FIT_CROP, 120, 160);
 	}
 
 }

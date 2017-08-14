@@ -12,10 +12,11 @@ use App\Models\City;
 use App\Models\Trip;
 use App\Models\User;
 use Laratrust\Traits\LaratrustUserTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
+use Spatie\Image\Manipulations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Watson\Validating\ValidatingInterface;
@@ -25,7 +26,7 @@ use Watson\Validating\ValidatingTrait;
  * Class Carrier
  * @package App\Models\User
  */
-class Carrier extends Model implements HasMediaConversions, AuditableInterface, ValidatingInterface
+class Carrier extends Model implements AuditableInterface, ValidatingInterface, HasMediaConversions
 {
 	use AuditableTrait,
 		SoftDeletes,
@@ -51,23 +52,38 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface, 
 	 * @var array
 	 */
 	protected $fillable = [
-		'id',
 		'is_activated',
 		'is_online',
 		'current_city',
 		'default_address',
-		//self::ID_IMAGE,
+		'birthday',
+		'nationality',
+		'id_number',
 	];
 
 	/**
 	 * @var array
 	 */
-	protected $casts = ['is_activated' => 'boolean', 'is_online' => 'boolean'];
+	protected $casts = [
+		'is_activated' => 'boolean',
+		'is_online' => 'boolean',
+		'birthday' => 'date',
+	];
 
 	/**
 	 * @var array
 	 */
-	protected $auditableEvents = ['deleted', 'updated', 'restored', 'current_city'];
+	protected $auditableEvents = ['deleted', 'updated', 'restored'];
+
+	/**
+	 * @var array
+	 */
+	protected $auditExclude = [
+		'id',
+		'nationality',
+		'birthday',
+		'default_address'
+	];
 
 	/**
 	 * @var bool
@@ -78,9 +94,14 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface, 
 	 * @var array
 	 */
 	protected $rules = [
-		'default_address' => 'required|string',
+		'default_address' => 'nullable|string',
 		'current_city' => 'nullable|integer',
-		//self::ID_IMAGE => 'required|string|unique:carriers,id_scan',
+		'birthday' => 'date|nullable',
+		'nationality' => 'string|nullable|min:2',
+		'id_number' => 'string|required|min:3',
+		'rating' => 'numeric|nullable',
+		'notes' => 'string|nullable',
+		'is_online' => 'boolean|required',
 	];
 
 	/**
@@ -96,7 +117,7 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface, 
 	 */
 	public function user()
 	{
-		return $this->belongsTo(User::class);
+		return $this->belongsTo(User::class, 'id');
 	}
 
 	/**
@@ -114,6 +135,9 @@ class Carrier extends Model implements HasMediaConversions, AuditableInterface, 
 	{
 		$this->addMediaConversion('fitted')
 			->fit(Manipulations::FIT_CROP, 400, 400);
+
+		$this->addMediaConversion('thumb')
+			->fit(Manipulations::FIT_CROP, 120, 160);
 	}
 
 	/**
