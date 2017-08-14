@@ -7,11 +7,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EditUserProfileRequest;
 use App\Http\Requests\SignupCarrierRequest;
 use App\Http\Requests\SignUpCustomerRequest;
+use App\Http\Responses\Admin\CarrierResponse;
 use App\Http\Responses\TripDetailsResponse;
 use App\Http\Responses\TripResponse;
 use App\Http\Responses\UserDetailedResponse;
+use App\Models\User;
+use App\Services\Carrier\CarrierService;
 use App\Services\Responder\ResponderService;
 use App\Services\SignUp\SignUpService;
 use App\Services\Trip\TripService;
@@ -25,7 +29,7 @@ use Illuminate\Http\Request;
  * Class CarrierController
  * @package App\Http\Controllers\Carrier
  */
-class CarrierController extends BaseController
+class CarrierController
 {
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
@@ -45,20 +49,29 @@ class CarrierController extends BaseController
 	protected $tripService;
 
 	/**
+	 * @var CarrierService
+	 */
+	protected $carrierService;
+
+	/**
 	 * CarrierController constructor.
 	 *
 	 * @param SignUpService    $signUpService
 	 * @param ResponderService $responderService
 	 * @param TripService      $tripService
+	 * @param CarrierService   $carrierService
 	 */
 	public function __construct(
 		SignUpService $signUpService,
 		ResponderService $responderService,
-		TripService $tripService
-	) {
+		TripService $tripService,
+		CarrierService $carrierService
+	)
+	{
 		$this->signupService = $signUpService;
 		$this->responderService = $responderService;
 		$this->tripService = $tripService;
+		$this->carrierService = $carrierService;
 	}
 
 	/**
@@ -128,5 +141,37 @@ class CarrierController extends BaseController
 	public function getUserTrips()
 	{
 		return $this->responderService->fractal($this->tripService->userTrips(), TripResponse::class);
+	}
+
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function all()
+	{
+		return $this->responderService->fractal($this->carrierService->all(), CarrierResponse::class);
+	}
+
+	/**
+	 * @param $id
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function get($id)
+	{
+		return $this->responderService->fractal($this->carrierService->byId($id), CarrierResponse::class);
+	}
+
+	/**
+	 * @param EditUserProfileRequest $request
+	 * @param int                    $id
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function edit(EditUserProfileRequest $request, $id)
+	{
+		return $this->responderService->fractal($this->carrierService->update($request, $id), CarrierResponse::class);
 	}
 }
