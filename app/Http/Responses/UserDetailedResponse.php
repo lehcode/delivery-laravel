@@ -7,13 +7,12 @@
 
 namespace App\Http\Responses;
 
+use App\Exceptions\MultipleExceptions;
 use App\Models\ProfileCustomer;
 use App\Models\ProfileDriver;
 use App\Models\User;
 use App\Models\UserCar;
 use App\Services\Rating\RatingServiceInterface;
-use Illuminate\Database\Eloquent\Collection;
-use League\Fractal\TransformerAbstract;
 use JWTAuth;
 
 /**
@@ -49,17 +48,28 @@ class UserDetailedResponse extends ApiResponse
 	 * @param User $user
 	 *
 	 * @return array
+	 * @throws Exception
+	 * @throws MultipleExceptions
 	 */
 	public function transform(User $user)
 	{
 		/* @var RatingServiceInterface $ratingService */
 		//$ratingService = app()->make(RatingServiceInterface::class);
 
-		$roles = $user->roles();
+		if ($user instanceof User\Carrier || $user instanceof User\Customer) {
+			$user = $user->with('user')->first()->user;
+			$roles = $user->roles;
+		} elseif ($user instanceof User) {
+			$roles = $user->roles();
+		} else {
+			throw new Exception("Unknown user class", 404);
+		}
+
 		$role = $roles->first();
 
 		switch ($role->name) {
 			case User::ROLE_ADMIN:
+				$data = [];
 				break;
 
 			case User::ROLE_CUSTOMER:
@@ -70,11 +80,8 @@ class UserDetailedResponse extends ApiResponse
 					'payment_info' => isset($user->customer->card_number) ? $this->includeTransformedItem($user->customer, new PaymentInfoResponse()) : '',
 				];
 
-				if (isset($user->customer->current_city)){
-					$location = $user->customer->currentCity()->with('country')->first();
-					$city = $location->toArray();
-					$data['current_city'] = $city;
-					$city['current_city']['country'] = $location->country->toArray();
+				if (isset($user->customer->current_city)) {
+					$data['current_city'] = ApiResponse::currentCityFromRole($user, 'customer');
 				}
 
 				if ($this->includeDetails == true) {
@@ -91,17 +98,17 @@ class UserDetailedResponse extends ApiResponse
 					User::PROFILE_IMAGE => !is_null($user->photo) ? $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb') : '',
 				];
 
-				if (isset($user->carrier->current_city)){
-					$location = $user->carrier->currentCity()->with('country')->first();
-					$city = $location->toArray();
-					$data['current_city'] = $city;
-					$city['current_city']['country'] = $location->country->toArray();
+				if (isset($user->carrier->current_city)) {
+					$data['current_city'] = ApiResponse::currentCityFromRole($user, 'carrier');
 				}
 
 				if ($this->includeDetails == true) {
 					$data = array_merge($data, ["notes" => $user->carrier->notes]);
 				}
 				break;
+
+			default:
+				throw new MultipleExceptions("Invalid user role", 403);
 		}
 
 		$data = array_merge($data, [
@@ -109,7 +116,7 @@ class UserDetailedResponse extends ApiResponse
 			'username' => $user->username,
 			'name' => $user->name,
 			'email' => $user->email,
-			'phone' => $user->phone,
+			'phone' => is_null($user->phone) ? '' : $user->phone,
 			'is_enabled' => $user->is_enabled,
 			'created_at' => $user->created_at->format('r'),
 			'roles' => $user->roles,

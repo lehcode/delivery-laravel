@@ -29,7 +29,7 @@ class TripResponse extends ApiResponse
 		$user = User::where(['id' => $trip->carrier_id])->first();
 
 		if (!$user) {
-			throw new \Exception("Carrier not found", 404);
+			throw new \Exception("Carrier not found", 400);
 		}
 
 		$data = [

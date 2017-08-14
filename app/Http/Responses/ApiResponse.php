@@ -7,6 +7,7 @@
 
 namespace App\Http\Responses;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use League\Fractal\TransformerAbstract;
 use Fractal;
@@ -39,5 +40,19 @@ class ApiResponse extends TransformerAbstract
     {
         $output = array_except(Fractal::collection($collection, $transformerClass)->jsonSerialize(), ['meta']);
         return $output;
+    }
+
+    /**
+     * @param User $user
+     * @param string $role
+     *
+     * @return array
+     */
+    static public function currentCityFromRole(User $user, $role = null){
+        $location = $user->$role->currentCity()->with('country')->first();
+        $city = $location->toArray();
+        $city['country'] = $location->country->toArray();
+
+        return $city;
     }
 }
