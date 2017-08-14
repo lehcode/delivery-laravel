@@ -9,9 +9,8 @@ namespace App\Services\Responder;
 
 use App\Exceptions\MultipleExceptions;
 use Exception;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
@@ -61,6 +60,10 @@ class ResponderService implements ResponderServiceInterface
             });
         } */
 
+		if (env('APP_ENV') === 'local'){
+			$headers['Access-Control-Allow-Origin'] = "*";
+		}
+
 		return response()->json($array, $status, $headers, $options);
 	}
 
@@ -78,7 +81,9 @@ class ResponderService implements ResponderServiceInterface
 			'status' => 'error',
 			'code' => !is_null($e->getCode()) ? $e->getCode() : $errorNumber,
 			'message' => $e instanceof MultipleExceptions ? $e->getMessages() : [$e->getMessage()]
-		], $errorNumber >= 400 && $errorNumber < 600 ? $errorNumber : 500);
+		], $errorNumber >= 400 && $errorNumber < 600 ? $errorNumber : 500, [
+			"Access-Control-Allow-Origin" => "*"
+		]);
 	}
 
 	/**

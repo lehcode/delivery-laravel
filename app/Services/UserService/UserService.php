@@ -13,6 +13,7 @@ use App\Models\ProfileDriver;
 use App\Models\User;
 use App\Models\UserCar;
 use App\Repositories\User\UserRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 use Validator;
 use Illuminate\Validation\Rule;
@@ -117,24 +118,11 @@ class UserService implements UserServiceInterface
 	 *
 	 * @return bool
 	 */
-	protected function editDriver(User $user, array $params)
+	protected function editCarrier(User $user, array $params)
 	{
 		$entityUser = array_only($params, app()->make(User::class)->getFillable());
 		$entityProfile = array_only($params, app()->make(ProfileDriver::class)->getFillable());
-		$entityCar = isset($params['car']) && is_array($params['car']) ? $params['car'] : [];
-
-
-		Validator::make($params, [
-			'phone' => ['phone:AUTO', Rule::unique('users')->ignore($user->id)],
-			'name' => 'min:1',
-			'email' => ['email', Rule::unique('users')->ignore($user->id)],
-			'password' => 'min:5',
-			'is_enabled' => 'boolean',
-
-			'cash_limit' => 'integer:min:1',
-			'membership_id' => 'exists:memberships,id',
-			'notes' => 'min:1',
-		])->validate();
+		//$entityCar = isset($params['car']) && is_array($params['car']) ? $params['car'] : [];
 
 		return DB::transaction(function () use ($entityUser, $entityProfile, $entityCar, $params, $user) {
 			/** @var User $user */
@@ -254,5 +242,39 @@ class UserService implements UserServiceInterface
 	{
 		$user->password = $password;
 		$user->save();
+	}
+
+	/**
+	 * @param User $user
+	 */
+	public function sendConfirmationLink(User $user)
+	{
+		$key = $this->makeConfirmationKey($user);
+		Mail::to($user)->queue(new UserEmailConfirmation($user, $key));
+	}
+
+	/**
+	 * @param bool $withDeleted
+	 *
+	 * @return Collection
+	 */
+	public function getAdmins($withDeleted = false)
+	{
+		$admins = DB::table('users')
+			->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
+			->rightJoin('roles', 'role_user.role_id', '=', 'roles.id')
+			->where('deleted_at', null)
+			->where('roles.name', '=', 'admin')
+			->select([
+				'users.*',
+				'role_user.role_id as role_id',
+				'roles.name as role_name'
+			])->get();
+
+		$adminsArray = $admins->toArray();
+
+		$collection = new Collection();
+
+		return $collection;
 	}
 }

@@ -7,7 +7,9 @@
 
 namespace App\Services\SignUp;
 
+use App\Exceptions\ModelValidationException;
 use App\Exceptions\MultipleExceptions;
+use App\Exceptions\RequestValidationException;
 use App\Http\Requests\SignupCarrierRequest;
 use App\Http\Requests\SignupCustomerRequest;
 use App\Models\City;
@@ -64,7 +66,7 @@ class SignUpService implements SignUpServiceInterface
 		$entityUser['type'] = User::ROLE_CUSTOMER;
 		$entityUser['is_enabled'] = true;
 
-		if ($request->has('location')){
+		if ($request->has('location')) {
 			$country = Country::where('alpha2_code', '=', $params['location']['country'])->first();
 			$entityCustomerProfile['current_city'] = City::where('name', '=', $params['location']['city'])
 				->where('country_id', '=', $country->id)->first()->id;
@@ -104,7 +106,7 @@ class SignUpService implements SignUpServiceInterface
 				}
 			}
 
-			if ($request->has('email')){
+			if ($request->has('email')) {
 				$this->userService->sendActivationLink($user);
 			} else {
 				$user->is_enabled = true;
@@ -139,54 +141,84 @@ class SignUpService implements SignUpServiceInterface
 	 * @param SignupCarrierRequest $request
 	 *
 	 * @return mixed
-	 * @throws \Illuminate\Validation\ValidationException
+	 * @throws RequestValidationException
 	 */
 	public function carrier(SignupCarrierRequest $request)
 	{
-		$params = $request->all();
-		$entityUser = array_only($params, app()->make(User::class)->getFillable());
-		$entityUser['type'] = User::ROLE_CARRIER;
+		$data = $request->all();
+		$entityUser = array_only($data, app()->make(User::class)->getFillable());
 		$entityUser['is_enabled'] = true;
 
-		$entityProfile = array_only($params, app()->make(User\Carrier::class)->getFillable());
-		$entityProfile['is_online'] = false;
+		$entityCarrier = array_only($data, app()->make(User\Carrier::class)->getFillable());
+		$entityCarrier['is_online'] = false;
 
-		Validator::make($params, [
-			'username' => 'required|alpha_num|min:3|unique:users,username',
-			'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
-			'password' => 'required|min:5|alpha_num|confirmed',
-		])->validate();
+		if ($request->validate() !== true){
+			throw new RequestValidationException($request->messages());
+		}
 
-		return DB::transaction(function () use ($entityProfile, $params, $entityUser, $request) {
+		return DB::transaction(function () use ($entityCarrier, $data, $entityUser, $request) {
 
-			$user = User::create($entityUser);
-			$role = User\Role::where(['name' => 'carrier'])->first();
-			$user->attachRole($role)->save();
-
-			if (isset($params['is_online']) && $params['is_online'] == true) {
-				$entityProfile['is_online'] = true;
-			} else {
-				$entityProfile['is_online'] = false;
+			if ($request->has('email')){
+				$entityUser['email'] = $data['email'];
 			}
+			
+			$user = factory(User::class)->make($entityUser);
 
-			$data = array_merge(['id' => $user->id], $entityProfile);
-
-			User\Carrier::create($data);
-
-			foreach ([User::PROFILE_IMAGE, User\Carrier::ID_IMAGE] as $mediaName) {
-				if (isset($params[$mediaName]) && $params[$mediaName] instanceof UploadedFile) {
-					/** @var UploadedFile $picture */
-					$picture = $params[$mediaName];
-					$user->profile
-						->clearMediaCollection($mediaName)
-						->addMedia($picture)
-						->toMediaLibrary($mediaName);
+			if (!$user->isValid()) {
+				$errors = $user->getErrors();
+				foreach ($errors as $req => $error) {
+					throw new ModelValidationException($error, 422);
 				}
 			}
 
-			if ($request->has('email')){
-				$this->userService->sendActivationLink($user);
+			$role = User\Role::where(['name' => 'carrier'])->first();
+
+			if (isset($data['is_online']) && $data['is_online'] == true) {
+				$entityCarrier['is_online'] = true;
+			} else {
+				$entityCarrier['is_online'] = false;
 			}
+
+			$user->saveOrFail();
+			$user->attachRole($role);
+
+			$carrier = factory(User\Carrier::class)
+				->create(array_merge(['id' => $user->id], $entityCarrier));
+
+			if (!$carrier->isValid()) {
+				$errors = $carrier->getErrors();
+				foreach ($errors as $req => $error) {
+					throw new ModelValidationException($error, 422);
+				}
+			}
+
+			if ($request->has(User\Carrier::ID_IMAGE)) {
+				if ($data[User\Carrier::ID_IMAGE] instanceof UploadedFile) {
+					$img = $data[User\Carrier::ID_IMAGE];
+					$user->carrier->clearMediaCollection(User\Carrier::ID_IMAGE)
+						->addMedia($img)
+						->usingFileName($img->hashName())
+						->toMediaCollection(User\Carrier::ID_IMAGE, 's3');
+				}
+			}
+
+			if ($request->has(User::PROFILE_IMAGE)) {
+				if ($data[User::PROFILE_IMAGE] instanceof UploadedFile) {
+					$img = $data[User::PROFILE_IMAGE];
+					$user->clearMediaCollection(User::PROFILE_IMAGE)
+						->addMedia($img)
+						->usingFileName($img->hashName())
+						->toMediaCollection(User::PROFILE_IMAGE, 's3');
+				}
+			}
+
+			if ($request->has('email')) {
+				$this->userService->sendConfirmationLink($user);
+			}
+
+			$carrier->saveOrFail();
+			$user->saveOrFail();
+			$user->load('carrier');
 
 			return $user;
 		});

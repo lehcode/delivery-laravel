@@ -16,7 +16,18 @@ use Illuminate\Database\Eloquent\Collection;
 interface CrudServiceInterface
 {
 	/**
+	 * Get Collection of items from repository
+	 *
 	 * @return Collection
 	 */
 	public function all();
+
+	/**
+	 * Get single item from repository
+	 *
+	 * @param string $id
+	 *
+	 * @return mixed
+	 */
+	public function byId($id);
 }
