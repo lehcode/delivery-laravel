@@ -195,10 +195,10 @@ return [
 
 
 	], (env('APP_DEBUG') == true ? [
-		Barryvdh\Debugbar\ServiceProvider::class,
+		//Barryvdh\Debugbar\ServiceProvider::class,
 		Way\Generators\GeneratorsServiceProvider::class,
-		Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
-		L5Swagger\L5SwaggerServiceProvider::class
+		//Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
+		//L5Swagger\L5SwaggerServiceProvider::class
 	] : [])),
 
 	/*
@@ -255,7 +255,7 @@ return [
 		'Flysystem' => 'GrahamCampbell\Flysystem\Facades\Flysystem'
 
 	], (env('APP_DEBUG') == true ? [
-		'Debugbar' => Barryvdh\Debugbar\Facade::class,
+		//'Debugbar' => Barryvdh\Debugbar\Facade::class,
 	] : []))
 
 ];
