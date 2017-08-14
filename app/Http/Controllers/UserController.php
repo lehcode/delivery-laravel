@@ -73,9 +73,6 @@ class UserController extends BaseController
 	 */
 	public function edit(EditUserProfileRequest $request)
 	{
-
-		$data = $request->except(['XDEBUG_SESSION_START']);
-
 		try {
 			$this->userService->edit(\Auth::user(), $data);
 			$user = $this->userRepository->find(\Auth::id());
@@ -118,5 +115,12 @@ class UserController extends BaseController
 		} catch(MultipleExceptions $e) {
 			return \View::make('activate')->withErrors($e->getMessages());
 		}
+	}
+
+	/**
+	 *
+	 */
+	public function resetPassword(){
+
 	}
 }
