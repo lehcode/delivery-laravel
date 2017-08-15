@@ -19,6 +19,7 @@ use App\Services\Carrier\CarrierService;
 use App\Services\Responder\ResponderService;
 use App\Services\SignUp\SignUpService;
 use App\Services\Trip\TripService;
+use App\Services\UserService\UserService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -54,24 +55,32 @@ class CarrierController
 	protected $carrierService;
 
 	/**
+	 * @var UserService
+	 */
+	protected $userService;
+
+	/**
 	 * CarrierController constructor.
 	 *
 	 * @param SignUpService    $signUpService
 	 * @param ResponderService $responderService
 	 * @param TripService      $tripService
 	 * @param CarrierService   $carrierService
+	 * @param UserService      $userService
 	 */
 	public function __construct(
 		SignUpService $signUpService,
 		ResponderService $responderService,
 		TripService $tripService,
-		CarrierService $carrierService
+		CarrierService $carrierService,
+		UserService $userService
 	)
 	{
 		$this->signupService = $signUpService;
 		$this->responderService = $responderService;
 		$this->tripService = $tripService;
 		$this->carrierService = $carrierService;
+		$this->userService = $userService;
 	}
 
 	/**
@@ -91,48 +100,7 @@ class CarrierController
 	 */
 	public function navigation()
 	{
-		return $this->responderService->response([
-			'status' => 'success',
-			'data' => [
-				'data' => [
-					[
-						'title' => 'Profile',
-						'id' => 'UserProfile',
-						'href' => '/carrier/v1/user/profile',
-					],
-					[
-						'title' => 'Trips',
-						'id' => 'TripsAll',
-						'href' => '/carrier/v1/trip/all',
-					],
-					[
-						'title' => 'Orders',
-						'id' => 'OrdersAll',
-						'href' => '/carrier/v1/order/all',
-					],
-					[
-						'title' => 'Payments',
-						'id' => 'PaymentsAll',
-						'href' => '/carrier/v1/payment/all',
-					],
-					[
-						'title' => 'Help',
-						'id' => 'InfoHelp',
-						'href' => '/carrier/v1/info/help',
-					],
-					[
-						'title' => 'About',
-						'id' => 'InfoAbout',
-						'href' => '/carrier/v1/info/about',
-					],
-					[
-						'title' => 'Legal',
-						'id' => 'InfoLegal',
-						'href' => '/carrier/v1/info/legal',
-					],
-				]
-			]
-		]);
+		return $this->responderService->response($this->userService->getNavigation('carrier'));
 	}
 
 	/**

@@ -7,6 +7,7 @@
 
 namespace App\Services\UserService;
 
+use App\Exceptions\MultipleExceptions;
 use App\Mail\UserActivationMail;
 use App\Models\ProfileCustomer;
 use App\Models\ProfileDriver;
@@ -276,5 +277,195 @@ class UserService implements UserServiceInterface
 		$collection = new Collection();
 
 		return $collection;
+	}
+
+	/**
+	 * @param string $role
+	 *
+	 * @return array
+	 * @throws MultipleExceptions
+	 */
+	public function getNavigation($role){
+		switch ($role){
+			case 'carrier':
+				return [
+					'status' => 'success',
+					'data' => [
+						'data' => [
+							[
+								'title' => 'Profile',
+								'id' => 'UserProfile',
+								'href' => '/carrier/v1/user/profile',
+							],
+							[
+								'title' => 'Trips',
+								'id' => 'TripsAll',
+								'href' => '/carrier/v1/trip/all',
+							],
+							[
+								'title' => 'Orders',
+								'id' => 'OrdersAll',
+								'href' => '/carrier/v1/order/all',
+							],
+							[
+								'title' => 'Payments',
+								'id' => 'PaymentsAll',
+								'href' => '/carrier/v1/payment/all',
+							],
+							[
+								'title' => 'Help',
+								'id' => 'InfoHelp',
+								'href' => '/carrier/v1/info/help',
+							],
+							[
+								'title' => 'About',
+								'id' => 'InfoAbout',
+								'href' => '/carrier/v1/info/about',
+							],
+							[
+								'title' => 'Legal',
+								'id' => 'InfoLegal',
+								'href' => '/carrier/v1/info/legal',
+							],
+						]
+					]
+				];
+			case 'customer':
+				return [
+					'status' => 'success',
+					'data' => [
+						'data' => [
+							/*
+							 * Main menu items
+							 */
+							[
+								'title' => 'Profile',
+								'id' => 'UserAccount',
+								'href' => '/customer/v1/user/profile',
+							],
+							[
+								'title' => 'Orders',
+								'id' => 'OrdersAll',
+								'href' => '/customer/v1/orders/all',
+							],
+							[
+								'title' => 'Settings',
+								'id' => 'ProfileSettings',
+								'href' => '/customer/v1/user/profile/settings',
+							],
+							[
+								'title' => 'Help',
+								'id' => 'InfoHelp',
+								'href' => '/customer/v1/info/help',
+							],
+							[
+								'title' => 'About',
+								'id' => 'InfoAbout',
+								'href' => '/customer/v1/info/about',
+							],
+							[
+								'title' => 'Legal',
+								'id' => 'InfoLegal',
+								'href' => '/customer/v1/info/legal',
+							],
+							/*
+							 * Settings child items
+							 */
+							[
+								'title' => "Payment Info",
+								'id' => 'SettingsPaymentInfo',
+								'href' => '/customer/v1/account/settings/payment-info',
+								'parent' => 'Settings'
+							],
+							[
+								'title' => "Notifications",
+								'id' => 'SettingsNotifications',
+								'href' => '/customer/v1/account/settings/notifications',
+								'parent' => 'Settings'
+							],
+							[
+								'title' => "Sign Out",
+								'id' => 'SettingsSignOut',
+								'href' => '/user/v1/account/sign-out',
+								'parent' => 'Settings'
+							],
+						]
+					]
+				];
+			case 'admin':
+				return [
+					'status' => 'success',
+					'data' => [
+						[
+							'title' => 'Dashboard',
+							'icon' => 'action:ic_dashboard_24px',
+							'sref' => 'dashboard',
+						],
+						[
+							'title' => 'Carriers',
+							'icon' => '/img/material-design-icons/taxi.svg',
+							'sref' => 'carriers',
+						],
+						[
+							'title' => 'Customers',
+							'icon' => 'social:ic_group_24px',
+							'sref' => 'customers',
+						],
+						[
+							'title' => 'Orders',
+							'icon' => 'content:ic_next_week_24px',
+							'sref' => 'orders',
+						],
+						[
+							'title' => 'Trips',
+							'icon' => 'maps:ic_zoom_out_map_24px',
+							'sref' => 'trips',
+						],
+						[
+							'title' => 'Shipments',
+							'icon' => 'social:ic_party_mode_24px',
+							'sref' => 'shipments',
+						],
+						[
+							'title' => 'Cities',
+							'icon' => 'social:ic_domain_24px',
+							'sref' => 'cities',
+						],
+						[
+							'title' => 'Administrators',
+							'icon' => '/img/material-design-icons/account-settings-variant.svg',
+							'sref' => 'administrators',
+						],
+						[
+							'title' => 'Audit',
+							'icon' => '/img/material-design-icons/grease-pencil.svg',
+							'sref' => 'audit',
+						],
+						[
+							'title' => 'Payments',
+							'icon' => '/img/material-design-icons/cash-multiple.svg',
+							'sref' => 'payments',
+						],
+						[
+							'title' => 'Reports',
+							'icon' => 'action:ic_speaker_notes_24px',
+							'sref' => 'reports',
+						],
+						[
+							'title' => 'Notifications',
+							'icon' => 'communication:ic_chat_24px',
+							'sref' => 'notifications',
+						],
+						[
+							'title' => 'Settings',
+							'icon' => '/img/material-design-icons/toggle-switch-off.svg',
+							'sref' => 'settings',
+						],
+					]
+				];
+			default:
+				throw new MultipleExceptions("Not found", 404);
+
+		}
 	}
 }

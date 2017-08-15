@@ -20,6 +20,7 @@ use App\Services\Payment\PaymentService;
 use App\Services\Responder\ResponderService;
 use App\Services\SignUp\SignUpService;
 use App\Services\Trip\TripService;
+use App\Services\UserService\UserService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -63,6 +64,11 @@ class CustomerController extends Controller
 	protected $paymentService;
 
 	/**
+	 * @var UserService
+	 */
+	protected $userService;
+
+	/**
 	 * CustomerController constructor.
 	 *
 	 * @param SignUpService    $signUpService
@@ -70,13 +76,15 @@ class CustomerController extends Controller
 	 * @param CustomerService  $customerService
 	 * @param TripService      $tripService
 	 * @param PaymentService   $paymentService
+	 * @param UserService      $userService
 	 */
 	public function __construct(
 		SignUpService $signUpService,
 		ResponderService $responderService,
 		CustomerService $customerService,
 		TripService $tripService,
-		PaymentService $paymentService
+		PaymentService $paymentService,
+		UserService $userService
 	)
 	{
 		$this->signupService = $signUpService;
@@ -84,6 +92,7 @@ class CustomerController extends Controller
 		$this->customerService = $customerService;
 		$this->tripService = $tripService;
 		$this->paymentService = $paymentService;
+		$this->userService = $userService;
 	}
 
 	/**
@@ -116,67 +125,7 @@ class CustomerController extends Controller
 	public function navigation()
 	{
 
-		return $this->responderService->response([
-			'status' => 'success',
-			'data' => [
-				'data' => [
-					/*
-					 * Main menu items
-					 */
-					[
-						'title' => 'Profile',
-						'id' => 'UserAccount',
-						'href' => '/customer/v1/user/profile',
-					],
-					[
-						'title' => 'Orders',
-						'id' => 'OrdersAll',
-						'href' => '/customer/v1/orders/all',
-					],
-					[
-						'title' => 'Settings',
-						'id' => 'ProfileSettings',
-						'href' => '/customer/v1/user/profile/settings',
-					],
-					[
-						'title' => 'Help',
-						'id' => 'InfoHelp',
-						'href' => '/customer/v1/info/help',
-					],
-					[
-						'title' => 'About',
-						'id' => 'InfoAbout',
-						'href' => '/customer/v1/info/about',
-					],
-					[
-						'title' => 'Legal',
-						'id' => 'InfoLegal',
-						'href' => '/customer/v1/info/legal',
-					],
-					/*
-					 * Settings child items
-					 */
-					[
-						'title' => "Payment Info",
-						'id' => 'SettingsPaymentInfo',
-						'href' => '/customer/v1/account/settings/payment-info',
-						'parent' => 'Settings'
-					],
-					[
-						'title' => "Notifications",
-						'id' => 'SettingsNotifications',
-						'href' => '/customer/v1/account/settings/notifications',
-						'parent' => 'Settings'
-					],
-					[
-						'title' => "Sign Out",
-						'id' => 'SettingsSignOut',
-						'href' => '/user/v1/account/sign-out',
-						'parent' => 'Settings'
-					],
-				]
-			]
-		]);
+		return $this->responderService->response($this->userService->getNavigation('customer'));
 	}
 
 	/**
