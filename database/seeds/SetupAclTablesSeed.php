@@ -84,7 +84,7 @@ class SetupAclTablesSeed extends Seeder
 				$user = factory(User::class)->make([
 					'email' => $key . '@barq.com',
 					'phone' => '+375291111110',
-					'username' => $key,
+					'username' => $key . '@barq.com',
 					'is_enabled' => true,
 					'password' => $this->pwd,
 					'last_login' => Date::now()->subHours(rand(1, 48))
@@ -126,7 +126,13 @@ class SetupAclTablesSeed extends Seeder
 						$user->password = $this->pwd;
 
 						if ($pre === true) {
-							$user->username = $role->name;
+
+							if (in_array($key, ['admin', 'support', 'accountant'])){
+								$user->username = $role->name. '@barq.com';
+							} else {
+								$user->username = $role->name;
+							}
+
 							$user->email = $role->name . '@barq.com';
 							$user->phone = '+37529' . '11111' . rand(11, 99);
 							$user->is_enabled = true;
@@ -140,8 +146,9 @@ class SetupAclTablesSeed extends Seeder
 							$user->last_login = Date::now()->subHours(rand(1, 48));
 						}
 
+						$user->saveOrFail();
+
 						try {
-							$user->save();
 							$user->attachRole($role);
 						} catch (\Exception $e) {
 							var_dump($user->toArray());

@@ -148,6 +148,8 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 			Route::group(['prefix' => 'user'], function () {
 				Route::post('create', ['uses' => 'AdminController@create']);
 				Route::get('navigation', ['uses' => 'AdminController@navigation']);
+				Route::get('exists/{username}', ['uses' => 'AdminController@checkUsernameExistence']);
+				Route::get('check-phone/{phone}', ['uses' => 'AdminController@checkPhoneExistence']);
 			});
 
 			Route::group(['prefix' => "carriers"], function () {
@@ -162,6 +164,9 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 			Route::group(['prefix' => 'admins'], function () {
 				Route::get("", ["uses" => "AdminController@all"]);
 				Route::get("{id}", ["uses" => "AdminController@get"]);
+				Route::post("create", ["uses" => "AdminController@create"]);
+				Route::put("update/{id}", ["uses" => "AdminController@update"]);
+				Route::post("toggle/{id}", ["uses" => "AdminController@toggle"]);
 			});
 		});
 

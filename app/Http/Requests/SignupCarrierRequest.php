@@ -16,7 +16,7 @@ class SignupCarrierRequest extends ApiRequest
 {
 
 	const RULES = [
-		'username' => 'required|alpha_num|min:3|unique:users,username',
+		'username' => 'required|min:3|unique:users,username',
 		'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
 		'password' => 'required|min:5|alpha_num|confirmed',
 		'password_confirmation' => 'required|min:6|alpha_num|required_with:password',

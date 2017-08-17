@@ -39,7 +39,7 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 
 	const PROFILE_IMAGE = 'photo';
 
-	const UUID_REGEX = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$';
+	const UUID_REGEX = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/';
 
 	/**
 	 * Indicates if the IDs are auto-incrementing.
@@ -54,11 +54,13 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 	 * @var array
 	 */
 	protected $fillable = [
+		'id',
 		'username',
 		'email',
 		'phone',
-		'password',
 		'is_enabled',
+		'last_login',
+		'password',
 	];
 
 	/**
@@ -73,17 +75,25 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 	 *
 	 * @var array
 	 */
-	protected $dates = ['deleted_at', 'created_at', 'updated_at', 'last_login'];
+	protected $dates = [
+		'deleted_at',
+		'created_at',
+		'updated_at',
+		'last_login'
+	];
 
 	/**
 	 * @var array
 	 */
-	protected $casts = ['is_enabled' => 'boolean', 'last_login' => 'datetime'];
+	protected $casts = [
+		'is_enabled' => 'boolean',
+		'last_login' => 'datetime'
+	];
 
 	/**
 	 * @var array
 	 */
-	protected $guarded = ['password', 'is_enabled', 'remember_token'];
+	//protected $guarded = ['password', 'is_enabled', 'remember_token'];
 
 	/**
 	 * @var array
@@ -125,29 +135,23 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 	 * @var array
 	 */
 	protected $rules = [
-		'username' => 'required|string|min:3',
-		'name' => 'string|nullable|min:3',
-		'email' => 'email|nullable',
-		'password' => 'required',
+		'id' => 'required|regex:'.User::UUID_REGEX,
+		'username' => 'required|string|min:3|unique:users,username',
+		'name' => 'string|nullable|min:3|unique:users,email',
+		'email' => 'email|nullable|unique:users,email',
+		'password' => 'required|string',
 		'phone' => 'nullable|phone:AUTO,mobile|unique:users,phone',
+		'is_enabled' => 'nullable|boolean',
 	];
 
-	/**
-	 * @var array
-	 */
-	protected $validationMessages = [
-		'username.required' => "Username is required",
-		'username.min' => "Username is too short",
-		'name.required' => "User full name is required",
-		'name.min' => "Username is too short",
-		'email.required' => "User email is required",
-		'email.unique' => "This e-mail adress already taken",
-		'email.email' => "Email has wrong format",
-		'password.required' => "User password is required",
-		'phone.required' => "User phone is required",
-		'phone.phone' => "User phone is wrong",
-		'phone.unique' => "This phone number cannot be taken",
-	];
+//	public function __construct($attributes=[]){
+//		if (env('APP_DEBUG')){
+//			$this->rules['password'] .=  '|min:5';
+//		} else {
+//			$this->rules['password'] .=  '|min:8';
+//		}
+//		parent::__construct($attributes);
+//	}
 
 	/**
 	 * @param string $value

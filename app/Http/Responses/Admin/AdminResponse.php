@@ -18,15 +18,16 @@ use App\Models\User;
 class AdminResponse extends ApiResponse
 {
 	/**
-	 * @param \stdClass $user
+	 * @param User $user
 	 *
 	 * @return array
 	 */
-	public function transform(\stdClass $user)
+	public function transform(User $user)
 	{
-		$data = [
-			'id' => $user->id,
-		];
+		$data = $user->toArray();
+
+		//$data['email'] = $data['username'];
+		ksort($data);
 
 		return $data;
 	}

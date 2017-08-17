@@ -77,7 +77,8 @@ class AuthController
 
 		$user = Auth::user();
 		$user->last_login = Date::now();
-		$user->update($user->toArray());
+		//$user->update($user->toArray());
+		$user->saveOrFail();
 
 		if (!$user->hasRole($type)) {
 			throw new MultipleExceptions(trans('auth.failed'), 400);

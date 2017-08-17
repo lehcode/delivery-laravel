@@ -8,6 +8,7 @@
 
 namespace App\Services\SignUp;
 
+use App\Http\Requests\Admin\SignupAdminRequest;
 use App\Http\Requests\SignupCustomerRequest;
 use App\Models\User;
 use App\Models\User\Customer;
@@ -20,22 +21,23 @@ use Illuminate\Database\Eloquent\Model;
  */
 interface SignUpServiceInterface
 {
-    /**
-     * @param SignupCustomerRequest $request
-     *
-     * @return Customer
-     */
-    public function customer(SignupCustomerRequest $request);
+	/**
+	 * @param SignupCustomerRequest $request
+	 *
+	 * @return Customer
+	 */
+	public function customer(SignupCustomerRequest $request);
 
-    /**
-     * @param array $params
-     * @return Model|User|null
-     */
-    public function admin(array $params);
+	/**
+	 * @param SignupAdminRequest $request
+	 *
+	 * @return mixed
+	 */
+	public function admin(SignupAdminRequest $request);
 
-    /**
-     * @param array $params
-     * @return Model|UserSignupRequest|null
-     */
-    public function request(array $params);
+	/**
+	 * @param array $params
+	 * @return Model|UserSignupRequest|null
+	 */
+	public function request(array $params);
 }

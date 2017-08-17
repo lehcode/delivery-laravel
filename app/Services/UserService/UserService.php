@@ -274,7 +274,11 @@ class UserService implements UserServiceInterface
 
 		$adminsArray = $admins->toArray();
 
-		$collection = new Collection();
+		foreach ($adminsArray as $idx => $props) {
+			$adminsArray[$idx] = User::make((array)$props);
+		}
+
+		$collection = new Collection($adminsArray);
 
 		return $collection;
 	}
@@ -285,8 +289,9 @@ class UserService implements UserServiceInterface
 	 * @return array
 	 * @throws MultipleExceptions
 	 */
-	public function getNavigation($role){
-		switch ($role){
+	public function getNavigation($role)
+	{
+		switch ($role) {
 			case 'carrier':
 				return [
 					'status' => 'success',
@@ -467,5 +472,24 @@ class UserService implements UserServiceInterface
 				throw new MultipleExceptions("Not found", 404);
 
 		}
+	}
+
+	/**
+	 * @param string $username
+	 *
+	 * @return array
+	 */
+	public function checkExistence($username)
+	{
+		$user = User::where('username', $username)->first();
+
+		$data = ['result' => false];
+
+		if (isset($user->id) && !is_null($user->id)) {
+			$data['result'] = true;
+		}
+
+		return $data;
+
 	}
 }

@@ -10,6 +10,7 @@ namespace App\Services\SignUp;
 use App\Exceptions\ModelValidationException;
 use App\Exceptions\MultipleExceptions;
 use App\Exceptions\RequestValidationException;
+use App\Http\Requests\Admin\SignupAdminRequest;
 use App\Http\Requests\SignupCarrierRequest;
 use App\Http\Requests\SignupCustomerRequest;
 use App\Models\City;
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Validator;
 use DB;
+use Webpatser\Uuid\Uuid;
 
 /**
  * Class SignUpService
@@ -118,23 +120,58 @@ class SignUpService implements SignUpServiceInterface
 	}
 
 	/**
-	 * @param array $params
+	 * @param SignupAdminRequest $request
 	 *
-	 * @return Model|User|null
+	 * @return User mixed
+	 * @throws RequestValidationException
 	 */
-	public function admin(array $params)
+	public function admin(SignupAdminRequest $request)
 	{
-		$params = array_merge($params, [
-			'type' => User::TYPE_ADMIN,
-			'is_enabled' => true
-		]);
+		if ($request->validate() !== true) {
+			throw new RequestValidationException($request->messages());
+		}
 
-		Validator::make($params, [
-			'email' => 'required|email|unique:users,email',
-			'password' => 'required|min:6|max:24|confirmed',
-		])->validate();
+		$data = $request->all();
+		$entityUser = array_only($data, app()->make(User::class)->getFillable());
+		$entityUser['password'] = $request->input('password');
 
-		return User::create($params);
+		return DB::transaction(function () use ($entityUser, $request) {
+
+			if ($request->has('email')) {
+				$entityUser['email'] = $request->get('email');
+			}
+
+			$user = factory(User::class)->make($entityUser);
+			
+			if (!$user->isValid()) {
+				$errors = $user->getErrors();
+				foreach ($errors as $req => $error) {
+					throw new ModelValidationException($error, 422);
+				}
+			}
+
+			$user->saveOrFail();
+
+			$role = User\Role::where(['name' => strtolower($request->input('role'))])->first();
+			$user->attachRole($role);
+
+			if ($request->has(User::PROFILE_IMAGE)) {
+				if ($request->input(User::PROFILE_IMAGE) instanceof UploadedFile) {
+					$img = $request->input(User::PROFILE_IMAGE);
+					$user->clearMediaCollection(User::PROFILE_IMAGE)
+						->addMedia($img)
+						->usingFileName($img->hashName())
+						->toMediaCollection(User::PROFILE_IMAGE, 's3');
+				}
+			}
+
+			if ($request->has('email')) {
+				$this->userService->sendConfirmationLink($user);
+			}
+
+			return $user;
+
+		});
 	}
 
 	/**
@@ -152,16 +189,16 @@ class SignUpService implements SignUpServiceInterface
 		$entityCarrier = array_only($data, app()->make(User\Carrier::class)->getFillable());
 		$entityCarrier['is_online'] = false;
 
-		if ($request->validate() !== true){
+		if ($request->validate() !== true) {
 			throw new RequestValidationException($request->messages());
 		}
 
 		return DB::transaction(function () use ($entityCarrier, $data, $entityUser, $request) {
 
-			if ($request->has('email')){
+			if ($request->has('email')) {
 				$entityUser['email'] = $data['email'];
 			}
-			
+
 			$user = factory(User::class)->make($entityUser);
 
 			if (!$user->isValid()) {
