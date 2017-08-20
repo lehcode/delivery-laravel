@@ -70,7 +70,6 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 				Route::post('update', ['uses' => 'CustomerController@update']);
 
 				Route::post('notify', ['uses' => "NotificationController@send"]);
-				Route::get('reset-password', ['uses' => 'UserController@resetPassword']);
 			});
 
 			Route::group(['prefix' => 'order'], function () {
@@ -148,8 +147,12 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 			Route::group(['prefix' => 'user'], function () {
 				Route::post('create', ['uses' => 'AdminController@create']);
 				Route::get('navigation', ['uses' => 'AdminController@navigation']);
-				Route::get('exists/{username}', ['uses' => 'AdminController@checkUsernameExistence']);
-				Route::get('check-phone/{phone}', ['uses' => 'AdminController@checkPhoneExistence']);
+
+				Route::get('exists/{username}', ['uses' => 'UserController@checkUsernameExistence']);
+				Route::get('phone/exists/{phone}', ['uses' => 'UserController@checkPhoneExistence']);
+				Route::get('email/exists/{email}', ['uses' => 'UserController@checkEmailExistence']);
+
+				Route::get('reset-password/{id}', ['uses' => 'AdminController@resetPassword']);
 			});
 
 			Route::group(['prefix' => "carriers"], function () {
