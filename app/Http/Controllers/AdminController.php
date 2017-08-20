@@ -9,6 +9,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Requests\Admin\SignupAdminRequest;
+use App\Http\Requests\EditUserProfileRequest;
 use App\Http\Responses\Admin\AdminResponse;
 use App\Services\Responder\ResponderService;
 use App\Services\SignUp\SignUpService;
@@ -50,8 +51,9 @@ class AdminController
 		ResponderService $responderService,
 		UserService $userService,
 		SignUpService $signUpService
-	) {
-	
+	)
+	{
+
 		$this->responderService = $responderService;
 		$this->userService = $userService;
 		$this->signupService = $signUpService;
@@ -75,14 +77,14 @@ class AdminController
 	}
 
 	/**
-	 * @param $id
+	 * @param string $uuid
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Exception
 	 */
-	public function get($id)
+	public function get(Request $request, $uuid)
 	{
-		return $this->responderService->fractal($this->userService->get($id), AdminResponse::class);
+		return $this->responderService->fractal($this->userService->getById($uuid), AdminResponse::class);
 	}
 
 	/**
@@ -103,8 +105,32 @@ class AdminController
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Exception
 	 */
-	public function checkUsernameExistence(Request $request, $username)
+	public function checkAdminExistence(Request $request, $username)
 	{
 		return $this->responderService->response($this->userService->checkExistence($username));
+	}
+
+	/**
+	 * @param EditUserProfileRequest $request
+	 * @param string                 $id
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function update(EditUserProfileRequest $request, $id)
+	{
+		return $this->responderService->fractal($this->userService->updateAdmin($request, $id), AdminResponse::class);
+	}
+
+	/**
+	 * @param Request $request
+	 * @param string  $id
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \App\Exceptions\MultipleExceptions
+	 * @throws \Exception
+	 */
+	public function resetPassword(Request $request, $id){
+		return $this->responderService->response($this->userService->resetPassword($id));
 	}
 }

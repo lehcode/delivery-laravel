@@ -17,6 +17,7 @@ use App\Repositories\User\UserRepository;
 use App\Services\CrudServiceInterface;
 use App\Services\UserService\UserService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Jenssegers\Date\Date;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -69,15 +70,16 @@ class CarrierService implements CrudServiceInterface
 	}
 
 	/**
+	 * @param Request $request
 	 * @param string $id
 	 *
 	 * @return mixed
 	 */
-	public function byId($id)
+	public function byId(Request $request, $id)
 	{
 
 		\Validator::make(['id' => $id], [
-			'id' => 'required|regex:/' . User::UUID_REGEX . '/',
+			'id' => 'required|regex:' . User::UUID_REGEX . '',
 		])->validate();
 
 		return Carrier::findOrFail($id);

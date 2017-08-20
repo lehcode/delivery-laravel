@@ -17,13 +17,12 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\User;
 use App\Models\UserSignupRequest;
-use App\Repositories\User\UserRepositoryInterface;
-use App\Services\UserService\UserServiceInterface;
+use App\Repositories\User\UserRepository;
+use App\Services\UserService\UserService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Validator;
 use DB;
-use Webpatser\Uuid\Uuid;
 
 /**
  * Class SignUpService
@@ -32,22 +31,23 @@ use Webpatser\Uuid\Uuid;
 class SignUpService implements SignUpServiceInterface
 {
 	/**
-	 * @var UserRepositoryInterface
+	 * @var UserRepository
 	 */
 	protected $userRepository;
 
 	/**
-	 * @var UserServiceInterface
+	 * @var UserService
 	 */
 	protected $userService;
 
 	/**
 	 * SignUpService constructor.
 	 *
-	 * @param UserRepositoryInterface $userRepository
-	 * @param UserServiceInterface    $userService
+	 * @param UserRepository $userRepository
+	 * @param UserService    $userService
 	 */
-	public function __construct(UserRepositoryInterface $userRepository, UserServiceInterface $userService)
+	public function __construct(UserRepository $userRepository,
+	                            UserService $userService)
 	{
 		$this->userService = $userService;
 		$this->userRepository = $userRepository;
@@ -137,18 +137,16 @@ class SignUpService implements SignUpServiceInterface
 
 		return DB::transaction(function () use ($entityUser, $request) {
 
-			if ($request->has('email')) {
-				$entityUser['email'] = $request->get('email');
-			}
-
 			$user = factory(User::class)->make($entityUser);
-			
+
 			if (!$user->isValid()) {
 				$errors = $user->getErrors();
 				foreach ($errors as $req => $error) {
 					throw new ModelValidationException($error, 422);
 				}
 			}
+
+			$user->email = $request->input('username');
 
 			$user->saveOrFail();
 
@@ -210,7 +208,13 @@ class SignUpService implements SignUpServiceInterface
 
 			$role = User\Role::where(['name' => 'carrier'])->first();
 
-			if (isset($data['is_online']) && $data['is_online'] == true) {
+			if ($request->has('is_enabled') && ((bool)$request->input('is_enabled') === true)) {
+				$entityUser['is_enabled'] = true;
+			} else {
+				$entityUser['is_enabled'] = false;
+			}
+
+			if ($request->has('is_online') && ((bool)$request->input('is_online') === true)) {
 				$entityCarrier['is_online'] = true;
 			} else {
 				$entityCarrier['is_online'] = false;
@@ -250,7 +254,7 @@ class SignUpService implements SignUpServiceInterface
 			}
 
 			if ($request->has('email')) {
-				$this->userService->sendConfirmationLink($user);
+				$this->userService->sendActivationLink($user);
 			}
 
 			$carrier->saveOrFail();

@@ -24,9 +24,19 @@ class AdminResponse extends ApiResponse
 	 */
 	public function transform(User $user)
 	{
+		$role = $user->roles()->first()->toArray();
 		$data = $user->toArray();
+		
+		unset ($data['email']);
 
-		//$data['email'] = $data['username'];
+		foreach ($data as $k=>$v){
+			if (is_null($v)){
+				$data[$k] = "";
+			}
+		}
+
+		$data['role'] = $role;
+
 		ksort($data);
 
 		return $data;

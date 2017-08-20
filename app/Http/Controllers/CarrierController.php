@@ -121,14 +121,15 @@ class CarrierController
 	}
 
 	/**
+	 * @params Request $request
 	 * @param $id
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Exception
 	 */
-	public function get($id)
+	public function get(Request $request, $id)
 	{
-		return $this->responderService->fractal($this->carrierService->byId($id), CarrierResponse::class);
+		return $this->responderService->fractal($this->carrierService->byId($request, $id), CarrierResponse::class);
 	}
 
 	/**

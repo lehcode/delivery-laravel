@@ -8,6 +8,7 @@
 namespace App\Services;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 
 /**
  * Interface CrudServiceInterface
@@ -25,9 +26,10 @@ interface CrudServiceInterface
 	/**
 	 * Get single item from repository
 	 *
-	 * @param string $id
+	 * @param Request $request
+	 * @param         $id
 	 *
 	 * @return mixed
 	 */
-	public function byId($id);
+	public function byId(Request $request, $id);
 }

@@ -15,6 +15,7 @@ use App\Services\Responder\ResponderService;
 use App\Services\SignUp\SignUpService;
 use App\Services\UserService\UserService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -73,23 +74,17 @@ class UserController extends BaseController
 	 */
 	public function edit(EditUserProfileRequest $request)
 	{
-		try {
-			$this->userService->edit(\Auth::user(), $data);
-			$user = $this->userRepository->find(\Auth::id());
+		$this->userService->edit(\Auth::user(), $request->all());
+		$user = $this->userRepository->find(\Auth::id());
 
-			if ($request->has('old_password') && $request->has('new_password')) {
-				if (!$this->userService->verifyPassword(\Auth::user(), $request->get('old_password'))) {
-					throw new ModelValidationException(trans('app.common.errors.incorrect_password'));
-				}
-				$this->userService->changePassword(\Auth::user(), $request->get('new_password'));
+		if ($request->has('old_password') && $request->has('new_password')) {
+			if (!$this->userService->verifyPassword(\Auth::user(), $request->get('old_password'))) {
+				throw new ModelValidationException(trans('app.common.errors.incorrect_password'));
 			}
-
-			return $this->responderService->fractal($user, UserDetailedResponse::class);
-		} catch (ValidationException $e) {
-			throw $e;
-		} catch (\Exception $e) {
-			return $this->responderService->errorResponse($e);
+			$this->userService->changePassword(\Auth::user(), $request->get('new_password'));
 		}
+
+		return $this->responderService->fractal($user, UserDetailedResponse::class);
 	}
 
 	/**
@@ -118,9 +113,47 @@ class UserController extends BaseController
 	}
 
 	/**
+	 * @param Request $request
+	 * @param string  $username
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function checkUsernameExistence(Request $request, $username)
+	{
+		return $this->responderService->response($this->userService->checkUsernameExistence($username));
+	}
+
+	/**
+	 * @param Request $request
+	 * @param string  $email
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function checkEmailExistence(Request $request, $email)
+	{
+		return $this->responderService->response($this->userService->checkEmailExistence($email));
+	}
+
+	/**
+	 * @param Request $request
+	 * @param         $phone
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 * @throws \Exception
+	 */
+	public function checkPhoneExistence(Request $request, $phone)
+	{
+		return $this->responderService->response($this->userService->checkPhoneExistence($phone));
+	}
+
+	/**
 	 *
 	 */
 	public function resetPassword(){
 
 	}
+
+
 }

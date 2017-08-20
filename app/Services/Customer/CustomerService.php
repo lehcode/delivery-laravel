@@ -70,7 +70,6 @@ class CustomerService
 				$user->customer->current_city = City::where('name', '=', $request->input('location.city'))
 					->where('country_id', '=', $country->id)
 					->first()->id;
-
 			}
 
 			$user->customer->saveOrFail();

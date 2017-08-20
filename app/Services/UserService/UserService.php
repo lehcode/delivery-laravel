@@ -8,7 +8,9 @@
 namespace App\Services\UserService;
 
 use App\Exceptions\MultipleExceptions;
+use App\Http\Requests\EditUserProfileRequest;
 use App\Mail\UserActivationMail;
+use App\Mail\UserPasswordResetMail;
 use App\Models\ProfileCustomer;
 use App\Models\ProfileDriver;
 use App\Models\User;
@@ -180,7 +182,7 @@ class UserService implements UserServiceInterface
 	public function sendActivationLink(User $user)
 	{
 		$key = $this->makeActivationKey($user);
-		Mail::to($user)->queue(new UserActivationMail($user, $key));
+		\Mail::to($user)->queue(new UserActivationMail($user, $key));
 	}
 
 	/**
@@ -242,7 +244,7 @@ class UserService implements UserServiceInterface
 	public function changePassword(User $user, $password)
 	{
 		$user->password = $password;
-		$user->save();
+		$user->saveOrFail();
 	}
 
 	/**
@@ -251,7 +253,7 @@ class UserService implements UserServiceInterface
 	public function sendConfirmationLink(User $user)
 	{
 		$key = $this->makeConfirmationKey($user);
-		Mail::to($user)->queue(new UserEmailConfirmation($user, $key));
+		\Mail::to($user)->queue(new UserEmailConfirmation($user, $key));
 	}
 
 	/**
@@ -479,7 +481,7 @@ class UserService implements UserServiceInterface
 	 *
 	 * @return array
 	 */
-	public function checkExistence($username)
+	public function checkUsernameExistence($username)
 	{
 		$user = User::where('username', $username)->first();
 
@@ -492,4 +494,176 @@ class UserService implements UserServiceInterface
 		return $data;
 
 	}
+
+	/**
+	 * @param string $id
+	 *
+	 * @return User\
+	 */
+	public function getById($id)
+	{
+		$admin = DB::table('users')
+			->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
+			->rightJoin('roles', 'role_user.role_id', '=', 'roles.id')
+			->where('users.id', '=', $id)
+			->where('roles.name', '=', 'admin')
+			->select([
+				'users.*',
+				'role_user.role_id as role_id',
+				'roles.name as role_name'
+			])->first();
+
+		$user = User::make((array)$admin);
+
+		return $user;
+	}
+
+	/**
+	 * @param string $email
+	 *
+	 * @return array
+	 * @throws \Illuminate\Validation\ValidationException
+	 */
+	public function checkEmailExistence($email)
+	{
+
+		$data = ['result' => false];
+
+		\Validator::make(['email' => $email], [
+			'email' => 'email|required'
+		])->validate();
+
+		$user = User::where('email', $email)->first();
+
+		if (isset($user->id) && !is_null($user->id)) {
+			$data['result'] = true;
+		}
+
+		return $data;
+
+	}
+
+	/**
+	 * @param string $phone
+	 *
+	 * @return array
+	 * @throws \Illuminate\Validation\ValidationException
+	 */
+	public function checkPhoneExistence($phone)
+	{
+
+		$data = ['result' => false];
+
+		\Validator::make(['phone' => $phone], [
+			'phone' => 'string|required|phone:AUTO,mobile'
+		])->validate();
+
+		$user = User::where('phone', $phone)->first();
+
+		if (isset($user->id) && !is_null($user->id)) {
+			$data['result'] = true;
+		}
+
+		return $data;
+
+	}
+
+	/**
+	 * @param EditUserProfileRequest $request
+	 * @param string                 $id
+	 *
+	 * @return mixed
+	 * @throws MultipleExceptions
+	 */
+	public function updateAdmin(EditUserProfileRequest $request, $id)
+	{
+
+		if (!$request->validate()) {
+			throw new MultipleExceptions("Request validation failed", 401);
+		}
+
+		return \DB::transaction(function () use ($request, $id) {
+
+			$user = User::find($id);
+
+			if ($request->has('remove_image')) {
+				$user->clearMediaCollection(User::PROFILE_IMAGE);
+			}
+
+			if ($request->has('name')) {
+				$user->name = $request->input('name');
+			}
+
+			if ($request->has('phone')) {
+				$user->phone = $request->input('phone');
+			}
+
+			if ($request->has('is_enabled')) {
+				$user->is_enabled = (bool)$request->input('is_enabled') === true ? true : false;
+			}
+
+			if ($request->has(User::PROFILE_IMAGE) && $request->input(User::PROFILE_IMAGE) instanceof UploadedFile) {
+				$user->clearMediaCollection(User::PROFILE_IMAGE)
+					->addMediaFromRequest(User::PROFILE_IMAGE)
+					->toMediaCollection(User::PROFILE_IMAGE, 's3');
+			}
+
+			$data = $request->except('_method');
+
+			if (count($data)) {
+
+				if (isset($data[User::PROFILE_IMAGE])) {
+					unset($data[User::PROFILE_IMAGE]);
+				}
+
+				$user->fill($data);
+			}
+
+			$user->saveOrFail();
+
+			return $user;
+		});
+
+	}
+
+	/**
+	 * Reset User password by User ID
+	 *
+	 * @param string $id
+	 */
+	public function resetPassword($id)
+	{
+
+		\Validator::make(['id' => $id], ['id' => 'required|regex:' . User::UUID_REGEX])
+			->validate();
+
+		$user = User::find($id)->first();
+		$plainPass = $this->randomPassword();
+		$user->password = $this->randomPassword();
+		$user->saveOrFail();
+
+		if (!is_null($user->email)){
+			\Mail::to($user->email)->queue(new UserPasswordResetMail($user, $plainPass));
+		}
+
+		return ['data' => ['updated' => true]];
+	}
+
+	/**
+	 * Generate random password
+	 *
+	 * @return string
+	 */
+	protected function randomPassword()
+	{
+		$load = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890.,!+-';
+		$pass = array();
+		$alphaLength = strlen($load) - 1;
+		for ($i = 0; $i < 8; $i++) {
+			$n = mt_rand(0, $alphaLength);
+			$pass[] = $load[$n];
+		}
+		return implode($pass);
+	}
+
 }

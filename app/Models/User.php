@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Extensions\ProfileAttributeTrait;
+use App\Models\User\Admin;
 use App\Models\User\Carrier;
 use App\Models\User\Customer;
 use App\Models\User\Role;
@@ -61,6 +62,7 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 		'is_enabled',
 		'last_login',
 		'password',
+		'name',
 	];
 
 	/**
@@ -135,36 +137,36 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 	 * @var array
 	 */
 	protected $rules = [
-		'id' => 'required|regex:'.User::UUID_REGEX,
+		'id' => 'required|regex:' . self::UUID_REGEX,
 		'username' => 'required|string|min:3|unique:users,username',
 		'name' => 'string|nullable|min:3|unique:users,email',
 		'email' => 'email|nullable|unique:users,email',
-		'password' => 'required|string',
+		'password' => 'required|string|min:6',
 		'phone' => 'nullable|phone:AUTO,mobile|unique:users,phone',
 		'is_enabled' => 'nullable|boolean',
 	];
 
-//	public function __construct($attributes=[]){
-//		if (env('APP_DEBUG')){
-//			$this->rules['password'] .=  '|min:5';
-//		} else {
-//			$this->rules['password'] .=  '|min:8';
-//		}
-//		parent::__construct($attributes);
-//	}
+	public function __construct($attributes = [])
+	{
+
+		parent::__construct($attributes);
+
+		if (env('APP_DEBUG')) {
+			$this->rules['password'] .= '|min:5';
+		} else {
+			$this->rules['password'] .= '|min:8';
+		}
+	}
 
 	/**
 	 * @param string $value
 	 */
 	public function setPasswordAttribute($value)
 	{
-		$validator = Validator::make([
-			'password' => $value
-		], array_only($this->rules, ['password']));
+		\Validator::make(['password' => $value], array_only($this->rules, ['password']))
+			->validate();
 
-		$validator->validate();
-
-		$this->attributes['password'] = Hash::make($value);
+		$this->attributes['password'] = \Hash::make($value);
 	}
 
 	/**
