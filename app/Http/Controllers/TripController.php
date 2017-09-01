@@ -8,11 +8,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TripRequest;
+use App\Http\Responses\CityResponse;
 use App\Http\Responses\TripResponse;
+use App\Models\City;
+use App\Models\User;
 use App\Services\Responder\ResponderService;
 use App\Services\Trip\TripService;
 use Illuminate\Http\Request;
 use Jenssegers\Date\Date;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Class TripController
@@ -45,6 +49,11 @@ class TripController extends Controller
 	 */
 	public function all()
 	{
+
+		if (!\Auth::user()->hasRole(['carrier', 'admin', 'root'])) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
 		return $this->responderService->fractal($this->tripService->all(), TripResponse::class);
 	}
 
@@ -53,7 +62,11 @@ class TripController extends Controller
 	 */
 	public function fromCurrentCity()
 	{
-		return $this->responderService->objectResponse($this->tripService->getTripsFromCurrentCity());
+		if (!\Auth::user()->hasRole(['customer', 'admin', 'root'])) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
+		return $this->responderService->fractal($this->tripService->getTripsFromCurrentCity(), TripResponse::class);
 	}
 
 	/**
@@ -63,42 +76,55 @@ class TripController extends Controller
 	 */
 	public function fromCity($city)
 	{
+		if (!\Auth::user()->hasRole(['customer', 'admin', 'root'])) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
 		return $this->responderService->fractal($this->tripService->getTripsFromCity($city), TripResponse::class);
 	}
 
 	/**
-	 * @param integer $id
+	 * @param Request $request
+	 * @param string  $id
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function get($id)
+	public function get(Request $request, $id)
 	{
-		return $this->responderService->fractal($this->tripService->item($id), TripResponse::class);
+		if (!\Auth::user()->hasRole(['customer', 'carrier', 'admin', 'root'])) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
+		return $this->responderService->fractal($this->tripService->byId($request, $id), TripResponse::class);
 	}
 
 	/**
 	 * @param TripRequest $request
 	 *
 	 * @return \Illuminate\Http\JsonResponse
-	 * @throws ValidationException
 	 */
 	public function create(TripRequest $request)
 	{
-		$params = $request->except(['XDEBUG_SESSION_START']);
-		$trip = $this->tripService->create($params);
-		return $this->responderService->fractal($trip, TripResponse::class);
+		if (!\Auth::user()->hasRole(array_merge(['carrier'], User::ADMIN_ROLES))) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
+		return $this->responderService->fractal($this->tripService->create($request), TripResponse::class);
 	}
 
 	/**
 	 * @param Request $request
-	 * @param string  $startDate
-	 * @param string  $endDate
+	 * @param         $startDate
+	 * @param         $endDate
 	 *
 	 * @return \Illuminate\Http\JsonResponse
-	 * @throws \Exception
 	 */
 	public function getByDatePeriod(Request $request, $startDate, $endDate)
 	{
+		if (!\Auth::user()->hasRole(['customer', 'admin', 'root'])) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
 		$dates = [
 			'start' => Date::createFromFormat('Y-m-d', $startDate),
 			'end' => Date::createFromFormat('Y-m-d', $endDate),
@@ -110,23 +136,30 @@ class TripController extends Controller
 	 * @param $date
 	 *
 	 * @return \Illuminate\Http\JsonResponse
-	 * @throws \Exception
 	 */
 	public function getByDate($date)
 	{
+		if (!\Auth::user()->hasRole(['customer', 'admin', 'root'])) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
 		$d = Date::createFromFormat('Y-m-d', $date);
 		return $this->responderService->fractal($this->tripService->getListByDate($d), TripResponse::class);
 	}
 
 	/**
-	 * @param null $userType
-	 * @param null $cityId
+	 * @param string $userType
+	 * @param int    $cityId
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
 	public function getCity($userType = null, $cityId = null)
 	{
-		return $this->responderService->objectResponse($this->tripService->getCity($cityId));
+		if (!\Auth::user()->hasRole(array_merge(['carrier'], User::ADMIN_ROLES))) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
+		return $this->responderService->fractal($this->tripService->getCity($cityId), CityResponse::class);
 	}
 
 	/**
@@ -134,19 +167,31 @@ class TripController extends Controller
 	 */
 	public function getCities()
 	{
-		return $this->responderService->objectResponse($this->tripService->getAllCities());
+		$roles = array_merge(User::ADMIN_ROLES, [User::ROOT_ROLE], ['carrier', 'customer']);
+
+		if (!\Auth::user()->hasRole($roles)) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
+		return $this->responderService->fractal($this->tripService->getAllCities(), CityResponse::class);
 	}
 
 	/**
-	 * @param string     $search
-	 * @param string $countryCode
+	 * @param Request $request
+	 * @param string  $search
+	 * @param string  $countryCode
 	 *
 	 * @return \Illuminate\Http\JsonResponse
+	 * @throws AccessDeniedHttpException
 	 * @throws \Exception
 	 */
-	public function findCityByName($userType, $search, $countryCode)
+	public function findCityByName(Request $request, $search, $countryCode)
 	{
-		return $this->responderService->objectResponse($this->tripService->findCity($search, $countryCode));
+		if (!\Auth::user()->hasRole(['carrier', 'customer', 'admin', 'root'])) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
+		return $this->responderService->fractal($this->tripService->findCity($search, $countryCode), CityResponse::class);
 	}
 
 

@@ -25,6 +25,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Class CarrierController
@@ -100,6 +101,10 @@ class CarrierController
 	 */
 	public function navigation()
 	{
+		if (!\Auth::user()->hasRole('carrier')) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
 		return $this->responderService->response($this->userService->getNavigation('carrier'));
 	}
 
@@ -108,16 +113,29 @@ class CarrierController
 	 */
 	public function getUserTrips()
 	{
+		if (!\Auth::user()->hasRole('carrier')) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+		
 		return $this->responderService->fractal($this->tripService->userTrips(), TripResponse::class);
 	}
 
 	/**
+	 * @param Request $request
+	 * @param string $orderBy
+	 * @param string $order
+	 * 
 	 * @return \Illuminate\Http\JsonResponse
-	 * @throws \Exception
+	 * @throws AccessDeniedException|\Exception
 	 */
-	public function all()
+	public function all(Request $request, $orderBy='created_at', $order='asc')
 	{
-		return $this->responderService->fractal($this->carrierService->all(), CarrierResponse::class);
+
+		if (!\Auth::user()->hasRole(User::ADMIN_ROLES)) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
+		return $this->responderService->fractal($this->carrierService->all($orderBy, $order), CarrierResponse::class);
 	}
 
 	/**
