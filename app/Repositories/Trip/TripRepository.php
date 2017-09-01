@@ -9,7 +9,7 @@ namespace App\Repositories\Trip;
 
 use App\Models\Trip;
 use App\Repositories\CrudRepository;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 /**
  * Class TripRepository
@@ -18,26 +18,36 @@ use Illuminate\Support\Facades\Auth;
 class TripRepository extends CrudRepository implements TripRepositoryInterface
 {
 	/**
-	 * @var
+	 * @var string
 	 */
 	protected $model = Trip::class;
 
+
 	/**
-	 * @return mixed
+	 * @param string $orderBy
+	 * @param string $order
+	 *
+	 * @return Collection
 	 */
-	public function all()
+	public function all($orderBy='created_at', $order='desc')
 	{
-		return Trip::all();
+
+		if ($order === 'asc'){
+			return Trip::all()
+				->sortBy($orderBy);
+		}
+
+		return Trip::all()
+			->sortByDesc($orderBy);
 	}
 
 	/**
-	 * @return mixed
+	 * @return Collection
 	 */
 	public function userTrips()
 	{
-		$user = Auth::getUser();
-		$result = Trip::where('carrier_id', $user->id);
-		return $result;
+		return Trip::where('carrier_id', \Auth::user()->id)
+			->get();
 	}
 
 	/**
