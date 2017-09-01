@@ -72,11 +72,11 @@ class Order extends Model implements AuditableInterface
 	protected $rules = [
 		'departure_date' => 'required|date',
 		'expected_delivery_date' => 'required|date',
-		'recipient_id' => 'required|regex:/' . User::UUID_REGEX . '/',
-		'customer_id' => 'required|regex:/' . User::UUID_REGEX . '/',
-		'shipment_id' => 'required|regex:/' . User::UUID_REGEX . '/',
-		'trip_id' => 'nullable|regex:/' . User::UUID_REGEX . '/',
-		'payment_id' => 'nullable|regex:/' . User::UUID_REGEX . '/',
+		'recipient_id' => 'required|regex:' . User::UUID_REGEX,
+		'customer_id' => 'required|regex:' . User::UUID_REGEX,
+		'shipment_id' => 'required|regex:' . User::UUID_REGEX,
+		'trip_id' => 'nullable|regex:' . User::UUID_REGEX,
+		'payment_id' => 'nullable|regex:' . User::UUID_REGEX,
 		'price' => 'numeric|min:1|max:100000',
 	];
 

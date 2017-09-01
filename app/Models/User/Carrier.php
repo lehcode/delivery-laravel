@@ -8,6 +8,7 @@
 namespace App\Models\User;
 
 use App\Extensions\ProfileAttributeTrait;
+use App\Extensions\RfcDateTrait;
 use App\Models\City;
 use App\Models\Trip;
 use App\Models\User;

@@ -42,6 +42,10 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 
 	const UUID_REGEX = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/';
 
+	const ADMIN_ROLES = ['admin', 'accountant', 'support'];
+
+	const ROOT_ROLE = 'root';
+
 	/**
 	 * Indicates if the IDs are auto-incrementing.
 	 *
