@@ -16,3 +16,4 @@ Route::get('/reset-password/{key}', ['as' => 'password_reset.form', 'uses' => 'R
 Route::post('/reset-password/{key}', ['as' => 'password_reset.action', 'uses' => 'RestorePasswordController@restoreAction']);
 
 Route::get('/activate/{user}/{key}', ['as' => 'activate.link', 'uses' => 'UserController@verify']);
+Route::get('/confirm-email/{uuid}/{key}', ['as' => 'confirm-email.link', 'uses' => 'UserController@confirmEmail']);

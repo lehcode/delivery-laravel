@@ -126,6 +126,7 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 
 			Route::group(['prefix' => 'order'], function () {
 				Route::get('all', ['uses' => 'OrderController@getCarrierOrders']);
+				Route::get('all/{orderBy}/{order}', ['uses' => 'OrderController@getCarrierOrders']);
 				Route::get('{id}', ['uses' => 'OrderController@get']);
 			});
 
@@ -157,11 +158,12 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 
 			Route::group(['prefix' => "carriers"], function () {
 				Route::get('', ["uses" => "CarrierController@all"]);
+				Route::get('{orderBy}/{order}', ["uses" => "CarrierController@all"]);
 				Route::get('{id}', ["uses" => "CarrierController@get"]);
 				Route::put('update/{id}', ['uses' => 'CarrierController@edit']);
 				Route::post('create', ['uses' => 'CarrierController@create']);
-				Route::post('enable/{value}', ['uses' => 'CarrierController@setAccountStatus']);
-				Route::post('status/{value}', ['uses' => 'CarrierController@setUserStatus']);
+				Route::post('toggle/{value}', ['uses' => 'CarrierController@setAccountStatus']);
+				Route::post('online/{value}', ['uses' => 'CarrierController@setUserStatus']);
 			});
 
 			Route::group(['prefix' => 'admins'], function () {
@@ -170,6 +172,21 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 				Route::post("create", ["uses" => "AdminController@create"]);
 				Route::put("update/{id}", ["uses" => "AdminController@update"]);
 				Route::post("toggle/{id}", ["uses" => "AdminController@toggle"]);
+			});
+
+			Route::group(['prefix' => "customers"], function () {
+				Route::get('', ["uses" => "CustomerController@all"]);
+				Route::get('{id}', ["uses" => "CustomerController@get"]);
+				Route::put('update/{id}', ['uses' => 'CustomerController@edit']);
+				Route::post('create', ['uses' => 'CustomerController@create']);
+				Route::post('toggle/{value}', ['uses' => 'CustomerController@setAccountStatus']);
+			});
+
+			Route::group(['prefix' => "trips"], function () {
+				Route::get('', ["uses" => "TripController@all"]);
+				Route::get('{id}', ["uses" => "TripController@get"]);
+				Route::post('create', ["uses" => "TripController@create"]);
+				Route::post('update/{id}', ["uses" => "TripController@update"]);
 			});
 		});
 
