@@ -19,8 +19,8 @@ class SetupAclTablesSeed extends Seeder
 
 	public $usersAmt = [
 		'admin' => 1,
-		'customer' => 25,
-		'carrier' => 25,
+		'customer' => 10,
+		'carrier' => 15,
 	];
 
 	public $cardTypes = ['Visa', 'MasterCard'];
@@ -111,7 +111,7 @@ class SetupAclTablesSeed extends Seeder
 				$pre = true;
 
 				factory(User::class, $this->usersAmt[$key])->make([
-					'id' => Uuid::generate(4),
+					'id' => Uuid::generate(4)->string,
 					'email' => $faker->freeEmail,
 					'username' => $faker->userName,
 					'password' => $this->pwd,
@@ -127,7 +127,7 @@ class SetupAclTablesSeed extends Seeder
 
 						if ($pre === true) {
 
-							if (in_array($key, ['admin', 'support', 'accountant'])){
+							if (in_array($key, User::ADMIN_ROLES)){
 								$user->username = $role->name. '@barq.com';
 							} else {
 								$user->username = $role->name;
@@ -146,7 +146,14 @@ class SetupAclTablesSeed extends Seeder
 							$user->last_login = Date::now()->subHours(rand(1, 48));
 						}
 
-						$user->saveOrFail();
+						$user->save();
+
+						if (!$user->isValid()) {
+							$errors = $user->getErrors();
+							foreach ($errors as $req => $error) {
+								throw new \Exception($error, 1);
+							}
+						}
 
 						try {
 							$user->attachRole($role);

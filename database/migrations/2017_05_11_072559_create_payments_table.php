@@ -3,9 +3,17 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\Payment;
 
+
+/**
+ * Class CreatePaymentsTable
+ */
 class CreatePaymentsTable extends Migration
 {
+	/**
+	 * @var string
+	 */
 	protected $name = 'payments';
 
 	/**
@@ -19,16 +27,15 @@ class CreatePaymentsTable extends Migration
 			
 			$table->uuid('id');
 			$table->primary('id');
-
-			$table->uuid('order_id')->index();
-
 			$table->float('amount');
 
 			$table->integer('payment_type_id')->unsigned()->index();
 			$table->foreign('payment_type_id')->references('id')->on('payment_types')
-				->onDelete('restrict')->onUpdate('restrict');
+				->onDelete('restrict')
+				->onUpdate('restrict');
 
-			$table->boolean('success')->default(0);
+			$table->enum('status', Payment::STATUSES)
+				->default('not_paid');
 
 			$table->timestamps();
 

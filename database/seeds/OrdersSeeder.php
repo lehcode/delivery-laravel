@@ -49,7 +49,7 @@ class OrdersSeeder extends Seeder
 		User\Customer::with('currentCity')->get()
 			->each(function ($customer) use ($trips, $faker) {
 
-				for ($i = 0; $i < rand(3, 50); $i++) {
+				for ($i = 0; $i < rand(3, 25); $i++) {
 					$trip = $trips->random()->with(['fromCity', 'destinationCity'])->first();
 
 					$recipient = factory(Recipient::class)->create();
@@ -88,7 +88,6 @@ class OrdersSeeder extends Seeder
 						'customer_id' => $customer->id,
 						'recipient_id' => $recipient->id->string,
 						'shipment_id' => $shipment->id,
-						'payment_id' => null,
 						'geo_start' => $this->makePoint($this->getGeoData($trip->fromCity()->first())),
 						'geo_end' => $this->makePoint($this->getGeoData($trip->destinationCity()->first())),
 						'price' => $faker->randomFloat(2, 49, 1999),
