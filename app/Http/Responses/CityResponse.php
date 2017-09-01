@@ -22,11 +22,11 @@ class CityResponse extends ApiResponse
 	public function transform(City $city)
 	{
 
-		$city->makeHidden('country_id');
-		$data = $city->toArray();
-		$data['country'] = $city->country;
+		$country = $city->country()->first();
+		$city = $city->toArray();
+		$city['country'] = $country->toArray();
 
-		return $data;
+		return $city;
 
 	}
 }

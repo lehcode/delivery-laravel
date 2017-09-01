@@ -7,6 +7,7 @@
 
 namespace App\Http\Responses;
 
+use App\Http\Responses\Admin\CarrierResponse;
 use App\Models\Trip;
 use App\Models\User;
 use Jenssegers\Date\Date;
@@ -17,6 +18,15 @@ use Jenssegers\Date\Date;
  */
 class TripResponse extends ApiResponse
 {
+
+	protected $forAdmin;
+
+	public function __construct($forAdmin = false){
+		if ($forAdmin === true && \Auth::user()->hasRole(User::ADMIN_ROLES)){
+			$this->forAdmin = true;
+		}
+	}
+
 	/**
 	 * @param Trip $trip
 	 *
@@ -34,14 +44,19 @@ class TripResponse extends ApiResponse
 
 		$data = [
 			'id' => $trip->id,
-			'payment_type' => $trip->paymentType()->first(),
 			'from_city' => $this->includeTransformedItem($trip->fromCity()->with('country')->first(), new CityResponse()),
 			'destination_city' => $this->includeTransformedItem($trip->destinationCity()->with('country')->first(), new CityResponse()),
-			'carrier' => $this->includeTransformedItem($user, new UserDetailedResponse()),
 			'departure_date' => $trip->departure_date,
 			'approx_time' => Date::createFromTimestamp($trip->approx_time * 60)->format('H:i'),
 			'created_at' => $trip->created_at,
 		];
+
+
+		if ($this->forAdmin){
+			$data['carrier'] = $this->includeTransformedItem($user->carrier, new CarrierResponse());
+		} else {
+			$data['carrier'] = $this->includeTransformedItem($user, new UserDetailedResponse());
+		}
 
 		return $data;
 	}
