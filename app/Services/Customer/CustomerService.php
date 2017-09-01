@@ -14,6 +14,9 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Trip;
 use App\Models\User;
+use App\Services\CrudServiceInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +24,7 @@ use Illuminate\Support\Facades\Auth;
  * Class CustomerService
  * @package App\Services\Customer
  */
-class CustomerService
+class CustomerService implements CrudServiceInterface
 {
 	/**
 	 * @return mixed
@@ -34,7 +37,7 @@ class CustomerService
 	/**
 	 * @param EditUserProfileRequest $request
 	 *
-	 * @return \App\Models\User|null
+	 * @return User|null
 	 * @throws MultipleExceptions
 	 */
 	public function update(EditUserProfileRequest $request)
@@ -95,4 +98,58 @@ class CustomerService
 		return \Auth::user()->customer;
 
 	}
+
+	/**
+	 * Get Collection of all Customers
+	 *
+	 * @return Collection
+	 */
+	public function all()
+	{
+		return User\Customer::all();
+	}
+
+	/**
+	 * Get single Customer model
+	 *
+	 * @param Request $request
+	 * @param string  $id
+	 *
+	 * @return mixed
+	 */
+	public function byId(Request $request, $id)
+	{
+
+		\Validator::make(['id' => $id], ['id' => 'required|regex:' . User::UUID_REGEX])
+			->validate();
+
+		return User::where('id', '=', $id)->first();
+	}
+
+	/**
+	 * @param Request $request
+	 * @param string  $id
+	 *
+	 * @return mixed
+	 * @throws \Illuminate\Validation\ValidationException
+	 */
+	public function setAccountStatus(Request $request, $id)
+	{
+		\Validator::make([
+			'id' => $id,
+			'enabled' => (int)$request->input('enabled'),
+		], [
+			'id' => 'required|regex:' . User::UUID_REGEX,
+			'enabled' => 'required|in:0,1',
+		])->validate();
+
+		$acc = User::where('id', '=', $id)->first();
+		$acc->is_enabled = (int)$request->input('enabled');
+		$acc->saveOrFail();
+
+		return $acc;
+
+	}
+
+
 }

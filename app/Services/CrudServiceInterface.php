@@ -7,6 +7,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -16,13 +17,6 @@ use Illuminate\Http\Request;
  */
 interface CrudServiceInterface
 {
-	/**
-	 * Get Collection of items from repository
-	 *
-	 * @return Collection
-	 */
-	public function all();
-
 	/**
 	 * Get single item from repository
 	 *

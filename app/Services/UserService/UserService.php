@@ -9,8 +9,10 @@ namespace App\Services\UserService;
 
 use App\Exceptions\MultipleExceptions;
 use App\Http\Requests\EditUserProfileRequest;
+use App\Mail\EmailConfirmationMail;
 use App\Mail\UserActivationMail;
 use App\Mail\UserPasswordResetMail;
+use App\Models\Order;
 use App\Models\ProfileCustomer;
 use App\Models\ProfileDriver;
 use App\Models\User;
@@ -252,8 +254,8 @@ class UserService implements UserServiceInterface
 	 */
 	public function sendConfirmationLink(User $user)
 	{
-		$key = $this->makeConfirmationKey($user);
-		\Mail::to($user)->queue(new UserEmailConfirmation($user, $key));
+		$key = $this->makeActivationKey($user);
+		\Mail::to($user)->queue(new EmailConfirmationMail($user, $key));
 	}
 
 	/**
@@ -664,6 +666,15 @@ class UserService implements UserServiceInterface
 			$pass[] = $load[$n];
 		}
 		return implode($pass);
+	}
+
+	/**
+	 * @param $id
+	 *
+	 * @return mixed
+	 */
+	public function getUserOrders($id){
+		return Order::where('customer_id', '=', $id)->get();
 	}
 
 }

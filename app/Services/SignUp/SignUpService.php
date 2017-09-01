@@ -61,42 +61,37 @@ class SignUpService implements SignUpServiceInterface
 	 */
 	public function customer(SignupCustomerRequest $request)
 	{
-		$params = $request->all();
-		$entityUser = array_only($params, app()->make(User::class)->getFillable());
-		$entityCustomerProfile = array_only($params, app()->make(User\Customer::class)->getFillable());
+		$entityUser = array_only($request->all(), app()->make(User::class)->getFillable());
+		$entityCustomerProfile = array_only($request->all(), app()->make(User\Customer::class)->getFillable());
 
-		$entityUser['type'] = User::ROLE_CUSTOMER;
-		$entityUser['is_enabled'] = true;
+		$entityUser['is_enabled'] = $request->has('is_enabled') ? (int)$request->input('is_enabled') : false;
 
 		if ($request->has('location')) {
-			$country = Country::where('alpha2_code', '=', $params['location']['country'])->first();
-			$entityCustomerProfile['current_city'] = City::where('name', '=', $params['location']['city'])
+			$data['country'] = $request->input('location.country');
+			$data['city'] = $request->input('location.city');
+			$country = Country::where('alpha2_code', '=', $data['country'])->first();
+			$entityCustomerProfile['current_city'] = City::where('name', '=', $data['city'])
 				->where('country_id', '=', $country->id)->first()->id;
 		}
 
-		Validator::make($params, [
-			'username' => 'required|alpha_num|min:3|unique:users,username',
-			'phone' => 'required|phone:AUTO,mobile|unique:users,phone',
-			'password' => 'required|min:5|alpha_num|confirmed',
-			'image' => 'file|image',
-			'location.city' => 'string|min:2|max:64',
-			'location.country' => 'string|regex:/^[A-Z]{2}$/',
-		])->validate();
+		Validator::make($request->all(), $request->rules())->validate();
 
-		return DB::transaction(function () use ($entityUser, $entityCustomerProfile, $params, $request) {
+		return DB::transaction(function () use ($entityUser, $entityCustomerProfile, $request) {
 
-			$user = User::create($entityUser);
+			$user = factory(User::class)->make($entityUser);
 
-			if ($request->has('image') && $request->input('image') instanceof UploadedFile) {
-				unset($params['image']);
-				$user->clearMediaCollection(User::PROFILE_IMAGE)
-					->addMediaFromRequest('image')
-					->toMediaCollection(User::PROFILE_IMAGE, 's3');
+			if (!$user->isValid()) {
+				$errors = $user->getErrors();
+				foreach ($errors as $req => $error) {
+					throw new ModelValidationException($error, 422);
+				}
 			}
 
-			$role = User\Role::where(['name' => 'customer'])->first();
-			$user->attachRole($role)->saveOrFail();
+			$user->saveOrFail();
 
+			$role = User\Role::where(['name' => 'customer'])->first();
+			$user->attachRole($role->id);
+			$user->saveOrFail();
 			$customer = User\Customer::create(array_merge(['id' => $user->id], $entityCustomerProfile));
 
 			if (!$customer->isValid()) {
@@ -108,12 +103,18 @@ class SignUpService implements SignUpServiceInterface
 				}
 			}
 
+			if ($request->has('image') && $request->input('image') instanceof UploadedFile) {
+				$user->clearMediaCollection(User::PROFILE_IMAGE)
+					->addMediaFromRequest('image')
+					->toMediaCollection(User::PROFILE_IMAGE, 's3');
+			}
+
 			if ($request->has('email')) {
 				$this->userService->sendActivationLink($user);
-			} else {
-				$user->is_enabled = true;
-				$user->saveOrFail();
 			}
+
+			$customer->saveOrFail();
+			$user->saveOrFail();
 
 			return $user;
 		});

@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\User\Carrier;
 use App\Repositories\User\UserRepository;
 use App\Services\CrudServiceInterface;
+use App\Services\Trip\TripService;
 use App\Services\UserService\UserService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -38,40 +39,62 @@ class CarrierService implements CrudServiceInterface
 	 */
 	protected $userRepository;
 
+	protected $tripService;
+
 	/**
 	 * CarrierService constructor.
 	 *
 	 * @param UserService    $userService
 	 * @param UserRepository $userRepository
+	 * @param TripService    $tripService
 	 */
 	public function __construct(UserService $userService,
-	                            UserRepository $userRepository)
+	                            UserRepository $userRepository,
+	                            TripService $tripService)
 	{
 		$this->userService = $userService;
 		$this->userRepository = $userRepository;
+		$this->tripService = $tripService;
 	}
 
 	/**
-	 * @return mixed
+	 * @param $orderBy
+	 * @param $order
+	 *
+	 * @return CarrierService
 	 */
-	public function getTrips()
+	public function getTrips($orderBy, $order)
 	{
-		return Trip::all()
-			->sortByDesc('created_at');
+		return $this->tripService->all($orderBy, $order);
 	}
 
 	/**
-	 * @return Collection
+	 * @param string $orderBy
+	 * @param string $order
+	 *
+	 * @return static
 	 */
-	public function all()
+	public function all($orderBy = 'created_at', $order = 'desc')
 	{
-		return Carrier::all()
-			->sortByDesc('created_at');
+		
+		
+		
+		$userProps = ['username', 'name', 'email', 'last_login', 'is_enabled'];
+
+		$result = Carrier::with(['currentCity', 'currentCity.country', 'user']);
+
+		if (in_array($orderBy, $userProps)) {
+			$result->join('users', 'carriers.id', '=', 'users.id')
+				->orderBy('users.' . $orderBy, $order);
+		}
+
+		return $result->get();
+
 	}
 
 	/**
 	 * @param Request $request
-	 * @param string $id
+	 * @param string  $id
 	 *
 	 * @return mixed
 	 */
@@ -99,7 +122,7 @@ class CarrierService implements CrudServiceInterface
 		$user = User::findOrFail($id);
 		$user->load('carrier');
 
-		if ($request->validate() !== true){
+		if ($request->validate() !== true) {
 			throw new RequestValidationException($request->messages());
 		}
 
@@ -116,15 +139,15 @@ class CarrierService implements CrudServiceInterface
 			if ($request->has('email')) {
 				$user->email = $data['email'];
 			}
-			
+
 			if ($request->has('phone')) {
-				if ($user->phone !== $data['phone']){
+				if ($user->phone !== $data['phone']) {
 					$user->phone = $data['phone'];
 				}
 			}
 
 			if ($request->has('is_enabled')) {
-				$user->is_enabled = (bool) $data['is_enabled'];
+				$user->is_enabled = (bool)$data['is_enabled'];
 			}
 
 			if ($request->has('default_address')) {

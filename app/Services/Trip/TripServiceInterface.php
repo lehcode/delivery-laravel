@@ -1,41 +1,39 @@
 <?php
-
-namespace App\Services\Trip;
-use App\Models\Trip;
-use Illuminate\Database\Eloquent\Collection;
-
 /**
  * Created by Antony Repin
  * Date: 31.05.2017
  * Time: 10:35
  */
-interface TripServiceInterface
+
+namespace App\Services\Trip;
+
+use App\Http\Requests\TripRequest;
+use App\Models\Trip;
+use App\Services\CrudServiceInterface;
+use Illuminate\Database\Eloquent\Collection;
+
+/**
+ * Interface TripServiceInterface
+ * @package App\Services\Trip
+ */
+interface TripServiceInterface extends CrudServiceInterface
 {
 	/**
-	 * @param array $data
+	 * @param TripRequest $data
 	 *
 	 * @return Trip
 	 */
-	public function create(array $data);
+	public function create(TripRequest $data);
 
 	/**
-	 * @param Trip $trip
-	 * @param array $params
-	 * @return Trip
-	 */
-	public function edit(Trip $trip, array $params);
-
-	/**
-	 * @return Builder
-	 */
-	public function all();
-
-	/**
-	 * @param $id
+	 * Get all Trips ordered by created_at ASC
 	 *
-	 * @return mixed
+	 * @param string $orderBy
+	 * @param string $order
+	 *
+	 * @return Collection
 	 */
-	public function item($id);
+	public function all($orderBy, $order);
 
 	/**
 	 * @return Collection

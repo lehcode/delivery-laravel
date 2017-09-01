@@ -171,7 +171,7 @@ class ResponderService implements ResponderServiceInterface
 		$fractal = fractal();
 
 		if ($items instanceof Collection) {
-			if ($page > -1) {
+			if ($page > 0) {
 				$paginator = new LengthAwarePaginator($items, $items->count(), config('laravel-fractal.per_page'), $page);
 				$response = $fractal->collection($paginator, $transformer);
 			} else {
@@ -195,7 +195,6 @@ class ResponderService implements ResponderServiceInterface
 		} elseif ($items instanceof Model) {
 			$collection = (new Collection())->add($items);
 			$response = $fractal->collection($collection, $transformer);
-			//$paginator = new LengthAwarePaginator($collection, $collection->count(), config('laravel-fractal.per_page'), $page);
 		} elseif (is_scalar($items)) {
 			/** @var \Spatie\Fractal\Fractal $response */
 			$response = $fractal->item($items, $transformer);
@@ -219,7 +218,7 @@ class ResponderService implements ResponderServiceInterface
 		return $this->response(array_merge(
 			['status' => 'success',],
 			$resp,
-			['meta' => isset($arr['meta']) ? $arr['meta'] : (isset($totalCount) ? ['pagination' => ['total' => $totalCount]] : null)]));
+			['meta' => isset($resp['meta']) ? $resp['meta'] : (isset($totalCount) ? ['pagination' => ['total' => $totalCount]] : null)]));
 	}
 
 	/**

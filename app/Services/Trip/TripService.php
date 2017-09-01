@@ -8,6 +8,7 @@
 namespace App\Services\Trip;
 
 use App\Exceptions\MultipleExceptions;
+use App\Http\Requests\TripRequest;
 use App\Http\Responses\TripResponse;
 use App\Models\City;
 use App\Models\Country;
@@ -16,6 +17,7 @@ use App\Models\User;
 use App\Repositories\Trip\TripRepository;
 use App\Repositories\Trip\TripRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Services\BaseServiceInterface;
@@ -52,33 +54,58 @@ class TripService implements TripServiceInterface
 
 
 	/**
-	 * @param array $tripData
+	 * @param TripRequest $request
 	 *
 	 * @return mixed
 	 * @throws MultipleExceptions
+	 * @throws \Illuminate\Validation\ValidationException
 	 */
-	public function create(array $tripData)
+	public function create(TripRequest $request)
 	{
 
+		\Validator::make($request->all(), $request->rules())->validate();
+
 		$now = Date::now();
-		$dd = Date::createFromFormat('Y-m-d H:i:s', $tripData['departure_date']);
+		$dd = Date::createFromFormat('Y-m-d H:i:s', $request->input('departure_date'));
 
 		if ($dd->lte($now)) {
 			throw new MultipleExceptions("Trip departure date must be in the future", 400);
 		}
 
-		return DB::transaction(function () use ($tripData) {
-			$trip = Trip::create($tripData);
+		return DB::transaction(function () use ($request) {
+			$entity = array_only($request->all(), app()->make(Trip::class)->getFillable());
+			$trip = factory(Trip::class)->make($entity);
+			$trip->saveOrFail();
+
 			return $trip;
 		});
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Collection|static[]
+	 * @param string $orderBy
+	 * @param string $order
+	 *
+	 * @return Collection
 	 */
-	public function all()
+	public function all($orderBy=null, $order=null)
 	{
-		return $this->tripRepository->all();
+
+		$result = null;
+
+		if (!is_null($orderBy)) {
+			if ($order === 'asc') {
+				$result = Trip::all()
+					->sortBy($orderBy);
+			} else {
+				$result = Trip::all()
+					->sortByDesc($orderBy);
+			}
+		} else {
+			$result = Trip::all()
+				->sortByDesc('created_at');
+		}
+
+		return $result;
 	}
 
 	/**
@@ -90,22 +117,16 @@ class TripService implements TripServiceInterface
 	}
 
 	/**
-	 * @param Trip  $trip
-	 * @param array $params
-	 */
-	public function edit(Trip $trip, array $params)
-	{
-		// TODO: Implement edit() method.
-	}
-
-	/**
 	 * @param $id
 	 *
 	 * @return $this|bool
 	 * @throws MultipleExceptions
 	 */
-	public function item($id)
+	public function byId(Request $request, $id)
 	{
+
+		\Validator::make(['id' => $id], ['id' => 'required|regex:' . User::UUID_REGEX])->validate();
+
 		$item = $this->tripRepository->find($id);
 
 		if (!$item) {
@@ -215,7 +236,7 @@ class TripService implements TripServiceInterface
 	public function getAllCities()
 	{
 
-		$result = Country::with('cities')->get();
+		$result = City::with('country')->get();
 
 		return $result;
 
