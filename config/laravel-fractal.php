@@ -14,6 +14,6 @@ return [
     */
 
 	'default_serializer' => League\Fractal\Serializer\JsonApiSerializer::class,
-	'per_page' => 20
+	'per_page' => 100
 
 ];
