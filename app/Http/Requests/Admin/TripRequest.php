@@ -5,12 +5,12 @@
  * Time: 8:12
  */
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
 
 /**
  * Class TripRequest
- * @package App\Http\Requests
+ * @package App\Http\Requests\Admin
  */
 class TripRequest extends ApiRequest
 {
@@ -23,8 +23,7 @@ class TripRequest extends ApiRequest
 			'carrier_id' => 'required|string|exists:carriers,id',
 			'from_city_id' => 'required|integer|exists:cities,id',
 			'to_city_id' => 'required|integer|exists:cities,id',
-			'shipment_size_id' => 'required|exists:shipment_sizes,id',
-			'departure_date' => 'required|date',
+			'departure_date' => 'required|date'
 		];
 	}
 }

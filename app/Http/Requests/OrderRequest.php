@@ -26,6 +26,7 @@ class OrderRequest extends ApiRequest
 			'geo_start' => 'required|array',
 			'geo_end' => 'required|array',
 			'price' => 'required|numeric',
+			'payment_type_id' => 'required|integer|exists:payment_types,id',
 		];
 
 		return $rules;
