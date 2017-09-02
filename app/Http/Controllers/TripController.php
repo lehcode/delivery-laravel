@@ -54,7 +54,7 @@ class TripController extends Controller
 			throw new AccessDeniedHttpException("Forbidden");
 		}
 
-		return $this->responderService->fractal($this->tripService->all(), TripResponse::class);
+		return $this->responderService->fractal($this->tripService->all(), TripResponse::class, 0 , [true]);
 	}
 
 	/**
