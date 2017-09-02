@@ -47,7 +47,7 @@ class TripResponse extends ApiResponse
 			'from_city' => $this->includeTransformedItem($trip->fromCity()->with('country')->first(), new CityResponse()),
 			'destination_city' => $this->includeTransformedItem($trip->destinationCity()->with('country')->first(), new CityResponse()),
 			'departure_date' => $trip->departure_date,
-			'approx_time' => Date::createFromTimestamp($trip->approx_time * 60)->format('H:i'),
+			'approx_time' => $trip->approx_time,
 			'created_at' => $trip->created_at,
 		];
 
