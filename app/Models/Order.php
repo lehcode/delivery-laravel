@@ -26,7 +26,9 @@ class Order extends Model implements AuditableInterface
 
 	const STATUS_CREATED = "created";
 	const STATUS_ACCEPTED = "accepted";
+	const STATUS_AT_THE_DOOR = "at-the-door";
 	const STATUS_PICKED = "picked";
+	const STATUS_DELIVERING = "delivering";
 	const STATUS_DELIVERED = "delivered";
 	const STATUS_COMPLETED = "completed";
 	const STATUS_CANCELLED = "cancelled";

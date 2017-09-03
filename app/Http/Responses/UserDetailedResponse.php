@@ -66,6 +66,7 @@ class UserDetailedResponse extends ApiResponse
 		}
 
 		$role = $roles->first();
+		$profileImage = $user->getMedia(User::PROFILE_IMAGE)->first();
 
 		switch ($role->name) {
 			case User::ROLE_ADMIN:
@@ -76,7 +77,7 @@ class UserDetailedResponse extends ApiResponse
 
 				$data = [
 					'is_enabled' => $user->is_enabled,
-					User::PROFILE_IMAGE => !is_null($user->photo) ? $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb') : '',
+					User::PROFILE_IMAGE => is_null($profileImage) ? "" : $profileImage->getUrl('thumb'),
 					'payment_info' => isset($user->customer->card_number) ? $this->includeTransformedItem($user->customer, new PaymentInfoResponse()) : '',
 				];
 
@@ -95,7 +96,7 @@ class UserDetailedResponse extends ApiResponse
 				$data = [
 					'is_enabled' => $user->is_enabled,
 					'is_online' => $user->carrier->is_online,
-					User::PROFILE_IMAGE => !is_null($user->photo) ? $user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb') : '',
+					User::PROFILE_IMAGE => is_null($profileImage) ? "" : $profileImage->getUrl('thumb'),
 				];
 
 				if (isset($user->carrier->current_city)) {
@@ -118,7 +119,7 @@ class UserDetailedResponse extends ApiResponse
 			'email' => $user->email,
 			'phone' => is_null($user->phone) ? '' : $user->phone,
 			'is_enabled' => $user->is_enabled,
-			'created_at' => $user->created_at->format('r'),
+			'created_at' => $user->created_at,
 			'roles' => $user->roles,
 		]);
 

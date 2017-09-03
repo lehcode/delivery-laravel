@@ -8,6 +8,7 @@
 namespace App\Services\Customer;
 
 use App\Exceptions\MultipleExceptions;
+use App\Exceptions\RequestValidationException;
 use App\Http\Requests\EditUserProfileRequest;
 use App\Http\Requests\PaymentInfoRequest;
 use App\Models\City;
@@ -15,6 +16,7 @@ use App\Models\Country;
 use App\Models\Trip;
 use App\Models\User;
 use App\Services\CrudServiceInterface;
+use App\Services\UserService\UserService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -26,6 +28,13 @@ use Illuminate\Support\Facades\Auth;
  */
 class CustomerService implements CrudServiceInterface
 {
+	protected $userService;
+
+	public function __construct(UserService $userService)
+	{
+		$this->userService = $userService;
+	}
+
 	/**
 	 * @return mixed
 	 */
@@ -36,20 +45,22 @@ class CustomerService implements CrudServiceInterface
 
 	/**
 	 * @param EditUserProfileRequest $request
+	 * @param string                 $user_id
 	 *
-	 * @return User|null
+	 * @return mixed
 	 * @throws MultipleExceptions
 	 */
-	public function update(EditUserProfileRequest $request)
+	public function update(EditUserProfileRequest $request, $user_id = null)
 	{
 
 		if (!$request->validate()) {
 			throw new MultipleExceptions("Request validation failed", 401);
 		}
 
-		return \DB::transaction(function () use ($request) {
+		$user = is_null($user_id) ? \Auth::user() : User::where('id', '=', $user_id)->get()->first();
 
-			$user = \Auth::user();
+		return \DB::transaction(function () use ($request, $user) {
+
 			$user->load('customer');
 			$data = $request->all();
 
@@ -61,10 +72,10 @@ class CustomerService implements CrudServiceInterface
 				$user->name = $data['name'];
 			}
 
-			if ($request->has('image') && $request->input('image') instanceof UploadedFile) {
+			if ($request->has(User::PROFILE_IMAGE) && $request->input(User::PROFILE_IMAGE) instanceof UploadedFile) {
 				unset($data['image']);
 				$user->clearMediaCollection(User::PROFILE_IMAGE)
-					->addMediaFromRequest('image')
+					->addMediaFromRequest(User::PROFILE_IMAGE)
 					->toMediaCollection(User::PROFILE_IMAGE, 's3');
 			}
 
@@ -73,15 +84,27 @@ class CustomerService implements CrudServiceInterface
 				$user->customer->current_city = City::where('name', '=', $request->input('location.city'))
 					->where('country_id', '=', $country->id)
 					->first()->id;
+				$user->customer->saveOrFail();
 			}
 
-			$user->customer->saveOrFail();
-
-			if (count($data)) {
-				$user->fill($data)->saveOrFail();
+			if ($request->has('phone') && $request->input('phone') !== $user->phone) {
+				$this->userService->sendConfirmationSms($user);
+				unset($data['phone']);
 			}
+
+			if ($request->has('email') && $request->input('email') !== $user->email) {
+				$this->userService->sendConfirmationLink($user);
+				unset($data['email']);
+			}
+
+			if ($request->has('is_enabled')) {
+				$user->is_enabled = $request->input('is_enabled');
+			}
+
+			$user->fill($data)->saveOrFail();
 
 			return $user;
+
 		});
 
 	}
@@ -126,30 +149,7 @@ class CustomerService implements CrudServiceInterface
 		return User::where('id', '=', $id)->first();
 	}
 
-	/**
-	 * @param Request $request
-	 * @param string  $id
-	 *
-	 * @return mixed
-	 * @throws \Illuminate\Validation\ValidationException
-	 */
-	public function setAccountStatus(Request $request, $id)
-	{
-		\Validator::make([
-			'id' => $id,
-			'enabled' => (int)$request->input('enabled'),
-		], [
-			'id' => 'required|regex:' . User::UUID_REGEX,
-			'enabled' => 'required|in:0,1',
-		])->validate();
 
-		$acc = User::where('id', '=', $id)->first();
-		$acc->is_enabled = (int)$request->input('enabled');
-		$acc->saveOrFail();
-
-		return $acc;
-
-	}
 
 
 }

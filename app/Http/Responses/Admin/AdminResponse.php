@@ -25,9 +25,7 @@ class AdminResponse extends ApiResponse
 	public function transform(User $user)
 	{
 		$role = $user->roles()->first()->toArray();
-		$data = $user->toArray();
-		
-		unset ($data['email']);
+		$data = $user->makeHidden(['email'])->toArray();
 
 		foreach ($data as $k=>$v){
 			if (is_null($v)){

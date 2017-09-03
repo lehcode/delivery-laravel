@@ -43,14 +43,14 @@ class OrdersSeeder extends Seeder
 	public function run()
 	{
 		$this->command->info('Generating predefined Orders');
-		$trips = Trip::all();
 		$faker = Faker::create('en_GB');
 
 		User\Customer::with('currentCity')->get()
-			->each(function ($customer) use ($trips, $faker) {
+			->each(function ($customer) use ($faker) {
 
 				for ($i = 0; $i < rand(3, 25); $i++) {
-					$trip = $trips->random()->with(['fromCity', 'destinationCity'])->first();
+
+					$trip = Trip::all()->random();
 
 					$recipient = factory(Recipient::class)->create();
 
@@ -86,7 +86,7 @@ class OrdersSeeder extends Seeder
 					$data = [
 						'status' => $status,
 						'customer_id' => $customer->id,
-						'recipient_id' => $recipient->id->string,
+						'recipient_id' => $recipient->id,
 						'shipment_id' => $shipment->id,
 						'geo_start' => $this->makePoint($this->getGeoData($trip->fromCity()->first())),
 						'geo_end' => $this->makePoint($this->getGeoData($trip->destinationCity()->first())),
@@ -107,6 +107,8 @@ class OrdersSeeder extends Seeder
 							}
 						}
 					}
+
+					$order->saveOrFail();
 
 				}
 			});

@@ -186,7 +186,7 @@ class SetupAclTablesSeed extends Seeder
 									'birthday' => $faker->date(),
 									'id_number' => strtoupper($faker->bothify("## ???##???")),
 									'current_city' => $cities->random()->id,
-									'default_address' => $faker->streetAddress,
+									'default_address' => $faker->address,
 									'notes' => $faker->text(128),
 								]);
 								break;

@@ -12,6 +12,7 @@ use App\Extensions\RfcDateTrait;
 use App\Models\City;
 use App\Models\Trip;
 use App\Models\User;
+use Jenssegers\Date\Date;
 use Laratrust\Traits\LaratrustUserTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 use OwenIt\Auditing\Auditable as AuditableTrait;
@@ -34,7 +35,8 @@ class Carrier extends Model implements AuditableInterface, ValidatingInterface, 
 		HasMediaTrait,
 		ProfileAttributeTrait,
 		LaratrustUserTrait,
-		ValidatingTrait;
+		ValidatingTrait,
+		RfcDateTrait;
 
 	const STATUS_ONLINE = 'online';
 	const STATUS_OFFLINE = 'offline';
@@ -149,5 +151,22 @@ class Carrier extends Model implements AuditableInterface, ValidatingInterface, 
 	public function scopeOnline(Builder $builder)
 	{
 		return $builder->where('is_online', true);
+	}
+
+	/**
+	 * @param string $value
+	 *
+	 * @return string
+	 */
+	public function getBirthdayAttribute($value){
+		if (preg_match('/^\d{4}-\d{1,2}-\d{1,3}$/', $value)){
+			$date = Date::createFromFormat('Y-m-d', $value);
+		} else {
+			$date = Date::createFromFormat('Y-m-d H:i:s', $value);
+		}
+
+		$date->hour(0)->minute(0)->second(0);
+
+		return $date->format('r');
 	}
 }

@@ -44,8 +44,6 @@ class CreateOrdersTable extends Migration
 			$table->foreign('payment_id')->references('id')->on('payments')
 				->onUpdate('restrict')->onDelete('restrict');
 
-			$table->uuid('delivery_id')->nullable();
-
 			$table->timestamps();
 			$table->softDeletes();
 

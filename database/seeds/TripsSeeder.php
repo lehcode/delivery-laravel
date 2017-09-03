@@ -21,17 +21,12 @@ class TripsSeeder extends Seeder
 
 		$faker = Faker::create('en_GB');
 
-		User::all()
-			->filter(function ($u) {
-				if ($u->roles()->first()->name == User::ROLE_CARRIER) {
-					return $u;
-				}
-			})
-			->each(function ($u) use ($faker) {
-				$carrier = $u->carrier()->with('trips')->first();
+		User\Carrier::all()
+			->each(function ($carrier) use ($faker) {
+
 				for ($i = 0; $i < rand(3, 15); $i++) {
 
-					$tripEntity = factory(Trip::class)->make([ 'carrier_id' => $carrier->id ]);
+					$tripEntity = factory(Trip::class)->make(['carrier_id' => $carrier->id]);
 
 					if (!$tripEntity->isValid()) {
 						$errors = $tripEntity->getErrors()->messages();

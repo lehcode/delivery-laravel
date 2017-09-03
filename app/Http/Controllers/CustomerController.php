@@ -15,6 +15,7 @@ use App\Http\Responses\Admin\CustomerResponse;
 use App\Http\Responses\PaymentInfoResponse;
 use App\Http\Responses\TripDetailsResponse;
 use App\Http\Responses\UserDetailedResponse;
+use App\Models\User;
 use App\Repositories\User\UserRepositoryInterface;
 use App\Services\Customer\CustomerService;
 use App\Services\Payment\PaymentService;
@@ -110,25 +111,23 @@ class CustomerController extends Controller
 			throw new AccessDeniedException();
 		}
 
-		return $this->responderService->fractal($this->signupService->customer($request), UserDetailedResponse::class, null, [false, true]);
+		return $this->responderService->fractal($this->signupService->customer($request),  UserDetailedResponse::class, null, [false, true]);
 
 	}
 
 	/**
 	 * @param EditUserProfileRequest $request
+	 * @param string                 $user_id
 	 *
 	 * @return \Illuminate\Http\JsonResponse
-	 * @throws AccessDeniedException
-	 * @throws \App\Exceptions\MultipleExceptions
-	 * @throws \Exception
 	 */
-	public function update(EditUserProfileRequest $request)
+	public function update(EditUserProfileRequest $request, $user_id = null)
 	{
 		if (!\Auth::user()->hasRole(['customer', 'admin'])) {
 			throw new AccessDeniedException();
 		}
 
-		return $this->responderService->fractal($this->customerService->update($request), UserDetailedResponse::class, null, [false]);
+		return $this->responderService->fractal($this->customerService->update($request, $user_id), UserDetailedResponse::class, 0, [false]);
 	}
 
 	/**
@@ -139,7 +138,7 @@ class CustomerController extends Controller
 	 */
 	public function navigation()
 	{
-		if (!\Auth::user()->hasRole('customer')) {
+		if (!\Auth::user()->hasRole(['customer'])) {
 			throw new AccessDeniedException();
 		}
 
@@ -210,12 +209,10 @@ class CustomerController extends Controller
 	 * Fetch list of all Customers accounts
 	 *
 	 * @return \Illuminate\Http\JsonResponse
-	 * @throws AccessDeniedException
-	 * @throws \Exception
 	 */
 	public function all()
 	{
-		if (!\Auth::user()->hasRole('admin')) {
+		if (!\Auth::user()->hasRole(User::ADMIN_ROLES)) {
 			throw new AccessDeniedException();
 		}
 
@@ -241,19 +238,17 @@ class CustomerController extends Controller
 
 	/**
 	 * @param Request $request
-	 * @param string  $id
+	 * @param string  $user_id
 	 *
 	 * @return \Illuminate\Http\JsonResponse
-	 * @throws AccessDeniedException
-	 * @throws \Exception
 	 */
-	public function setAccountStatus(Request $request, $id)
+	public function setAccountStatus(Request $request, $user_id = null)
 	{
 		if (!\Auth::user()->hasRole(['admin', 'customer'])) {
 			throw new AccessDeniedException();
 		}
 
-		return $this->responderService->fractal($this->customerService->setAccountStatus($request, $id), UserDetailedResponse::class);
+		return $this->responderService->fractal($this->customerService->setAccountStatus($request, $user_id), UserDetailedResponse::class);
 
 	}
 }

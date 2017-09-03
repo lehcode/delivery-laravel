@@ -103,9 +103,9 @@ class SignUpService implements SignUpServiceInterface
 				}
 			}
 
-			if ($request->has('image') && $request->input('image') instanceof UploadedFile) {
+			if ($request->has(User::PROFILE_IMAGE) && $request->input(User::PROFILE_IMAGE) instanceof UploadedFile) {
 				$user->clearMediaCollection(User::PROFILE_IMAGE)
-					->addMediaFromRequest('image')
+					->addMediaFromRequest(User::PROFILE_IMAGE)
 					->toMediaCollection(User::PROFILE_IMAGE, 's3');
 			}
 

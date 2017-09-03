@@ -7,14 +7,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Admin\OrderRequest as AdminOrderRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\RecipientRequest;
 use App\Http\Responses\OrderResponse;
 use App\Http\Responses\RecipientResponse;
+use App\Models\User;
 use App\Services\BaseServiceInterface;
 use App\Services\Order\OrderService;
 use App\Services\Responder\ResponderService;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Class OrderController
@@ -84,7 +87,7 @@ class OrderController
 	}
 
 	/**
-	 * @param int     $id
+	 * @param int $id
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Exception
@@ -122,11 +125,49 @@ class OrderController
 	 * @param RecipientRequest $request
 	 *
 	 * @return \Illuminate\Http\JsonResponse
-	 * @throws \Exception
 	 */
 	public function createRecipient(RecipientRequest $request)
 	{
 		return $this->responderService->fractal($this->orderService->createRecipient($request), RecipientResponse::class);
+	}
+
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function all()
+	{
+
+		if (!\Auth::user()->hasRole(User::ADMIN_ROLES)) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
+		return $this->responderService->fractal($this->orderService->all(), OrderResponse::class);
+	}
+
+	/**
+	 * @param AdminOrderRequest $request
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function createAdminOrder(AdminOrderRequest $request)
+	{
+		if (!\Auth::user()->hasRole(User::ADMIN_ROLES)) {
+			throw new AccessDeniedHttpException("Forbidden");
+		}
+
+		$result = $this->orderService->createAdminOrder($request);
+
+		if ($result){
+			return $this->responderService->fractal($result, OrderResponse::class);
+		}
+
+		return $this->responderService->response([
+			'status' => 'error',
+			'code' => 404,
+			'message' => "Not found"
+		]);
+
+
 	}
 
 }

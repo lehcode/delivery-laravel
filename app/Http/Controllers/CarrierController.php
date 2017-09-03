@@ -161,4 +161,20 @@ class CarrierController
 	{
 		return $this->responderService->fractal($this->carrierService->update($request, $id), CarrierResponse::class);
 	}
+
+	/**
+	 * @param Request $request
+	 * @param string  $user_id
+	 *
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function setAccountStatus(Request $request, $user_id = null)
+	{
+		if (!\Auth::user()->hasRole(['admin', 'carrier'])) {
+			throw new AccessDeniedException();
+		}
+
+		return $this->responderService->response($this->carrierService->setAccountStatus($request, $user_id));
+
+	}
 }

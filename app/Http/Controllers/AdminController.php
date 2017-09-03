@@ -127,8 +127,6 @@ class AdminController
 	 * @param string  $id
 	 *
 	 * @return \Illuminate\Http\JsonResponse
-	 * @throws \App\Exceptions\MultipleExceptions
-	 * @throws \Exception
 	 */
 	public function resetPassword(Request $request, $id){
 		return $this->responderService->response($this->userService->resetPassword($id));

@@ -26,7 +26,7 @@ class CreateCustomersTable extends Migration
 			$table->foreign('current_city')->references('id')->on('cities')
 				->onDelete('restrict')->onUpdate('restrict');
 
-			//$table->string('username')->unique();
+			$table->double('rating', 2, 2)->unsigned()->nullable()->default(0);
 			$table->string('name')->nullable();
 			$table->text('notes')->nullable();
 

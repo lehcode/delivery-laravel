@@ -68,7 +68,7 @@ class Trip extends Model implements AuditableInterface
 	];
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function carrier()
 	{
@@ -84,7 +84,7 @@ class Trip extends Model implements AuditableInterface
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
 	public function fromCity()
 	{
@@ -92,7 +92,7 @@ class Trip extends Model implements AuditableInterface
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
 	public function destinationCity()
 	{

@@ -36,16 +36,18 @@ class CarrierResponse extends ApiResponse
 			"name" => !is_null($carrier->user->name) ? $carrier->user->name : "",
 			'is_enabled' => $carrier->user->is_enabled,
 			"is_online" => $carrier->is_online,
-			//User::PROFILE_IMAGE => !is_null($carrier->user->photo) ? $carrier->user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb') : '',
-			//Carrier::ID_IMAGE => !is_null(Carrier::ID_IMAGE) ? $carrier->user->getMedia(Carrier::ID_IMAGE)->first()->getUrl('thumb') : '',
-			"notes" => $carrier->notes,
+			"notes" => !is_null($carrier->notes) ? $carrier->notes : "",
 			"cash_payments" => 0,
-			"online_payments" => 0,
+			"card_payments" => 0,
 			"trips" => 0,
+			"orders" => 0,
 			"rating" => $carrier->rating,
 			"nationality" => !is_null($carrier->nationality) ? $carrier->nationality : "",
 			"id_number" => !is_null($carrier->id_number) ? $carrier->id_number : "",
 			"birthday" => !is_null($carrier->birthday) ? $carrier->birthday : "",
+			"default_address" => $carrier->default_address,
+			"created_at" => $carrier->created_at,
+			"last_login" => !is_null($carrier->user->last_login) ? $carrier->user->last_login : "",
 		];
 
 		if ($carrier->getMedia(Carrier::ID_IMAGE)->first()){

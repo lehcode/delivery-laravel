@@ -13,11 +13,13 @@ use Webpatser\Uuid\Uuid;
  */
 $factory->define(Recipient::class, function (Faker\Generator $faker) {
 
-	return [
-		'id' => Uuid::generate(4),
-		'name' => $faker->name,
-		'phone' => '+37529' . mt_rand(1111111, 9999999),
-		'notes' => ''
+	$data = [
+		'id' => Uuid::generate(4)->string,
+		'name' => null,
+		'phone' => null,
+		'notes' => null,
 	];
+
+	return $data;
 
 });

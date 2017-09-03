@@ -28,6 +28,7 @@ class EditUserProfileRequest extends ApiRequest
 		'birthday' => 'date|nullable',
 		'nationality' => 'string|nullable',
 		'id_number' => 'string|nullable',
+		'is_enabled' => 'boolean',
 	];
 
 	/**

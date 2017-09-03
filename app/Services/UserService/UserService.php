@@ -259,6 +259,13 @@ class UserService implements UserServiceInterface
 	}
 
 	/**
+	 * @param User $user
+	 */
+	public function sendConfirmationSms(User $user){
+		$key = $this->makeActivationKey($user);
+	}
+
+	/**
 	 * @param bool $withDeleted
 	 *
 	 * @return Collection
@@ -675,6 +682,15 @@ class UserService implements UserServiceInterface
 	 */
 	public function getUserOrders($id){
 		return Order::where('customer_id', '=', $id)->get();
+	}
+
+	/**
+	 * @param string $username
+	 *
+	 * @return User
+	 */
+	public function getByUsername($username){
+		return User::where('username', '=', $username)->get()->first();
 	}
 
 }

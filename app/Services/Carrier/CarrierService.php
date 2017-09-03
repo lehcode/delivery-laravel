@@ -13,6 +13,7 @@ use App\Http\Requests\EditUserProfileRequest;
 use App\Models\Trip;
 use App\Models\User;
 use App\Models\User\Carrier;
+use App\Repositories\CrudService;
 use App\Repositories\User\UserRepository;
 use App\Services\CrudServiceInterface;
 use App\Services\Trip\TripService;
@@ -27,7 +28,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * Class CarrierService
  * @package App\Services\Carrier
  */
-class CarrierService implements CrudServiceInterface
+class CarrierService extends CrudService implements CrudServiceInterface
 {
 	/**
 	 * @var UserService
@@ -61,7 +62,7 @@ class CarrierService implements CrudServiceInterface
 	 * @param $orderBy
 	 * @param $order
 	 *
-	 * @return CarrierService
+	 * @return Collection
 	 */
 	public function getTrips($orderBy, $order)
 	{
@@ -76,9 +77,8 @@ class CarrierService implements CrudServiceInterface
 	 */
 	public function all($orderBy = 'created_at', $order = 'desc')
 	{
-		
-		
-		
+
+
 		$userProps = ['username', 'name', 'email', 'last_login', 'is_enabled'];
 
 		$result = Carrier::with(['currentCity', 'currentCity.country', 'user']);
@@ -122,10 +122,6 @@ class CarrierService implements CrudServiceInterface
 		$user = User::findOrFail($id);
 		$user->load('carrier');
 
-		if ($request->validate() !== true) {
-			throw new RequestValidationException($request->messages());
-		}
-
 		return \DB::transaction(function () use ($request, $user, $data) {
 
 			if ($request->has('remove_id_scan')) {
@@ -133,15 +129,15 @@ class CarrierService implements CrudServiceInterface
 			}
 
 			if ($request->has('name')) {
-				$user->name = $data['name'];
+				$user->name = $request->input('name');
 			}
 
 			if ($request->has('email')) {
-				$user->email = $data['email'];
+				$user->email = $request->input('email');
 			}
 
 			if ($request->has('phone')) {
-				if ($user->phone !== $data['phone']) {
+				if ($user->phone !== $request->input('phone')) {
 					$user->phone = $data['phone'];
 				}
 			}
@@ -151,7 +147,7 @@ class CarrierService implements CrudServiceInterface
 			}
 
 			if ($request->has('default_address')) {
-				$user->carrier->default_address = $data['default_address'];
+				$user->carrier->default_address = $request->input('default_address');
 			}
 
 			if ($request->has('location')) {
@@ -166,6 +162,10 @@ class CarrierService implements CrudServiceInterface
 				$user->carrier->birthday = Date::createFromFormat("Y-m-d", $data['birthday']);
 			}
 
+			if ($request->has('nationality')) {
+				$user->carrier->nationality = $request->input('nationality');
+			}
+
 			if ($request->has(Carrier::ID_IMAGE)) {
 				if ($data[Carrier::ID_IMAGE] instanceof UploadedFile) {
 					$img = $data[Carrier::ID_IMAGE];
@@ -178,6 +178,7 @@ class CarrierService implements CrudServiceInterface
 
 			if ($request->has(User::PROFILE_IMAGE)) {
 				if ($data[User::PROFILE_IMAGE] instanceof UploadedFile) {
+					/** @var UploadedFile $img */
 					$img = $data[User::PROFILE_IMAGE];
 					$user->clearMediaCollection(User::PROFILE_IMAGE)
 						->addMedia($img)
@@ -191,6 +192,11 @@ class CarrierService implements CrudServiceInterface
 
 			return $user->carrier;
 		});
+
+	}
+
+	public function getCarrierOrders(Carrier $carrier, $startDate = null)
+	{
 
 	}
 

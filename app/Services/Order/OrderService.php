@@ -5,13 +5,17 @@
  * Date: 31.05.2017
  * Time: 10:34
  */
+
 namespace App\Services\Order;
 
+use App\Http\Requests\Admin\OrderRequest as AdminOrderRequest;
 use App\Http\Requests\RecipientRequest;
 use App\Models\Order;
 use App\Models\Recipient;
+use App\Models\Shipment;
 use App\Models\User;
 use App\Repositories\Order\OrderRepository;
+use App\Repositories\Shipment\ShipmentRepository;
 use App\Services\Builder;
 use App\Services\Trip;
 use App\Services\UserService\UserService;
@@ -32,13 +36,29 @@ class OrderService implements OrderServiceInterface
 	protected $orderRepository;
 
 	/**
+	 * @var UserService
+	 */
+	protected $userService;
+
+	/**
+	 * @var ShipmentRepository
+	 */
+	protected $shipmentRepository;
+
+	/**
 	 * OrderService constructor.
 	 *
-	 * @param OrderRepository $orderRepository
+	 * @param OrderRepository    $orderRepository
+	 * @param UserService        $userService
+	 * @param ShipmentRepository $shipmentRepository
 	 */
-	public function __construct(OrderRepository $orderRepository)
+	public function __construct(OrderRepository $orderRepository,
+	                            UserService $userService,
+	                            ShipmentRepository $shipmentRepository)
 	{
 		$this->orderRepository = $orderRepository;
+		$this->userService = $userService;
+		$this->shipmentRepository = $shipmentRepository;
 	}
 
 	/**
@@ -49,8 +69,7 @@ class OrderService implements OrderServiceInterface
 	 */
 	public function create(Request $request)
 	{
-		$data = $request->except('XDEBUG_SESSION_START');
-		$result = $this->orderRepository->create($data);
+		$result = $this->orderRepository->create($request->all());
 
 		return $result;
 	}
@@ -111,8 +130,7 @@ class OrderService implements OrderServiceInterface
 	 */
 	public function update(Request $request, $id)
 	{
-		$data = $request->except(['XDEBUG_SESSION_START']);
-
+		$data = $request->all();
 		if (isset($data['status'])) {
 			return $this->orderRepository->updateStatus($id, $data['status']);
 		}
@@ -153,13 +171,56 @@ class OrderService implements OrderServiceInterface
 	 */
 	public function createRecipient(Request $request)
 	{
-		$data = $request->except('XDEBUG_SESSION_START');
-
+		$data = $request->all();
 		\Validator::make($data, RecipientRequest::RULES)->validate();
-
 		$result = factory(Recipient::class)->create($data);
 
 		return $result;
+	}
+
+	public function createAdminOrder(AdminOrderRequest $request)
+	{
+		//$data = $request->all();
+
+		$data = [];
+		$data['geo_start'] = $request->input('start_coord');
+		//unset($data['start_coord']);
+		$data['geo_end'] = $request->input('end_coord');
+		//unset($data['end_coord']);
+
+		$data['customer_id'] = $this->userService->getByUsername($request->input('customer'))->id;
+		$recipientData = [
+			'name' => $request->input('recipient_name'),
+			'phone' => $request->input('recipient_phone'),
+			'notes' => $request->input('recipient_notes'),
+		];
+		$recipient = factory(Recipient::class)->create($recipientData)->save();
+
+		$data['recipient_id'] = $recipient->id;
+		$data['size_id'] = (int) $request->input('shipment_size');
+		$data['category_id'] = (int) $request->input('shipment_category');
+
+		$shipment = $this->shipmentRepository->create($data);
+
+		if (count($data['images'])) {
+			$shipment->clearMediaCollection(Shipment::MEDIA_COLLECTION);
+			foreach ($data['images'] as $img) {
+				$shipment->addMedia($img)
+					->usingFileName($img->hashName())
+					->toMediaCollection(Shipment::MEDIA_COLLECTION, 's3');
+			}
+		}
+
+		try {
+			$order = factory(Order::class)->create($data);
+		} catch (\Exception $e) {
+			throw new MultipleExceptions("Cannot create Order.", $e->getCode(), $e);
+		}
+
+		$order->saveOrFail();
+
+		return $order;
+
 	}
 
 }

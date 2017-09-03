@@ -10,6 +10,7 @@ namespace App\Repositories\Order;
 use App\Exceptions\MultipleExceptions;
 use App\Models\Order;
 use App\Repositories\CrudRepository;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Jenssegers\Date\Date;
 
@@ -25,15 +26,18 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 	protected $model = Order::class;
 
 	/**
-	 * @return mixed
+	 * @return Collection
 	 */
 	public function all()
 	{
-		return Order::all();
+		$result = Order::with(['customer', 'trip', 'trip.carrier', 'trip.carrier.user', 'recipient', 'shipment'])
+			->get();
+
+		return $result;
 	}
 
 	/**
-	 * @return mixed
+	 * @return Collection
 	 */
 	public function customerOrders()
 	{
@@ -60,10 +64,10 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 		$data['customer_id'] = Auth::user()->customer->id;
 		$data['status'] = Order::STATUS_CREATED;
 
-		try{
+		try {
 			$order = factory(Order::class)->create($data);
-		} catch (\Exception $e){
-			switch ($e->getCode()){
+		} catch (\Exception $e) {
+			switch ($e->getCode()) {
 				case 23000:
 					throw new MultipleExceptions("Duplicate shipment found.", 422);
 					break;
@@ -73,9 +77,9 @@ class OrderRepository extends CrudRepository implements OrderRepositoryInterface
 		}
 
 
-		if (!$order->isValid()){
+		if (!$order->isValid()) {
 			$errors = $order->getErrors();
-			foreach ($errors as $error){
+			foreach ($errors as $error) {
 				throw new \Exception($error, 404);
 			}
 		}

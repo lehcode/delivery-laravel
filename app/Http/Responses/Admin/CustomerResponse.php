@@ -38,11 +38,14 @@ class CustomerResponse extends ApiResponse
 	 */
 	public function transform(Customer $customer)
 	{
+		$customer->load('user');
+
 		$data = [
 			'id' => $customer->id,
 			'username' => $customer->user->username,
 			"phone" => $customer->user->phone,
 			"email" => $customer->user->email,
+			'last_login' => $customer->user->last_login,
 			"name" => !is_null($customer->user->name) ? $customer->user->name : "",
 			'is_enabled' => $customer->user->is_enabled,
 			User::PROFILE_IMAGE => !is_null($customer->user->photo) ? $customer->user->getMedia(User::PROFILE_IMAGE)->first()->getUrl('thumb') : '',
@@ -52,6 +55,7 @@ class CustomerResponse extends ApiResponse
 			"orders" => (int)$this->userService->getUserOrders($customer->id)->count(),
 			'payment_info' => isset($customer->card_number) ? $this->includeTransformedItem($customer, new PaymentInfoResponse()) : '',
 			'created_at' => $customer->created_at->format('r'),
+			'rating' => is_null($customer->rating) ? 0 : $customer->rating,
 		];
 
 		if (isset($customer->current_city) && !is_null($customer->current_city)) {

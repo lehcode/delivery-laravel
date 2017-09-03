@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\Extensions\ProfileAttributeTrait;
+use App\Extensions\RfcDateTrait;
 use App\Models\User\Admin;
 use App\Models\User\Carrier;
 use App\Models\User\Customer;
 use App\Models\User\Role;
-use Jenssegers\Date\Date;
 use App\Extensions\UuidTrait;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -15,12 +15,10 @@ use Laratrust\Traits\LaratrustUserTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
-use Hash;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use Watson\Validating\ValidatingTrait;
-use Validator;
 
 class User extends Authenticatable implements AuditableInterface, HasMediaConversions
 {
@@ -31,7 +29,8 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 		ValidatingTrait,
 		AuditableTrait,
 		ProfileAttributeTrait,
-		HasMediaTrait;
+		HasMediaTrait,
+		RfcDateTrait;
 
 	const ROLE_ROOT = 'root';
 	const ROLE_ADMIN = 'admin';
@@ -212,6 +211,20 @@ class User extends Authenticatable implements AuditableInterface, HasMediaConver
 
 		$this->addMediaConversion('thumb')
 			->fit(Manipulations::FIT_CROP, 120, 160);
+	}
+
+	/**
+	 * @param string $value
+	 *
+	 * @return string
+	 */
+	public function getLastLoginAttribute($value)
+	{
+		if (is_null($value)) {
+			return $value;
+		}
+
+		return $this->rfcDate($value);
 	}
 
 }

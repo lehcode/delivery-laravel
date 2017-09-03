@@ -177,9 +177,9 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 			Route::group(['prefix' => "customers"], function () {
 				Route::get('', ["uses" => "CustomerController@all"]);
 				Route::get('{id}', ["uses" => "CustomerController@get"]);
-				Route::put('update/{id}', ['uses' => 'CustomerController@edit']);
+				Route::put('update/{id}', ['uses' => 'CustomerController@update']);
 				Route::post('create', ['uses' => 'CustomerController@create']);
-				Route::post('toggle/{value}', ['uses' => 'CustomerController@setAccountStatus']);
+				Route::post('toggle/{user_id}', ['uses' => 'CustomerController@setAccountStatus']);
 			});
 
 			Route::group(['prefix' => "trips"], function () {
@@ -187,6 +187,12 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 				Route::get('{id}', ["uses" => "TripController@get"]);
 				Route::post('create', ["uses" => "TripController@create"]);
 				Route::post('update/{id}', ["uses" => "TripController@update"]);
+			});
+
+			Route::group(['prefix' => "orders"], function () {
+				Route::get('', ["uses" => "OrderController@all"]);
+
+				Route::post('create', ['uses' => 'OrderController@createAdminOrder']);
 			});
 		});
 

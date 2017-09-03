@@ -48,7 +48,7 @@ class ShipmentService implements ShipmentServiceInterface
 	 */
 	public function getCategories()
 	{
-		return ShipmentCategory::all();
+		return ['data' => ShipmentCategory::all()];
 	}
 
 	/**
@@ -68,15 +68,14 @@ class ShipmentService implements ShipmentServiceInterface
 		$shipment = $this->shipmentRepository->create($data);
 
 		$images = $request->input('photosArray');
-		if (count($images)){
+		if (count($images)) {
 			$shipment->clearMediaCollection(Shipment::MEDIA_COLLECTION);
-			foreach ($images as $img){
+			foreach ($images as $img) {
 				$shipment->addMedia($img)
 					->usingFileName($img->hashName())
 					->toMediaCollection(Shipment::MEDIA_COLLECTION, 's3');
 			}
 		}
-
 
 
 		return $shipment;
@@ -87,7 +86,7 @@ class ShipmentService implements ShipmentServiceInterface
 	 */
 	public function getSizes()
 	{
-		return ShipmentSize::all();
+		return ['data' => ShipmentSize::all()];
 	}
 
 }
