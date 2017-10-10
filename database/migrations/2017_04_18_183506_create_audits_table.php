@@ -41,7 +41,6 @@ class CreateAuditsTable extends Migration
             $table->string('user_agent');
 
             $table->timestamp('created_at');
-            $table->timestamp('updated_at')->nullable();
         });
     }
 

@@ -31,7 +31,7 @@ class OrderResponse extends ApiResponse
 			'status' => $order->status,
 			'customer' => $this->includeTransformedItem($user, new UserDetailedResponse(false)),
 			'recipient' => $this->includeTransformedItem($order->recipient, new RecipientResponse(false)),
-			'departure_date' => $order->departure_date,
+			'departure_date' => is_null($order->departure_date) ? "" : $order->departure_date,
 			'expected_delivery_date' => $order->expected_delivery_date,
 			'shipment' => $this->includeTransformedItem($order->shipment, new ShipmentResponse(false)),
 			'geo_start' => $order->geo_start,

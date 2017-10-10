@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\Payment;
 
 class CreateOrdersTable extends Migration
 {
@@ -16,13 +17,19 @@ class CreateOrdersTable extends Migration
 	{
 		Schema::create($this->name, function (Blueprint $table) {
 
+			$statuses = [
+				Payment::STATUS_UNPAID,
+				Payment::STATUS_PROCESSING,
+				Payment::STATUS_PAID
+			];
+
 			$table->uuid('id');
 			$table->primary('id');
 
-			$table->dateTime('departure_date')->index();
+			$table->dateTime('departure_date')->nullable()->index();
 			$table->dateTime('expected_delivery_date')->index();
-			$table->enum('status', OrdersSeeder::STATUSES)->index();
-			$table->float('price', 8, 2);
+			//$table->enum('status', $statuses)->index();
+			//$table->float('price', 8, 2);
 
 			$table->uuid('recipient_id')->index();
 			$table->foreign('recipient_id')->references('id')->on('recipients')

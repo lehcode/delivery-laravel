@@ -34,8 +34,11 @@ class CreatePaymentsTable extends Migration
 				->onDelete('restrict')
 				->onUpdate('restrict');
 
-			$table->enum('status', Payment::STATUSES)
-				->default('not_paid');
+			$table->enum('status', [
+				Payment::STATUS_UNPAID,
+				Payment::STATUS_PROCESSING,
+				Payment::STATUS_PAID
+			])->default(Payment::STATUS_UNPAID);
 
 			$table->timestamps();
 

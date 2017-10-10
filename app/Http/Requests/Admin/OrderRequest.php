@@ -29,7 +29,8 @@ class OrderRequest extends ApiRequest
 			'recipient_notes' => 'nullable',
 			'shipment_size' => 'required|numeric|exists:shipment_sizes,id',
 			'shipment_category' => 'required|numeric|exists:shipment_categories,id',
-			'images' => 'array|required'
+			'images' => 'array|required',
+			'expected_delivery_date' => 'required|date',
 		];
 
 		return $rules;

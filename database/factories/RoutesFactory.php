@@ -18,7 +18,7 @@ $factory->define(Route::class, function (Faker\Generator $faker) {
 	$type = $faker->randomElement(['order', 'trip']);
 
 	return [
-		'id' => Uuid::generate(4),
+		'id' => Uuid::generate(4)->string,
 		'from_city_id' => $startCity->id,
 		'to_city_id' => $destinationCity->id,
 		'type' => $type,

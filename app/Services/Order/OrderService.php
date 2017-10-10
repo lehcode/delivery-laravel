@@ -11,6 +11,7 @@ namespace App\Services\Order;
 use App\Http\Requests\Admin\OrderRequest as AdminOrderRequest;
 use App\Http\Requests\RecipientRequest;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Recipient;
 use App\Models\Shipment;
 use App\Models\User;
@@ -22,6 +23,7 @@ use App\Services\UserService\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Webpatser\Uuid\Uuid;
 
 /**
  * Class OrderService
@@ -178,48 +180,58 @@ class OrderService implements OrderServiceInterface
 		return $result;
 	}
 
+	/**
+	 * @param AdminOrderRequest $request
+	 *
+	 * @return Order
+	 */
 	public function createAdminOrder(AdminOrderRequest $request)
 	{
-		//$data = $request->all();
+		$orderData = [];
 
-		$data = [];
-		$data['geo_start'] = $request->input('start_coord');
-		//unset($data['start_coord']);
-		$data['geo_end'] = $request->input('end_coord');
-		//unset($data['end_coord']);
+		$orderData['geo_start'] = $request->input('start_coord');
+		$orderData['geo_end'] = $request->input('end_coord');
+		$orderData['customer_id'] = $this->userService->getByUsername($request->input('customer'))->id;
 
-		$data['customer_id'] = $this->userService->getByUsername($request->input('customer'))->id;
-		$recipientData = [
+		$recipientEntity = factory(Recipient::class)->create([
 			'name' => $request->input('recipient_name'),
 			'phone' => $request->input('recipient_phone'),
 			'notes' => $request->input('recipient_notes'),
-		];
-		$recipient = factory(Recipient::class)->create($recipientData)->save();
+		]);
+		$recipientEntity->saveOrFail();
 
-		$data['recipient_id'] = $recipient->id;
-		$data['size_id'] = (int) $request->input('shipment_size');
-		$data['category_id'] = (int) $request->input('shipment_category');
+		$orderData['recipient_id'] = $recipientEntity->id;
 
-		$shipment = $this->shipmentRepository->create($data);
+		$shipment['size_id'] = (int) $request->input('shipment_size');
+		$shipment['category_id'] = (int) $request->input('shipment_category');
 
-		if (count($data['images'])) {
-			$shipment->clearMediaCollection(Shipment::MEDIA_COLLECTION);
-			foreach ($data['images'] as $img) {
-				$shipment->addMedia($img)
+		$shipmentEntity = $this->shipmentRepository->create($shipment);
+		$shipmentEntity->saveOrFail();
+
+		$orderData['shipment_id'] = $shipmentEntity->id;
+
+		if ($request->has('images')) {
+			$shipmentEntity->clearMediaCollection(Shipment::MEDIA_COLLECTION);
+			foreach ($request->input('images') as $img) {
+				$shipmentEntity->addMedia($img)
 					->usingFileName($img->hashName())
 					->toMediaCollection(Shipment::MEDIA_COLLECTION, 's3');
 			}
 		}
 
-		try {
-			$order = factory(Order::class)->create($data);
-		} catch (\Exception $e) {
-			throw new MultipleExceptions("Cannot create Order.", $e->getCode(), $e);
-		}
+		$payment['id'] = Uuid::generate(4)->string;
+		$payment['status'] = Payment::STATUS_UNPAID;
+		$paymentEntity = new Payment();
+		$paymentEntity->saveOrFail($payment);
 
-		$order->saveOrFail();
+		$orderData['price'] = (float)$request->input('price');
+		$orderData['departure_date'] = null;
+		$orderData['expected_delivery_date'] = (float)$request->input('expected_delivery_date');
 
-		return $order;
+		$orderEntity = factory(Order::class)->create($orderData);
+		$orderEntity->saveOrFail();
+
+		return $orderEntity;
 
 	}
 

@@ -106,6 +106,7 @@ Route::group(['middleware' => ['maintenance', 'api']], function () {
 
 		Route::group(['prefix' => 'user'], function () {
 			Route::post('create', ['uses' => 'CarrierController@create']);
+			Route::post('toggle/{id}', ['uses' => 'CarrierController@toggle']);
 		});
 
 		Route::group(['middleware' => 'jwt.auth'], function () {

@@ -72,7 +72,7 @@ class Order extends Model implements AuditableInterface
 	 * @var array
 	 */
 	protected $rules = [
-		'departure_date' => 'required|date',
+		'departure_date' => 'nullable|date',
 		'expected_delivery_date' => 'required|date',
 		'recipient_id' => 'required|regex:' . User::UUID_REGEX,
 		'customer_id' => 'required|regex:' . User::UUID_REGEX,
@@ -187,6 +187,10 @@ class Order extends Model implements AuditableInterface
 	 */
 	public function getDepartureDateAttribute($value)
 	{
+		if (is_null($value)){
+			return null;
+		}
+
 		return $this->rfcDate($value);
 	}
 

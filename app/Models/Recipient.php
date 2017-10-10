@@ -22,7 +22,7 @@ class Recipient extends Model implements AuditableInterface
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['id', 'name', 'email', 'notes'];
+	protected $fillable = ['id', 'name', 'email', 'notes', 'phone'];
 
 	/**
 	 * @var bool
@@ -45,6 +45,7 @@ class Recipient extends Model implements AuditableInterface
 	protected $rules = [
 		'name' => 'required|string|min:3',
 		'phone' => 'required|phone:AUTO,mobile',
+		'notes' => 'nullable',
 	];
 
 	public function order()

@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
 
-	const STATUSES = ['not_paid', 'processing', 'paid'];
+	const STATUS_UNPAID = 'unpaid';
+	const STATUS_PROCESSING = 'processing';
+	const STATUS_PAID = 'paid';
 
 	protected $fillable = ['order_id', 'amount', 'payment_type_id'];
 	
