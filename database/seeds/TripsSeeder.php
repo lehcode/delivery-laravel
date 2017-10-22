@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Trip;
 use Faker\Factory as Faker;
+use App\Models\City;
 
 /**
  * Class TripsSeeder
@@ -20,13 +21,23 @@ class TripsSeeder extends Seeder
 		$this->command->info('Creating Carrier\'s trips');
 
 		$faker = Faker::create('en_GB');
+		$cities = City::all();
 
 		User\Carrier::all()
-			->each(function ($carrier) use ($faker) {
+			->each(function ($carrier) use ($faker, $cities) {
 
 				for ($i = 0; $i < rand(3, 15); $i++) {
 
-					$tripEntity = factory(Trip::class)->make(['carrier_id' => $carrier->id]);
+					$fromCity = $cities->random();
+					$toCity = $cities->random();
+
+					$tripEntity = factory(Trip::class)->make([
+						'carrier_id' => $carrier->id,
+						'from_city_id' => $fromCity,
+						'to_city_id' => $toCity,
+						'geo_start' => OrdersSeeder::makePoint($this->getGeoData($fromCity)),
+						'geo_end' => OrdersSeeder::makePoint($this->getGeoData($fromCity)),
+					]);
 
 					if (!$tripEntity->isValid()) {
 						$errors = $tripEntity->getErrors()->messages();
@@ -42,5 +53,20 @@ class TripsSeeder extends Seeder
 				}
 
 			});
+	}
+
+	/**
+	 * @param City $city
+	 *
+	 * @return mixed
+	 */
+	private function getGeoData($city)
+	{
+
+		$srcCities = collect(CitiesSeeder::CITIES);
+		$c = $srcCities->where('name', '=', $city->name)->first();
+		$geo = $c['geo'];
+
+		return $geo;
 	}
 }

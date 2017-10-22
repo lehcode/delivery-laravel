@@ -42,6 +42,10 @@ class CreateTripsTable extends Migration
 			$table->softDeletes();
 
 		});
+
+		DB::statement("ALTER TABLE {$this->name} ADD COLUMN geo_start POINT");
+		DB::statement("ALTER TABLE {$this->name} ADD COLUMN geo_end POINT");
+
 	}
 
 	/**

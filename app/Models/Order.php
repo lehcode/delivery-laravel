@@ -144,17 +144,17 @@ class Order extends Model implements AuditableInterface
 
 	public function getGeoStartAttribute($value)
 	{
-		return $this->formatLocationAttribute($value);
+		return self::formatLocationAttribute($value);
 	}
 
 	/**
 	 * @param $value
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function getGeoEndAttribute($value)
 	{
-		return $this->formatLocationAttribute($value);
+		return self::formatLocationAttribute($value);
 	}
 
 	/**
@@ -209,7 +209,7 @@ class Order extends Model implements AuditableInterface
 	 *
 	 * @return array
 	 */
-	private function formatLocationAttribute($value)
+	public static function formatLocationAttribute($value)
 	{
 		$ex = explode(' ', preg_replace('/[^\d\s\.]+/', '', $value));
 		$ex[0] = (float)$ex[0];

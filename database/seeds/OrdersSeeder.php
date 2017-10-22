@@ -52,7 +52,11 @@ class OrdersSeeder extends Seeder
 
 					$trip = Trip::all()->random();
 
-					$recipient = factory(Recipient::class)->create();
+					$recipient = factory(Recipient::class)->create([
+						'name' => $faker->name,
+						'phone' => '+37529' . mt_rand(1111111, 9999999),
+						'notes' => ''
+					]);
 
 					if (!$recipient->isValid()) {
 						$errors = $recipient->getErrors()->messages();
@@ -88,8 +92,8 @@ class OrdersSeeder extends Seeder
 						'customer_id' => $customer->id,
 						'recipient_id' => $recipient->id,
 						'shipment_id' => $shipment->id,
-						'geo_start' => $this->makePoint($this->getGeoData($trip->fromCity()->first())),
-						'geo_end' => $this->makePoint($this->getGeoData($trip->destinationCity()->first())),
+						'geo_start' => self::makePoint($this->getGeoData($trip->fromCity()->first())),
+						'geo_end' => self::makePoint($this->getGeoData($trip->destinationCity()->first())),
 						'price' => $faker->randomFloat(2, 49, 1999),
 					];
 
@@ -134,7 +138,7 @@ class OrdersSeeder extends Seeder
 	 *
 	 * @return array|null
 	 */
-	private function makePoint(array $geo)
+	public static function makePoint(array $geo)
 	{
 
 		$result = null;

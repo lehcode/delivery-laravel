@@ -68,6 +68,11 @@ class Trip extends Model implements AuditableInterface
 	];
 
 	/**
+	 * @var array
+	 */
+	protected $geofields = ['geo_start', 'geo_end'];
+
+	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function carrier()
@@ -106,6 +111,52 @@ class Trip extends Model implements AuditableInterface
 	 */
 	public function getDepartureDateAttribute($value){
 		return $this->rfcDate($value);
+	}
+
+	/**
+	 * @param array $value
+	 */
+	public function setGeoStartAttribute(array $value)
+	{
+		$this->attributes['geo_start'] = \DB::raw("ST_GeomFromText('POINT(" . implode(' ', $value) . ")')");
+	}
+
+	public function getGeoStartAttribute($value)
+	{
+		return Order::formatLocationAttribute($value);
+	}
+
+	/**
+	 * @param $value
+	 *
+	 * @return array
+	 */
+	public function getGeoEndAttribute($value)
+	{
+		return Order::formatLocationAttribute($value);
+	}
+
+	/**
+	 * @param array $value
+	 */
+	public function setGeoEndAttribute(array $value)
+	{
+		$this->attributes['geo_end'] = \DB::raw("ST_GeomFromText('POINT(" . implode(' ', $value) . ")')");
+	}
+
+	/**
+	 * @return $this
+	 */
+	public function newQuery()
+	{
+		$raw = [];
+		foreach ($this->geofields as $column) {
+			$raw[] = " ST_AsText(" . $column . ") AS " . $column;
+		}
+
+		$q = parent::newQuery()->addSelect('*', \DB::raw(implode(', ', $raw)));
+
+		return $q;
 	}
 
 }
